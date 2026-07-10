@@ -2,23 +2,17 @@
 
 > Reach for this document when planning or executing a feature, bug fix, enhancement, or refactor; creating a task file; updating phase checkboxes; or preparing commits and pull requests.
 
-## Required change loop
+## Change workflow
 
-For every fix, enhancement, improvement, or feature, follow this order:
+1. Read the request and inspect the nearest implementation before editing.
+2. Identify the owning app or package and keep the change scoped there.
+3. Write or update `task.md` when the work requires multiple phases, affects several layers, or benefits from an explicit handoff checklist.
+4. Implement the smallest coherent slice using existing structure, naming, data flow, hooks, modules, and repositories.
+5. Run the smallest relevant validation first, then expand checks only as risk requires.
+6. Update checkboxes and notes to match the actual repository state.
+7. Summarize what changed, what was validated, and any remaining follow-up.
 
-1. **Task source first** — find and read the matching tracker item before editing code. Treat its description, root cause, expected behavior, and fix notes as scope.
-2. **Code second** — change only the owning app, follow its existing patterns, and validate the smallest relevant slice.
-3. **Standards last** — capture any reusable lesson in the owning app's agent standard and mirror cross-surface guidance where applicable.
-
-When no tracker item exists, create one before implementation with:
-
-- Task type: Bug, Feature request, or Polish
-- Clear task name
-- Problem description
-- Expected output/behavior
-- Status: In progress
-
-After implementation, mark it Done and record a concise root-cause and fix note.
+Do not require an external tracker or a standards update unless the user or repository instructions explicitly require one.
 
 ## Task file format
 
@@ -62,8 +56,8 @@ Use `task.md` for repository-local implementation plans. Keep it actionable and 
 ### Phase 3 — <Integration and finish>
 
 - [ ] <Regression or cross-surface check>
-- [ ] Update tracker status and notes
-- [ ] Capture reusable standards lesson, if any
+- [ ] Complete regression and cross-surface checks
+- [ ] Record assumptions, decisions, and follow-ups
 
 ## Verification
 
@@ -101,7 +95,7 @@ Immediately follow a feature plan with UI mockups for every affected admin and m
 - Change public contracts first: SDL/schema, shared types, then generated/client code.
 - For cross-app changes, implement in dependency order: shared contract → API → clients.
 - Add tests alongside the changed behavior.
-- Update documentation only when the change produces a reusable rule.
+- Update documentation only when the change produces a durable repository rule.
 
 ## Validation order
 
@@ -127,7 +121,7 @@ Use the corresponding Nx project target when validating one app.
 Use Conventional Commit-style subjects:
 
 ```text
-<type>(<scope>): <imperative summary>
+<type>(<optional scope>): <imperative summary>
 ```
 
 Common types:
@@ -139,13 +133,14 @@ Common types:
 - `docs` — documentation-only change
 - `chore` — maintenance or tooling
 
-Common scopes are `admin`, `mobile`, `api`, `shared`, and `workspace`.
+Common scopes are `web`, `mobile`, `api`, `shared`, and `workspace`. A scope is optional when the change is truly repository-wide.
 
 Examples:
 
 ```text
 feat(api): add structured request validation
 fix(mobile): prevent duplicate notification registration
+refactor: update application references
 docs(workspace): document implementation workflow
 ```
 
@@ -186,7 +181,7 @@ The boilerplate has no established PR history, so use this compatible baseline:
 
 ## Screenshots
 
-<Required for visible admin/mobile changes; otherwise "Not applicable".>
+<Required for visible web/mobile changes; otherwise "Not applicable".>
 ```
 
 Keep PRs scoped to one task. Call out generated files, contract changes, security-sensitive behavior, and follow-up work explicitly.
