@@ -7,14 +7,12 @@
 ```text
 .
 ├── apps/
-│   ├── app-admin/              # Next.js admin web application
+│   ├── app-web/                # Next.js admin web application
 │   ├── app-api/                # NestJS GraphQL and REST API
 │   └── app-mobile/             # Expo React Native application
 ├── packages/
 │   └── shared-constants/       # Cross-app types, constants, schemas, and pure logic
-├── .claude/skills/             # Claude-facing reusable implementation standards
-├── .codex/skills/              # Codex-facing reusable implementation standards
-├── .agents/skills/             # Tooling and workspace skills
+├── .agents/skills/             # Agent tooling and workspace instructions
 ├── AGENTS.md                   # Repository-wide agent rules
 ├── nx.json                     # Nx plugins and task configuration
 ├── package.json                # Root scripts and npm workspaces
@@ -25,10 +23,10 @@ The repository uses npm workspaces for `apps/*` and `packages/*`. Run projects t
 
 ## Ownership rules
 
-- Put admin UI, browser behavior, and Next.js routes in `apps/app-admin`.
+- Put web UI, browser behavior, and Next.js routes in `apps/app-web`.
 - Put native screens, Expo Router routes, device behavior, and NativeWind UI in `apps/app-mobile`.
 - Put GraphQL SDL, resolvers, services, repositories, REST controllers, authentication, scheduling, and infrastructure adapters in `apps/app-api`.
-- Put only platform-neutral types, constants, schemas, and pure business logic in `packages/shared-constants`.
+- Put only product-neutral types, constants, schemas, and pure business logic used by two or more applications in `packages/shared-constants`.
 - Do not share web UI components with React Native.
 - Do not create a shared package for code used by only one app.
 - Keep changes inside the owning app unless a contract or genuinely reusable rule crosses app boundaries.
@@ -61,13 +59,13 @@ Rules:
 - Put reusable transport validation in a feature validation file or a shared validation pipe.
 - Keep tests beside the implementation as `*.spec.ts`.
 
-### Admin and mobile features
+### Web and mobile features
 
 - Follow the nearest existing feature's route, component, hook, provider, query, and form layout.
 - Keep route-only components close to their route.
 - Promote a component to shared app-level UI only after it is reused across features.
 - Keep platform-specific implementations separate even when admin and mobile expose the same capability.
-- Import cross-app contracts from `@app/shared-constants`; do not copy them into each app.
+- Import genuinely shared, product-neutral contracts from `@app/shared-constants`; keep app-specific and single-consumer values in the owning app.
 
 ## GraphQL placement
 
@@ -77,14 +75,12 @@ Rules:
 - Change SDL before regenerating generated TypeScript types.
 - Never edit generated GraphQL files by hand.
 
-## Agent standards
+## Agent instructions
 
-Implementation standards are mirrored under `.claude/skills` and `.codex/skills`. When a reusable rule changes:
-
-- Update the owning app's standard.
-- Mirror client-agnostic rules between web and mobile references when both apply.
-- Mirror API contract rules into affected client GraphQL or caching references.
-- Keep API-specific guidance synchronized between `apps/app-api/AGENTS.md` and `apps/app-api/CLAUDE.md` until a dedicated API skill exists.
+- Treat the root `AGENTS.md` as the repository-wide authority.
+- Use relevant instructions under `.agents/skills/` when the task matches them.
+- Keep reusable guidance product-neutral; do not hardcode paths from another project.
+- Update instructions only when a durable repository rule changes, not for one-off implementation details.
 
 ## Placement checklist
 
