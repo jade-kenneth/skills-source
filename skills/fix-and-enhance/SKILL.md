@@ -1,76 +1,56 @@
 ---
 name: fix-and-enhance
-description: "Three-step workflow for every fix or enhancement in this monorepo: pull the task from Notion first, apply the change in the owning app, then feed the reusable lesson back into that app's standard. USE whenever the user requests a bug fix, enhancement, improvement, or feature. TRIGGERS: 'fix', 'fix this', 'fix the bug', 'enhance', 'improve', 'add', 'implement', 'polish', feature requests, any change request that alters behavior. EXAMPLES: 'fix the login crash', 'enhance the waitlist form', 'add a delete button', 'improve the document request flow', 'this is broken, fix it', 'polish this screen'."
+description: Repository-agnostic coordinator for bug fixes and enhancements. Uses the project's generated workflow instructions, coordinates Notion-tracked work through the Notion MCP, and delegates implementation standards to the `web-app`, `mobile-app`, and `api-app` skills when their supported surfaces are affected. Use whenever a user asks to fix broken behavior, improve or polish an existing feature, add or change functionality, or implement a scoped feature.
 ---
 
-# Fix & Enhancement Workflow
+# Fix and Enhance
 
-Follow this three-step loop **every time** the user asks for a fix or an enhancement (any "fix", "fix this", "enhance", "improve", "add", feature-request, or similar behavior change). The order is fixed: **Notion → code → standard.**
+Coordinate fixes and enhancements across project workflow, app-specific standards, tracking, validation, and durable guidance.
 
-Do not skip a step because a change "looks small." The point of the loop is that one-off fixes become durable rules and every change is tracked.
+## Workflow authority
 
----
+Follow the current project's applicable `AGENTS.md` and `CLAUDE.md`. In the unified agent stack, their workflow is generated from `conventions/workflow.md` in the producer repository; update that source and regenerate instructions instead of maintaining a second editable workflow here.
 
-## Step 1 — Pull from Notion first (before touching code)
+When the synced producer is present, `.skills-source/conventions/workflow.md` is the upstream source. Do not edit generated `AGENTS.md` to change the reusable workflow.
 
-Use the **Notion MCP** to work the project task/bug tracker (the *Barangay Buddy* database) as the source of truth for scope.
+If a project has not adopted the generated workflow yet, use this fallback sequence: inspect the request and nearest implementation, establish the root cause or expected outcome, make the smallest coherent change using local patterns, run focused validation before broader checks, inspect the final diff, and report results and remaining risks honestly.
 
-1. **Find the matching item.** Search the tracker for the task/bug. If the user names a symptom rather than a task, search to locate the owning item.
-2. **Read it fully.** Treat the **Description**, **Root cause**, and **Fix** notes as the authoritative scope — this avoids re-investigating what's already diagnosed and keeps the change tight.
-3. **If no matching item exists, create one first** before any code changes:
-   - **Task type** — pick the fitting one: 🐞 Bug / 💬 Feature request / 💅 Polish.
-   - **Task name** — clear and specific.
-   - **Description** — the problem.
-   - **Status** — `In progress`.
+## Companion app skills
 
-> Never start editing code until the tracker item exists and you've read its scope.
+This skill coordinates the lifecycle; companion app skills remain the implementation authority for their supported surfaces:
 
----
-
-## Step 2 — Apply the fix (owning app only)
-
-1. Make the change **in the owning app only**, following that app's established patterns (reuse the pattern already used in that layer/feature — don't introduce a new one).
-2. Keep changes scoped; validate the smallest relevant slice first (only the affected app's paths).
-3. When the change lands, update the Notion item's **Status** to `Done`, and add a short **root-cause + fix** note in the page body if one isn't already there.
-
----
-
-## Step 3 — Enhance the relevant standard
-
-After the fix is applied, capture the **reusable lesson** where that app's standards live. Write it **generically** — the rule or pattern itself, never this fix's domain, routes, filenames, or project labels. Concrete/project-specific values stay in app source.
-
-### Where the lesson goes (by owning app)
-
-| Owning app | Home for the lesson |
+| Affected surface | Companion skill |
 | --- | --- |
-| Admin / Next.js (`apps/brgy-system-admin`) | the **`web-app`** skill |
-| Mobile / Expo / React Native (`apps/brgy-system-mobile`) | the **`mobile-app`** skill |
-| API / NestJS / GraphQL (`apps/brgy-system-api`) | the **`api-app`** skill; if the lesson changes a core rule also stated in the API app's `AGENTS.md`/`CLAUDE.md`, update those two files too (kept in sync with each other) |
+| Compatible web or admin application | `web-app` |
+| Compatible mobile application | `mobile-app` |
+| Compatible API or backend application | `api-app` |
 
-For all three skills, put the lesson in the right place: SKILL.md non-negotiables + `references/*.md`.
+Invoke every companion skill whose description and compatibility match the affected scope. Read its routed instructions and references before editing that surface.
 
-### Then sync any cross-cutting lesson to its sibling(s)
+For cross-surface changes, use all relevant companion skills and implement shared contracts in dependency order. If none matches, follow the project's generated instructions and nearest established patterns.
 
-- **`web-app` ↔ `mobile-app`.** These carry parallel reference files (e.g. `references/caching.md`, `graphql-patterns.md`, `react-patterns.md`, `typescript-patterns.md`). If a lesson is **not** platform-specific — it holds for both admin and mobile — add it to the matching reference in **both** skills, in the equivalent section of each. The copies have diverged over time, so **insert the guidance to match each file's structure** rather than copy-pasting one over the other.
-- **API ↔ client.** Mirror a shared API↔client convention (e.g. a GraphQL contract or an error-code rule) into the other side too.
+## Notion coordination
 
-**Skip the sibling only when** the lesson is genuinely bound to one platform (Expo/native-only, Next.js/SSR-only, or backend-only) or the sibling has no parallel location.
+Use the **Notion MCP** when the request references Notion or the current project uses Notion for task tracking.
 
-> Only edit skills in **this repo's** `.claude/skills/` — never the boilerplate repo.
+1. Search for and read the matching task before editing so its description, acceptance criteria, diagnosis, and notes inform the scope.
+2. Verify the task's claims against the current code and behavior because tracker content may be stale.
+3. Discover the connected database's name, properties, task types, and status values instead of assuming a schema.
+4. Create or mutate a Notion item only when the user has authorized the write and the project workflow calls for it.
+5. After required validation and acceptance, record the root cause and resolution and move the item to the appropriate completed state when authorized.
 
----
+If the project uses another tracker, apply the same scope, verification, schema-discovery, authorization, and closeout rules through its available integration.
 
-## Why this order
+## Durable guidance
 
-The tracker already holds the diagnosed root cause and intended fix, so starting there avoids re-investigating and keeps scope tight. Feeding each fix back into the owning app's standard turns one-off fixes into durable rules — but **only when written generically**; otherwise the standard fills up with project trivia instead of transferable rules. Each app has a skill for this (`web-app`, `mobile-app`, `api-app`); the API's `AGENTS.md`/`CLAUDE.md` remain the on-disk base standard the `api-app` skill builds on. Most caching, data-fetching, React, and TypeScript lessons apply to both clients, so keeping the parallel references in sync stops the two skills from drifting apart.
+Update the relevant `web-app`, `mobile-app`, or `api-app` guidance only when the change introduces a durable implementation rule for that surface. Update `conventions/workflow.md` when the reusable change process itself changes.
 
----
+When a durable rule spans surfaces, update each affected companion skill in its canonical location. Keep reusable guidance project-neutral, adapt it to each skill's structure, and do not mirror platform-specific guidance to unrelated skills.
 
-## Checklist (run through before finishing)
+## Integration checklist
 
-- [ ] Notion item found or created, with correct **Task type** and **Status: In progress**, and its scope read.
-- [ ] Fix applied in the **owning app only**, following existing patterns.
-- [ ] Smallest relevant slice validated (only the affected app's paths).
-- [ ] Notion item set to **Done** with a root-cause + fix note in the body.
-- [ ] Reusable lesson written **generically** into the owning app's skill (`web-app` / `mobile-app` / `api-app`; for API core-rule changes, also the API's `AGENTS.md`/`CLAUDE.md` kept in sync).
-- [ ] Cross-cutting lesson mirrored to the sibling (other client skill, or the other side of an API↔client contract) — or consciously skipped as platform-bound.
+- [ ] Applicable generated workflow and repository instructions were followed.
+- [ ] Relevant `web-app`, `mobile-app`, and `api-app` skills were used for affected surfaces.
+- [ ] When Notion is in use, the matching item was read and authorized updates used its existing schema.
+- [ ] Tracker records, companion standards, and the canonical workflow were updated only when required.
+- [ ] The handoff states the result, validation, and remaining risks accurately.

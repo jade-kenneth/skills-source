@@ -2,17 +2,87 @@
 
 > Reach for this document when planning or executing a feature, bug fix, enhancement, or refactor; creating a task file; updating phase checkboxes; or preparing commits and pull requests.
 
+This file is the canonical workflow source for generated project instructions. Update it here, then regenerate `AGENTS.md`; do not maintain a second editable copy in a skill or consumer repository.
+
 ## Change workflow
 
-1. Read the request and inspect the nearest implementation before editing.
-2. Identify the owning app or package and keep the change scoped there.
-3. Write or update `task.md` when the work requires multiple phases, affects several layers, or benefits from an explicit handoff checklist.
-4. Implement the smallest coherent slice using existing structure, naming, data flow, hooks, modules, and repositories.
-5. Run the smallest relevant validation first, then expand checks only as risk requires.
-6. Update checkboxes and notes to match the actual repository state.
-7. Summarize what changed, what was validated, and any remaining follow-up.
+Apply this sequence together with the user's request and the repository instructions that govern the affected files.
 
-Do not require an external tracker or a standards update unless the user or repository instructions explicitly require one.
+### 1. Establish scope and local rules
+
+Before editing:
+
+1. Read the request and any linked issue, specification, logs, screenshots, or error output.
+2. Read the applicable `AGENTS.md`, `CLAUDE.md`, README, contribution guides, and nested instructions.
+3. Inspect the working tree so existing user changes are not overwritten or mistaken for task changes.
+4. Locate the nearest implementation, tests, configuration, and comparable feature.
+5. Identify the owning app or package and include another boundary only when a contract or dependency genuinely crosses it.
+6. Discover the supported scripts, generated-file workflow, and validation commands from repository configuration rather than guessing them.
+
+Ask a clarifying question only when missing information would materially change the implementation. Otherwise, state a reasonable assumption and continue. If the user requested diagnosis or review only, provide the requested evidence without implementing an unrequested fix.
+
+Use an external tracker only when the user references one or the repository workflow requires it. Verify tracker content against the current code and require user authorization for external writes.
+
+### 2. Diagnose or define the change
+
+For a bug fix:
+
+- Reproduce the failure when practical, or gather the strongest available evidence when reproduction is unavailable.
+- Trace the affected control flow, data flow, and boundary conditions far enough to identify the root cause.
+- Check for an existing test or nearby pattern that reveals the intended behavior.
+- Fix the cause rather than only suppressing the visible symptom.
+
+For an enhancement:
+
+- Compare the current behavior with the requested outcome.
+- Identify acceptance criteria, affected states, edge cases, and compatibility constraints.
+- Find the nearest comparable implementation before introducing a new pattern or abstraction.
+
+### 3. Plan and implement the smallest coherent change
+
+Write or update `task.md` when the work requires multiple phases, affects several layers, or benefits from an explicit handoff checklist. Use the format below and keep its state aligned with reality.
+
+- Follow the nearest established structure, naming, data flow, hooks, modules, repositories, and error-handling patterns.
+- Keep the diff focused and avoid unrelated cleanup or broad refactors.
+- Preserve public behavior and compatibility outside the requested scope unless the change explicitly requires otherwise.
+- Change public contracts first: SDL/schema, shared types, then generated and client code.
+- For cross-app changes, implement in dependency order: shared contract → API → clients.
+- Add or update tests for observable behavior when the repository has a relevant test surface.
+- For user-facing changes, cover applicable loading, empty, error, success, accessibility, and responsive states.
+- Do not hand-edit generated files when a generator exists. Inspect regenerated output for unrelated churn and report a failed or unavailable generator instead of fabricating output.
+
+### 4. Validate in proportion to risk
+
+Run the smallest relevant checks first:
+
+1. Focused test, reproduction, or manual check for the changed behavior.
+2. Affected project's lint and typecheck.
+3. Affected project's broader tests and build when the change can affect compilation or bundling.
+4. Workspace-wide or integration checks only when shared contracts, root configuration, or cross-system behavior changed.
+
+Typical root commands:
+
+```bash
+npm run lint
+npm run typecheck
+npm run build
+```
+
+Use the corresponding Nx project target when validating one app.
+
+Inspect unfamiliar scripts before running them. Deployment, destructive, data-mutating, production-bound, privileged, or external-write commands require explicit user authorization; their presence in CI or package scripts is not permission to execute them.
+
+Increase validation for authentication, authorization, sensitive data, persistence, concurrency, public APIs, schemas, migrations, billing, destructive operations, and deployment configuration. Verify relevant failure paths, compatibility, and rollback or migration needs.
+
+Do not claim a check passed unless it ran successfully. If a check cannot run, report the command, reason, and remaining risk.
+
+### 5. Close out accurately
+
+- Inspect the final diff and working tree for unintended or unrelated edits.
+- Update task checkboxes and notes to match the actual repository state.
+- Update an authorized tracker only when the user or repository workflow requires it; do not mark incomplete or unvalidated work complete.
+- Update documentation or standards only when the change creates a durable rule, public contract, configuration requirement, or reusable workflow.
+- Summarize what changed, what was validated, and any limitation, assumption, migration, or follow-up that remains.
 
 ## Task file format
 
@@ -85,36 +155,6 @@ Immediately follow a feature plan with UI mockups for every affected admin and m
 - Preserve incomplete items; do not mark a phase complete because most of it works.
 - Add newly discovered work to the appropriate phase instead of hiding it in prose.
 - Keep status honest: the task file should show the actual repository state at handoff.
-
-## Implementation discipline
-
-- Inspect the nearest implementation before editing.
-- Keep the change inside the app or package that owns the behavior.
-- Avoid unrelated cleanup and broad refactors.
-- Reuse established data flow, naming, hooks, modules, and repositories.
-- Change public contracts first: SDL/schema, shared types, then generated/client code.
-- For cross-app changes, implement in dependency order: shared contract → API → clients.
-- Add tests alongside the changed behavior.
-- Update documentation only when the change produces a durable repository rule.
-
-## Validation order
-
-Run the smallest relevant checks first:
-
-1. Focused test for the changed module/component.
-2. Affected project's lint and typecheck.
-3. Affected project's build when the change can affect compilation or bundling.
-4. Workspace-wide checks only when shared contracts or root configuration changed.
-
-Typical root commands:
-
-```bash
-npm run lint
-npm run typecheck
-npm run build
-```
-
-Use the corresponding Nx project target when validating one app.
 
 ## Commit style
 
