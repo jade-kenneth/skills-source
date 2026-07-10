@@ -35,6 +35,12 @@
 - Use concrete `XEdge` and `XConnection` types for paginated collections.
 - Use `[Type!]!` for lists that are always present; make fields nullable only when absence is meaningful.
 
+## Shared code
+
+- Export from `packages/shared-constants` only when a type, constant, schema, or pure helper is product-neutral and used by at least two applications.
+- Keep web-only, mobile-only, and API-only values in their owning app.
+- Do not leave placeholder domain exports in the shared package; an empty package should use an explicit `export {};`.
+
 ## Imports and formatting
 
 - Use type-only imports when a value is not required at runtime.
