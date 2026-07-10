@@ -269,20 +269,20 @@ When porting `WysiwygReference`, replace unsupported dependencies with supported
 
 ### Replace (unsupported Ark dependencies)
 
-| WysiwygReference (Ark) | Replace with |
-|---|---|
-| `HTMLArkProps<'div'>` / `HTMLArkProps<'button'>` | `React.ComponentPropsWithRef<'div'>` / `React.ComponentPropsWithRef<'button'>` |
-| `ark.div` / `ark.button` | standard `div` / `button` elements |
-| `mergeProps` from `@ark-ui/react/utils` | manual spread merge or a lightweight `mergeProps` utility |
-| `createContext` from `@ark-ui/react/utils` | React `createContext` + `useContext` with a null guard |
-| `useFieldContext` | remove — do not integrate with an external Field component unless it already exists in the app |
-| `useEnvironmentContext` | remove — use `document.getElementById` directly |
-| `useLocaleContext` | remove — omit `dir` prop from generated props, or default to `'ltr'` |
-| `Assign` from `@ark-ui/react` | `Omit<React.ComponentPropsWithRef<'div'>, keyof UseRichTextProps> & UseRichTextProps` |
-| `parts.*Trigger.attrs` from anatomy | remove — anatomy pattern is Ark-specific, drop `...parts.X.attrs` spreads |
-| `splitProps` from `~/utils/splitProps` | inline prop splitting using destructuring or `Object.keys` |
+| WysiwygReference (Ark)                                     | Replace with                                                                                                      |
+| ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| `HTMLArkProps<'div'>` / `HTMLArkProps<'button'>`           | `React.ComponentPropsWithRef<'div'>` / `React.ComponentPropsWithRef<'button'>`                                    |
+| `ark.div` / `ark.button`                                   | standard `div` / `button` elements                                                                                |
+| `mergeProps` from `@ark-ui/react/utils`                    | manual spread merge or a lightweight `mergeProps` utility                                                         |
+| `createContext` from `@ark-ui/react/utils`                 | React `createContext` + `useContext` with a null guard                                                            |
+| `useFieldContext`                                          | remove — do not integrate with an external Field component unless it already exists in the app                    |
+| `useEnvironmentContext`                                    | remove — use `document.getElementById` directly                                                                   |
+| `useLocaleContext`                                         | remove — omit `dir` prop from generated props, or default to `'ltr'`                                              |
+| `Assign` from `@ark-ui/react`                              | `Omit<React.ComponentPropsWithRef<'div'>, keyof UseRichTextProps> & UseRichTextProps`                             |
+| `parts.*Trigger.attrs` from anatomy                        | remove — anatomy pattern is Ark-specific, drop `...parts.X.attrs` spreads                                         |
+| `splitProps` from `~/utils/splitProps`                     | inline prop splitting using destructuring or `Object.keys`                                                        |
 | `useControllableState` from `~/hooks/useControllableState` | check if the hook exists in the target app; if not, implement a minimal equivalent using `useState` + `useEffect` |
-| `dataAttr` from `~/utils/dataAttr` | check if the util exists in the target app; if not, implement inline: `(v: boolean | undefined) => v ? '' : undefined` |
+| `dataAttr` from `~/utils/dataAttr`                         | check if the util exists in the target app; if not, implement inline: `(v: boolean                                | undefined) => v ? '' : undefined` |
 
 Important: this replacement is per rendered element, not per original reference file. If a React port changes a trigger from `button` to `label` or another intrinsic element for correctness, update the prop type to match the rendered element or introduce an explicit shared trigger state type.
 
