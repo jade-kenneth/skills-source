@@ -9,9 +9,9 @@ Coordinate fixes and enhancements across project workflow, app-specific standard
 
 ## Workflow authority
 
-Follow the current project's applicable `AGENTS.md` and `CLAUDE.md`. In the unified agent stack, their workflow is generated from `conventions/workflow.md` in the producer repository; update that source and regenerate instructions instead of maintaining a second editable workflow here.
+Follow the current project's applicable `AGENTS.md` and `CLAUDE.md`. In the unified agent stack, their workflow is generated from `conventions/workflow.md` in the **skills-source repository itself** — that repository is the only editable, upstream source.
 
-When the synced producer is present, `.skills-source/conventions/workflow.md` is the upstream source. Do not edit generated `AGENTS.md` to change the reusable workflow.
+`.skills-source/` in a project is a **read-only synced snapshot** of that upstream, wiped and re-cloned on every sync. Never edit anything under `.skills-source/` and never edit generated `AGENTS.md` to change the reusable workflow — both changes are lost on the next `npm run sync-skills`. To change the workflow: edit `conventions/workflow.md` in the skills-source repository, commit and push, then run `npm run sync-skills` (which regenerates `AGENTS.md`) in each consuming project and commit the regenerated `AGENTS.md`.
 
 If a project has not adopted the generated workflow yet, use this fallback sequence: inspect the request and nearest implementation, establish the root cause or expected outcome, make the smallest coherent change using local patterns, run focused validation before broader checks, inspect the final diff, and report results and remaining risks honestly.
 
@@ -19,11 +19,11 @@ If a project has not adopted the generated workflow yet, use this fallback seque
 
 This skill coordinates the lifecycle; companion app skills remain the implementation authority for their supported surfaces:
 
-| Affected surface | Companion skill |
-| --- | --- |
-| Compatible web or admin application | `web-app` |
-| Compatible mobile application | `mobile-app` |
-| Compatible API or backend application | `api-app` |
+| Affected surface                      | Companion skill |
+| ------------------------------------- | --------------- |
+| Compatible web or admin application   | `web-app`       |
+| Compatible mobile application         | `mobile-app`    |
+| Compatible API or backend application | `api-app`       |
 
 Invoke every companion skill whose description and compatibility match the affected scope. Read its routed instructions and references before editing that surface.
 
@@ -43,14 +43,31 @@ If the project uses another tracker, apply the same scope, verification, schema-
 
 ## Durable guidance
 
-Update the relevant `web-app`, `mobile-app`, or `api-app` guidance only when the change introduces a durable implementation rule for that surface. Update `conventions/workflow.md` when the reusable change process itself changes.
+Update the relevant `web-app`, `mobile-app`, or `api-app` guidance only when the change introduces a durable implementation rule for that surface. Update `conventions/workflow.md` **in the skills-source repository** when the reusable change process itself changes; never in a project's synced snapshot.
 
-When a durable rule spans surfaces, update each affected companion skill in its canonical location. Keep reusable guidance project-neutral, adapt it to each skill's structure, and do not mirror platform-specific guidance to unrelated skills.
+When a durable rule spans surfaces, update each affected companion skill in its canonical location (the skills-source repository). Keep reusable guidance project-neutral, adapt it to each skill's structure, and do not mirror platform-specific guidance to unrelated skills. After any upstream change, re-run the global install script (skills/commands symlinks pick it up live) and `npm run sync-skills` in affected projects so `AGENTS.md` carries the rule to the executor.
+
+### Durable guidance — how to actually do it
+
+**Location of the upstream repository:** `~/dev/skills-source`
+(If this path does not exist, check the current project's `CLAUDE.md` for a "skills-source" line; if still not found, ask the user for the path instead of guessing or skipping the update.)
+
+**Procedure — propose first, never edit unprompted:**
+
+1. **Propose.** After completing the primary task, state the candidate rule in one or two sentences, name the exact target file (e.g. `skills/api/api-app/SKILL.md` or `conventions/workflow.md`), and quote the text you intend to add or change. Then stop and wait.
+2. **Wait for explicit approval.** Only proceed on a clear yes. If the user declines or does not answer, drop it — do not queue it, do not apply it later in the session without asking again.
+3. **Edit upstream only.** Make the approved change in the skills-source repository at the path above. Never write durable rules into the current project's `.skills-source/`, `AGENTS.md`, or `CLAUDE.md` — those are downstream copies.
+4. **Commit and push** in skills-source with a message naming the skill and the rule (e.g. `api-app: propagate error envelope rule`).
+5. **Propagate to the current project** if it consumes the changed guidance: run `npm run sync-skills`, then commit the regenerated `AGENTS.md`. Mention that other projects will pick the rule up via postinstall or the CI drift check.
+6. **Report** the rule, the file it now lives in, and the propagation status in the final handoff.
+
+A durable rule is one that should govern _future_ work in _other_ projects. A fix-local decision (naming in this file, a workaround for this repo's quirk) is not durable — leave it in the project and out of skills-source.
 
 ## Integration checklist
 
 - [ ] Applicable generated workflow and repository instructions were followed.
 - [ ] Relevant `web-app`, `mobile-app`, and `api-app` skills were used for affected surfaces.
 - [ ] When Notion is in use, the matching item was read and authorized updates used its existing schema.
-- [ ] Tracker records, companion standards, and the canonical workflow were updated only when required.
+- [ ] Tracker records, companion standards, and the canonical workflow were updated only when required — and only upstream in skills-source, never in `.skills-source/` or generated `AGENTS.md`.
+- [ ] Any durable rule was proposed with its exact target file and wording, and written only after explicit approval; approved rules were committed, pushed, and synced per the procedure above.
 - [ ] The handoff states the result, validation, and remaining risks accurately.
