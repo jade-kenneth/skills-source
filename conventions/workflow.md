@@ -4,6 +4,16 @@
 
 This file is the canonical workflow source for generated project instructions. Update it here, then regenerate `AGENTS.md`; do not maintain a second editable copy in a skill or consumer repository.
 
+## Roles
+
+Project work is split across two agents with fixed responsibilities; apply the sections below through the lens of whichever role you occupy.
+
+- **Codex — the executor.** Builds against `AGENTS.md` and the project Task Plan, one phase at a time, updating phase checkboxes (`[ ]` → `[~]` → `[x]`) as work completes and passes its QA rows. Does not write to Notion.
+- **Claude Code — the planner and reviewer.** Distils the design export into the Reference and Task Plan, refines phases, reviews the executor's finished work against the Reference with the Fidelity QA gate, and syncs phase status to Notion during planning or review sessions. Does not implement features unless the user explicitly asks.
+- **Provenance of scope:** all product planning and UI/UX originates in Claude Design and arrives as the committed `design/` export. Neither agent invents UI; ambiguity is escalated to the user.
+
+When only one agent is present on a task, it still respects the boundary that matters most: nothing visual is rebuilt from prose, and no phase is marked complete without its validation.
+
 ## Change workflow
 
 Apply this sequence together with the user's request and the repository instructions that govern the affected files.

@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-// Renders AGENTS.md for Codex from conventions + skill summaries.
+// Renders AGENTS.md for Codex (the EXECUTOR): contract header + full conventions
+// + a routed skill index (pointer style — full bodies live in .skills-source/).
 // Usage: node build-agents-md.js [output-path]
 const fs = require("fs");
 const path = require("path");
@@ -40,8 +41,37 @@ function findSkillFiles(dir) {
   return files;
 }
 
-let doc =
-  "# AGENTS.md — Project conventions (generated from skills-source, do not edit)\n\n";
+let doc = `# AGENTS.md — execution contract (generated from skills-source; do not edit)
+
+You are the EXECUTOR on this project. Claude Design produced the UI/UX and plan;
+Claude Code distilled them into the two docs below. Your job is to build, faithfully.
+
+## Read these first, in this order
+1. [PROJECT]Reference.md — UI & behavior source of truth. Screens are PORTED
+   VERBATIM from design/prototypes/, never rebuilt from a written description.
+2. [PROJECT] Task Plan.md — dependency-ordered phases. Work ONE phase at a time,
+   top to bottom. Check off [ ] → [~] (in progress) → [x] (done, QA passed).
+3. This file — code structure, naming, stack patterns, and the skill index below.
+
+## Non-negotiables
+- Conflict order: design/prototypes > design/system > design/planning >
+  this file (code structure ONLY) > boilerplate UI (never wins, always discarded).
+- Fidelity: a screen is done only when it passes every row of the Fidelity QA
+  checklist at the end of the Task Plan. "Close enough" is a failure.
+- Reuse-not-rebuild: auth, authz, GraphQL client/server, codegen, S3, CI are
+  provided ([BP]) — extend the existing primitive, never re-implement it.
+- Do not mark a phase [x] without running its QA rows. Do not skip ahead.
+- If the Reference and this file disagree on anything visual, the Reference wins.
+- If something is genuinely ambiguous, stop and ask instead of inventing.
+
+## How to use the skill index
+Each skill below lists WHEN it applies and WHERE its full instructions live
+(inside .skills-source/, which is synced into this repo on npm install).
+Before working on a surface or component a skill covers, OPEN and READ its
+full instructions at the listed path. The one-line description is a router,
+not the rule set. If .skills-source/ is missing, run: npm run sync-skills
+
+`;
 
 // 1) Full conventions inline
 doc += "## Conventions\n\n";
@@ -51,7 +81,8 @@ for (const f of fs.readdirSync(path.join(root, "conventions")).sort()) {
 
 // 2) Skill summaries. Full bodies remain available to Claude Code and in the
 // synced producer; keeping them out of AGENTS.md avoids exhausting Codex context.
-doc += "## Stack skills\n\n";
+doc +=
+  "## Stack skills (routed index — read the full file before touching its surface)\n\n";
 const skillsDir = path.join(root, "skills");
 for (const p of findSkillFiles(skillsDir)) {
   const s = path.basename(path.dirname(p));
