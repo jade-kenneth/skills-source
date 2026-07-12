@@ -7,7 +7,9 @@ description: Build or rebuild a DataTable component by porting DataTableReferenc
 
 This skill builds a `DataTable` component by porting `DataTableReference` (found in `references/` alongside this file) to the current app's dependency set.
 
-Before starting, **ask the user for the target output path** if it hasn't been specified (e.g. `components/DataTable/`).
+Before starting, infer the target output path from the request, the current app,
+and the nearest table implementation. Ask only when multiple plausible targets
+remain and choosing one would materially change the work.
 
 ## How to use this skill
 

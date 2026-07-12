@@ -1,26 +1,13 @@
 ---
 name: project-learning-auditor
 description: >-
-  Scan the current project read-only and generate a self-contained HTML learning
-  guide at `reference/project-learning-audit/index.html`: mental model,
-  architecture, tech stack, JavaScript fundamentals, frontend/backend/database
-  patterns, full-stack flows, old-vs-modern comparisons, optimization audit
-  (bundle size, mobile startup, API/GraphQL/database performance, caching, assets,
-  build/CI), Core Web Vitals audit (static LCP/INP/CLS signals for the web app),
-  UI/UX audit (in-flight action safety / double-submit, loading and
-  disabled states, error and empty states, accessibility, forms),
-  accessibility (WCAG) audit (POUR criteria mapped to WCAG 2.2 A/AA/AAA for the web
-  app plus a WCAG-aligned mobile mapping), feature
-  enhancement initiatives (non-breaking, low-complexity wins that make existing
-  features more useful, more effective, or better at retaining users),
-  engineering initiatives (CI/CD, migrations, automation, AI & third-party
-  integrations),
-  P1/P2/P3/STRENGTH audit cards, diagrams, comprehension tests, and a
-  learning path. Also supports topic deep-dive append mode with per-topic tests and
-  an opt-in local AI tutor. Use when the user wants to learn, onboard, understand,
-  audit for learning/risks/optimization, generate an interactive guide, or append a
-  specific topic section. Docs-only output under `reference/project-learning-audit/`;
-  never edits app source, runs builds/tests, deploys, or commits.
+  Scan a project read-only and generate a self-contained HTML learning guide at
+  reference/project-learning-audit/index.html. Use when a user wants repository
+  onboarding, a mental model, architecture and full-stack flow explanations,
+  frontend/backend/database pattern analysis, optimization or accessibility risks,
+  prioritized audit cards, diagrams, comprehension tests, a learning path, or an
+  appended topic deep dive. Produces documentation only and never edits app source,
+  runs builds or tests, deploys, or commits.
 ---
 
 # Project Learning Auditor

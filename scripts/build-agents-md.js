@@ -12,9 +12,32 @@ function frontmatter(md) {
   const m = md.match(/^---\n([\s\S]*?)\n---/);
   if (!m) return {};
   const o = {};
-  for (const line of m[1].split("\n")) {
+  const lines = m[1].split("\n");
+  for (let lineNumber = 0; lineNumber < lines.length; lineNumber += 1) {
+    const line = lines[lineNumber];
     const i = line.indexOf(":");
-    if (i > 0) o[line.slice(0, i).trim()] = line.slice(i + 1).trim();
+    if (i <= 0 || /^\s/.test(line)) continue;
+
+    const key = line.slice(0, i).trim();
+    let value = line.slice(i + 1).trim();
+
+    if ([">", ">-", "|", "|-"].includes(value)) {
+      const parts = [];
+      while (lineNumber + 1 < lines.length && /^\s+/.test(lines[lineNumber + 1])) {
+        parts.push(lines[(lineNumber += 1)].trim());
+      }
+      value = parts.join(value.startsWith("|") ? "\n" : " ");
+    } else if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
+      const quote = value[0];
+      value = value.slice(1, -1);
+      if (quote === '"') value = value.replace(/\\"/g, '"');
+      if (quote === "'") value = value.replace(/''/g, "'");
+    }
+
+    o[key] = value;
   }
   return o;
 }

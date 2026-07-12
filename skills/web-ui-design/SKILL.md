@@ -1,7 +1,8 @@
 ---
 name: web-ui-design
 description: 'Complete guide for designing and building production-grade web interfaces. Use for any web UI work: pages, dashboards, forms, tables, dialogs, drawers, navigation, responsive layouts, dark mode, accessibility, motion, charts, empty/loading/error states, and visual polish. Pair with `web-app` for implementation authority.'
-version: 1.4.0
+metadata:
+  version: 1.4.0
 license: MIT
 ---
 

@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)"
+SKILL_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+REPOSITORY_ROOT="$(cd "$SKILL_ROOT/../.." && pwd)"
+TARGET="${1:-$REPOSITORY_ROOT}"
 OUT_DIR="$(mktemp -d)"
 trap 'rm -rf "$OUT_DIR"' EXIT
 
-python3 "$ROOT/.claude/skills/project-learning-auditor/scripts/safe_scan.py" \
-  "$ROOT" \
+python3 "$SKILL_ROOT/scripts/safe_scan.py" \
+  "$TARGET" \
   --out "$OUT_DIR/manifest.json" \
   --summary-out "$OUT_DIR/manifest-summary.json" \
   --quiet

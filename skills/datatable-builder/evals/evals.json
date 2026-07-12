@@ -1,0 +1,29 @@
+{
+  "skill_name": "datatable-builder",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Rebuild the admin DataTable at components/DataTable using the bundled reference. Keep the app's current UI, add search, filters, persisted column ordering, pagination, row selection, reload, and export.",
+      "expected_output": "A modular port preserving the reference architecture and public API while adapting unsupported dependencies to the target app.",
+      "files": [],
+      "expectations": [
+        "Reads every bundled DataTable reference before implementation",
+        "Preserves separate hook, shell, context, filter, column-control, and focused component ownership",
+        "Keeps the target application's visual and interaction baseline",
+        "Preserves collection, clearStore, slot, selection, pagination, reload, and export contracts"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Fix the existing DataTable's date-range filter without redesigning the toolbar. The old reference uses unsupported UI primitives but dnd-kit and the current shadcn components are installed.",
+      "expected_output": "A focused dependency adaptation that preserves architecture, toolbar parity, filter ownership, and supported drag-and-drop behavior.",
+      "files": [],
+      "expectations": [
+        "Adapts unsupported UI dependencies instead of replacing the architecture",
+        "Retains dnd-kit",
+        "Keeps date filtering inside the Filter package",
+        "Avoids unrelated toolbar or table redesign"
+      ]
+    }
+  ]
+}

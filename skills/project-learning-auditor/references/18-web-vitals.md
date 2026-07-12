@@ -44,7 +44,7 @@ than grading them on their own.
 
 ## What hurts each metric (static signals to look for)
 
-Only inspect the web/admin app (`apps/brgy-system-admin/**`) and any web landing.
+Only inspect manifest-identified web/admin applications and web landing pages.
 
 - **LCP — Largest Contentful Paint (loading)**
   - Raw `<img>` tags in web UI instead of `next/image` — no automatic sizing, lazy

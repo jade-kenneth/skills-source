@@ -1,0 +1,29 @@
+{
+  "skill_name": "web-app",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Build an admin users page in the existing Next.js App Router app with URL-backed filters, paginated GraphQL data, loading/error/empty states, and an edit mutation.",
+      "expected_output": "A project-aligned feature using existing routing, query, form, cache, UI, accessibility, and responsive patterns.",
+      "files": [],
+      "expectations": [
+        "Inspects and follows the nearest feature structure before adding abstractions",
+        "Keeps server state in the established query layer and URL state shareable",
+        "Defines loading, error, empty, success, and mutation feedback states",
+        "Updates or invalidates cache through the project's established query keys"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Diagnose a hydration mismatch on a dashboard card that formats the current date and reads localStorage during render. Do not implement a fix.",
+      "expected_output": "An evidence-based diagnosis separating nondeterministic server rendering from browser-only storage access and explaining safe correction options without editing files.",
+      "files": [],
+      "expectations": [
+        "Identifies server/client date divergence as a hydration risk",
+        "Identifies render-time localStorage access as browser-only behavior",
+        "Distinguishes diagnosis from implementation",
+        "Recommends the smallest compatible boundary or initialization strategy"
+      ]
+    }
+  ]
+}

@@ -73,7 +73,7 @@ finding rests on a heuristic you could not fully confirm.
       "id": "AUD-001",
       "priority": "P1 HIGH | P2 MEDIUM | P3 LOW | STRENGTH | INITIATIVE",
       "title": "Short imperative title",
-      "file": "apps/brgy-system-api/src/modules/x/x.resolver.ts",
+      "file": "apps/<api-app>/src/modules/x/x.resolver.ts",
       "lines": "120-138",
       "why_it_matters": "plain-English impact",
       "analogy": "real-world analogy",

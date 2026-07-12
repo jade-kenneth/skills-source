@@ -1,0 +1,29 @@
+{
+  "skill_name": "mobile-app",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Add an Expo screen for creating an announcement with a native date picker, keyboard-safe form layout, offline-aware submission, and GraphQL mutation feedback.",
+      "expected_output": "A project-aligned native implementation covering platform behavior, safe areas, keyboard handling, network state, validation, cache updates, and accessible feedback.",
+      "files": [],
+      "expectations": [
+        "Uses native date-picker behavior rather than a web input pattern",
+        "Accounts for keyboard avoidance and safe areas",
+        "Prevents or explains submission while offline and surfaces retry feedback",
+        "Uses established GraphQL mutation and cache patterns"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Review a React Native feed where every row creates inline callbacks, images have no dimensions, and the list is rendered inside a ScrollView. Explain likely performance problems only.",
+      "expected_output": "A diagnosis grounded in observable list virtualization, render stability, and layout-shift costs without implementing changes.",
+      "files": [],
+      "expectations": [
+        "Flags the loss of virtualization from rendering the feed in a ScrollView",
+        "Explains image dimension and layout measurement costs",
+        "Treats callback memoization as profiling-dependent rather than automatic",
+        "Does not make unrequested code changes"
+      ]
+    }
+  ]
+}

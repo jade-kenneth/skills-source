@@ -1,0 +1,29 @@
+{
+  "skill_name": "richtext-builder",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Create a reusable Tiptap rich-text field with controlled and uncontrolled values, a character limit, image upload hidden input, disabled/read-only states, and accessible toolbar actions.",
+      "expected_output": "A component package following the bundled Wysiwyg reference's composition and public API while adapting dependencies to the current application.",
+      "files": [],
+      "expectations": [
+        "Preserves root, context, hook, content, menu, and trigger responsibilities",
+        "Supports controlled and uncontrolled value flows without feedback loops",
+        "Exposes disabled, read-only, invalid, required, placeholder, and limit behavior",
+        "Provides accessible names and states for toolbar controls"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Fix the rich-text editor so external form resets update its content without causing onChange loops. Keep the current component API and UI.",
+      "expected_output": "A focused synchronization fix preserving the public API and visual behavior, with regression coverage for resets and user edits.",
+      "files": [],
+      "expectations": [
+        "Separates external value synchronization from user-originated updates",
+        "Avoids emitting redundant change events during reset synchronization",
+        "Preserves the component API and UI",
+        "Adds regression coverage for reset and normal editing paths"
+      ]
+    }
+  ]
+}

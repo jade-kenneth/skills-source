@@ -1,0 +1,29 @@
+{
+  "skill_name": "api-app",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Add a cursor-paginated GraphQL query for audit logs to the existing NestJS API. It needs tenant scoping, date and actor filters, stable sorting, and generated client types.",
+      "expected_output": "A schema-first implementation plan or change using the repository boundary, tenant enforcement, bounded pagination, validation, code generation, and focused tests.",
+      "files": [],
+      "expectations": [
+        "Changes SDL before generated types or client operations",
+        "Keeps resolver transport logic thin and business rules in the service",
+        "Uses the repository abstraction for tenant-scoped filtering and pagination",
+        "Covers invalid filters, authorization, and pagination behavior with tests"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Review this upload-signing REST endpoint. The caller supplies the final object key and MIME type, and the controller has no auth guard. Explain the risks and propose the smallest safe correction.",
+      "expected_output": "A security-focused review that identifies authorization, namespace, MIME, path, and caller-controlled key risks without inventing unrelated refactors.",
+      "files": [],
+      "expectations": [
+        "Requires authentication and authorization at the endpoint boundary",
+        "Generates final storage keys server-side",
+        "Validates namespaces, MIME allowlists, traversal, and absolute paths",
+        "Recommends focused rejected-input and authorization tests"
+      ]
+    }
+  ]
+}

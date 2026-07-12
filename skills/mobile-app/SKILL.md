@@ -93,7 +93,7 @@ Every rule area has a dedicated file under `references/`. Each file is self-cont
 | Toast / showToast / ToastHost                  | `references/toast-feedback.md`                                           |
 | ErrorBoundary, screen-level error states       | `references/error-handling.md`                                           |
 | Accessibility rules + audit checklist          | `references/accessibility.md`                                            |
-| Icons + dark mode color tokens                 | `mobile-native-ui-design` › `references/icons.md`                        |
+| Icons + dark mode color tokens                 | `../mobile-native-ui-design/references/icons.md`                         |
 
 ### Auth, security & notifications
 
@@ -138,7 +138,7 @@ Each rule lives in a dedicated reference — consult it before implementing:
 | Accessibility (labels, 44×44 targets, WCAG AA, no color-only)     | `references/accessibility.md`                                                                           |
 | Every async flow has loading + empty + error states               | `references/error-handling.md` · `references/ux-patterns.md` § Screen States                            |
 | State signal clarity and redundancy                               | `references/common-anti-patterns.md`                                                                    |
-| Icons (MaterialIcons only) + dark mode color tokens               | `mobile-native-ui-design` › `references/icons.md` (NON-NEGOTIABLE: hardcoded icon colors are a blocker) |
+| Icons (MaterialIcons only) + dark mode color tokens               | `../mobile-native-ui-design/references/icons.md` (NON-NEGOTIABLE: hardcoded icon colors are a blocker) |
 
 ---
 

@@ -1,0 +1,29 @@
+{
+  "skill_name": "web-ui-design",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Design a dense operations dashboard with KPI cards, a filterable table, an empty state, loading skeletons, error recovery, and light/dark themes using the existing design tokens.",
+      "expected_output": "A clear, accessible product UI specification or implementation that prioritizes scanning, state coverage, responsive behavior, and existing tokens.",
+      "files": [],
+      "expectations": [
+        "Uses existing tokens and component patterns instead of introducing a second design system",
+        "Covers light and dark modes for surfaces, text, borders, charts, and interactive states",
+        "Defines loading, empty, error, and success states",
+        "Includes keyboard, focus, contrast, and responsive considerations"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Review this mobile-width web form: labels disappear into placeholders, the submit button has no focus style, validation is color-only, and the dialog cannot be closed with Escape.",
+      "expected_output": "An accessibility and responsive review identifying labeling, focus, error communication, and keyboard-dialog failures with practical corrections.",
+      "files": [],
+      "expectations": [
+        "Requires persistent programmatic labels rather than placeholder-only labeling",
+        "Requires visible keyboard focus",
+        "Requires validation text or semantics in addition to color",
+        "Requires expected dialog keyboard behavior including Escape"
+      ]
+    }
+  ]
+}

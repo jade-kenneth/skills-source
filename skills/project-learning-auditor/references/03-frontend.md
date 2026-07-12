@@ -85,11 +85,11 @@ User taps "Submit"
 
 ## This codebase's likely stack (confirm against the scan)
 
-- **Admin:** Next.js App Router + React + TypeScript + TanStack Query + Tailwind +
-  shadcn/ui. Look in `apps/brgy-system-admin/` (`features/`, `react-query/`,
-  `components/`, `app/`).
-- **Mobile:** React Native + Expo + TypeScript + TanStack Query + NativeWind. Look
-  in `apps/brgy-system-mobile/`.
+- **Web/admin:** When detected, describe its actual framework and libraries. Look
+  in the manifest-identified web application (`features/`, `react-query/`,
+  `components/`, `app/`, or the nearest equivalents).
+- **Mobile:** When detected, describe its actual framework and libraries. Use the
+  manifest-identified mobile application instead of assuming its folder name.
 - GraphQL data layer with generated hooks/types is common here — cite the
   generated files and the `react-query/` operations.
 

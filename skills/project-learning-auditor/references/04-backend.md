@@ -87,8 +87,9 @@ Frontend sends a request
 
 ## This codebase's likely stack (confirm against the scan)
 
-- **API:** NestJS + GraphQL (code-first or schema-first via `*.gql`), Mongoose
-  (MongoDB). Look in `apps/brgy-system-api/src/` (`modules/`, `graphql/`).
+- **API:** Describe the detected server framework, transport, and persistence
+  layer. Look in the manifest-identified API application (`modules/`, `graphql/`,
+  `routes/`, or the nearest equivalents) rather than assuming a folder name.
 - Resolvers live per-module under `modules/<name>/<name>.resolver.ts`; services
   under `<name>.service.ts`; schemas under `<name>.schema.ts` or `graphql/schemas/*.gql`.
 - Schedulers exist (e.g. polls reminder) — explain the cron/scheduler pattern and

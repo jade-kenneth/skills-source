@@ -37,7 +37,8 @@ mark it `Not detected from current files.`
    > holds the records, and an ID checker (authentication) guards the entrance.
 
 2. **Then a mapping list** — each row: analogy → real part → the file/folder that
-   proves it (`apps/brgy-system-api/src/modules/auth/` etc.). Cite paths.
+   proves it (`apps/<api-app>/src/modules/auth/` etc.). Cite paths from the
+   repository being audited rather than assuming a project name.
 
 3. **Then the "one request, start to finish" line** in analogy terms:
    > A resident asks the front desk for a document → the clerk checks their ID →

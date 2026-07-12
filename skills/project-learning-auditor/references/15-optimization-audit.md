@@ -42,7 +42,7 @@ For each optimization card, include:
 - **Impact** — what gets slower or larger: first load, interaction latency, API
   latency, database load, mobile startup, bandwidth, CI time.
 - **How to confirm** — the smallest command or measurement the developer can run
-  later (for example `npx nx build brgy-system-admin --configuration=production`,
+  later (for example `npx nx build <web-project> --configuration=production`,
   a bundle analyzer, API timing, Mongo explain plan). Do not run it yourself by
   default.
 - **Suggested fix** — concrete next step, scoped to the owning app/layer.
@@ -51,7 +51,7 @@ For each optimization card, include:
 ## What to look for
 
 - Web/admin:
-  - Route-level files under `apps/brgy-system-admin/app/**/(page|layout).tsx` marked
+  - Route-level `(page|layout).tsx` files in the detected web app marked
     `'use client'`. Prefer moving client boundaries into the smallest interactive
     feature component.
   - Heavy dependencies imported by client components (PDF generation, charting,

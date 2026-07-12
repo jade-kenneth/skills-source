@@ -122,14 +122,14 @@ Each of those that's actually present becomes a deep-dive card.
 Use as hints only — prove each from the manifest before asserting:
 
 - **Nx + npm workspaces** — `nx.json`, root `package.json` `workspaces: ["apps/*","packages/*"]`. Imposes the `apps/`+`packages/` split; `npx nx <target> <project>` runs per-app tooling. Connects everything: shared types flow through `packages/shared-constants`.
-- **TypeScript** — `tsconfig.base.json` `paths` map `@brgy-system/shared-constants` to the shared package; strict mode. Connects the three apps to one type source.
-- **NestJS** — `nest-cli.json` + `apps/brgy-system-api/src/main.ts`. Imposes the `modules/<feature>/` resolver→service→repository shape. Hands the API surface to GraphQL.
+- **TypeScript** — cite the detected compiler configuration, path aliases, strictness, and shared packages. Explain how types connect the detected applications.
+- **Server framework** — cite its configuration and entry point, then explain the module or route structure actually present. Do not assume NestJS or a fixed app name.
 - **Apollo GraphQL (schema-first)** — SDL in `src/graphql/schemas/**/*.gql` compiled to `src/graphql/generated/graphql.ts`. The contract every client codegen reads.
 - **graphql-codegen** — `codegen.ts` in each client points at the API's `.gql` files; `generates` writes `react-query/generated__types.ts` (admin) and the mobile typed ops. The bridge from server SDL to typed client hooks.
 - **Mongoose / MongoDB** — connection from `MONGODB_URI` (`config/env.schema.ts`), base repo in `src/libs/` (`repository.ts`, `moongose-repository.ts`, `cursor.ts`) giving cursor/Relay pagination. The persistence layer behind every service.
-- **Next.js App Router** — `apps/brgy-system-admin/app/` with `(super-admin)` and `admin` groups; `next-intl` locale in `proxy.ts`. The admin/super-admin surface.
+- **Web framework** — cite the detected web entry point, routing model, localization, and major route groups. Describe only surfaces visible in the scanned files.
 - **shadcn/ui + Tailwind v4** — `tailwind.config.*`/`globals.css`; prefer canonical utilities. Note v4's CSS-first config if present.
-- **Expo + React Native + Expo Router + NativeWind** — `app.json`, `eas.json`, `apps/brgy-system-mobile/app/` `(auth)`/`(main)` groups, providers under `providers/`. The resident mobile app.
+- **Mobile framework** — cite detected mobile configuration, routing groups, styling system, and providers. Omit this row when no mobile application is detected.
 - **TanStack Query + hand-rolled `GraphQLClient`** — `react-query/<feature>/*.ts` hooks + query keys; client returns a discriminated `{ ok, data } | { ok:false, error }`. The data-fetching layer both clients share by pattern (not by code).
 - **Kafka / @nestjs/schedule / S3 / Brevo / Expo push / Zod env** — `docker-compose.yml` (Kafka KRaft :9092), `libs/async-event-module`, `scheduler-locks`, `modules/s3`, `modules/mail`, `modules/push-notifications`, `config/env.schema.ts`. The async/infra edges; gate by env.
 
