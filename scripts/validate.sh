@@ -8,6 +8,7 @@ trap 'rm -rf "$TEMP_DIR"' EXIT
 
 echo "Checking script syntax"
 node --check "$ROOT/scripts/build-agents-md.js"
+node --check "$ROOT/scripts/validate-generated-agents.js"
 bash -n "$ROOT/scripts/install-global.sh" "$ROOT/scripts/setup-mcp.sh" "$0"
 
 echo "Validating skills"
@@ -24,12 +25,11 @@ echo "Running project-learning-auditor self-test"
 bash "$ROOT/skills/project-learning-auditor/scripts/selftest.sh" "$ROOT"
 
 echo "Smoke-testing AGENTS.md generation"
-node "$ROOT/scripts/build-agents-md.js" "$TEMP_DIR/AGENTS.md"
-rg -q '^### project-learning-auditor$' "$TEMP_DIR/AGENTS.md"
-if rg -q '^_"' "$TEMP_DIR/AGENTS.md" || rg -q "^_'" "$TEMP_DIR/AGENTS.md"; then
-  echo "Generated skill descriptions retain YAML quote characters" >&2
-  exit 1
-fi
+SKILLS_SOURCE_SHA="0000000000000000000000000000000000000000" \
+  node "$ROOT/scripts/build-agents-md.js" "$TEMP_DIR/AGENTS.md"
+node "$ROOT/scripts/validate-generated-agents.js" "$TEMP_DIR/AGENTS.md" "$ROOT"
+grep -Fq 'Source revision: `jade-kenneth/skills-source@0000000000000000000000000000000000000000`' \
+  "$TEMP_DIR/AGENTS.md"
 
 echo "Smoke-testing isolated global installation"
 HOME="$TEMP_DIR/home" bash "$ROOT/scripts/install-global.sh" >/dev/null
