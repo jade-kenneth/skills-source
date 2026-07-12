@@ -32,9 +32,11 @@ You are producing the canonical build documentation for **$ARGUMENTS**. Do not d
 
 Read every file in all three. Quote nothing you haven't verified. Then **list the files you're basing this on**, grouped by folder, before writing anything.
 
+**Prototype filename patterns:** prototype files may land as `screen--<name>.html` / `logo--<name>.html` **or** as Design Component exports named `<Screen Name>.dc.html` (e.g. `Video Factory Prototype.dc.html`). Treat every `*.dc.html` file exactly like a `screen--*.html` file — each one is a screen contract subject to the Completeness rule below; never skip a prototype because its filename doesn't match `screen--*`.
+
 **Prototypes (`design/prototypes/`)** are the **pixel-exact, behavior-exact contract**, not loose inspiration. Extract the _actual code_: every font-family/size/weight/line-height, every hex color, every px of padding/margin/gap, every border/shadow/radius/rotation, every element and its order, every state, interaction, handler, and animation. Do not summarize a screen into prose that drops details — if a value is in the prototype, it must survive into the docs verbatim.
 
-**Completeness rule:** every `screen--*.html` file MUST produce its own §3 (or §4) subsection in the Reference. Before writing, map each prototype file to a planned section; if any file has no section, or `design/planning/` describes a screen that has no prototype file, surface the gap to me explicitly instead of silently omitting or inventing it.
+**Completeness rule:** every prototype file (`screen--*.html` and `*.dc.html`) MUST produce its own §3 (or §4) subsection in the Reference. Before writing, map each prototype file to a planned section; if any file has no section, or `design/planning/` describes a screen that has no prototype file, surface the gap to me explicitly instead of silently omitting or inventing it.
 
 **Scope rule:** `design/planning/` may describe screens, flows, or features that were never prototyped. Those are **not** silently dropped and **not** designed by you — list them in a "Planned but not prototyped" callout in File A §6 and give them Task Plan phases marked `⚠ needs design` (blocked on a prototype before implementation).
 
@@ -109,7 +111,9 @@ Make seeding **idempotent and re-runnable** (e.g. an `npm run seed` script), and
 - [ ] **Style moves** — borders, hard-offset shadows, radii, rotations, badges/pills render exactly as specified.
 - [ ] **Copy** — all visible text is verbatim (labels, placeholders, empty-state and error strings, tips).
 - [ ] **States** — hover, press/active, focus, disabled, empty, loading, error, selected/toggled all present and matching.
-- [ ] **Functions/interactions** — every handler, navigation, toggle, animation/transition, and special behavior (e.g. moderation block, ping toggle, staggered pin pop-in) works as in the prototype.
+- [ ] **Functions/interactions** — every handler, navigation, toggle, animation/transition, and special behavior (e.g. moderation block, ping toggle, staggered pin pop-in) works as in the prototype. Specifically: no dead controls or silent no-ops (blocked actions give visible feedback — log entry / disabled styling); anything progress- or timeline-shaped is drag-scrubbable (pointer capture, works mid-drag and on touch); popovers/menus dismiss on click-outside and re-toggle; text inputs are controlled and save to the correct target.
+- [ ] **State consistency** — an action updates ALL dependent state as in the prototype (e.g. costs → ledger + budget chip + progress bar; status changes → badges, dots, counts, buttons, event log); edits invalidate stale approvals/QC exactly as the prototype does.
+- [ ] **Guardrails** — caps/limits from the prototype (e.g. budget 90% auto-pause, 100% hard stop, operator override; item caps) hold through every action; nothing spends or proceeds past a cap silently.
 - [ ] **Imagery** — placeholder rule honored; no hand-drawn/invented art; real assets slotted where provided.
 - [ ] **Data** — screen renders populated from seeded MONGODB_URI data (no mock/hard-coded values, no empty states at demo).
 - [ ] **Side-by-side** — built screen and its `design/prototypes/screen--*.html` compared directly; any visible diff filed and fixed before sign-off.

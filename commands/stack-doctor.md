@@ -9,7 +9,9 @@ You are diagnosing my agent-stack setup. Run every check below, **read-only** �
 ## 1. Global installs (machine level)
 
 - [ ] `~/.claude/skills/` exists and contains symlinks into skills-source (not copies — check with `ls -la`). List the skill names found.
-- [ ] `~/.claude/commands/` contains at least `gen-build-docs.md` and `notion-setup.md`, symlinked.
+- [ ] `~/.claude/commands/` contains at least `gen-build-docs.md`, `notion-setup.md`, and `stack-doctor.md`, symlinked.
+- [ ] The skills include the coordinator set: `fix-and-enhance` plus its companions (`web-app`, `mobile-app`, `api-app`) — flag any missing.
+- [ ] **Skill hygiene** (matters most for AI-created skills): every skill folder has a `SKILL.md` whose frontmatter contains a `name` and a non-empty `description` that states _when_ to use it. A missing or vague description = the skill silently never triggers — report it as ✗ with the file path.
 - [ ] Broken symlinks check: flag any link whose target no longer exists (skills-source moved/renamed).
 - Fix for any of the above: `./scripts/install-global.sh` in skills-source.
 
@@ -22,12 +24,18 @@ You are diagnosing my agent-stack setup. Run every check below, **read-only** �
 
 ## 3. Current repo (skip section with "–" if not inside a project repo)
 
-- [ ] `CLAUDE.md` exists and mentions: conventions/AGENTS.md, task-file workflow, the Notion status-update instruction, and the design/prototypes rules.
-- [ ] `AGENTS.md` exists, starts with the "generated from skills-source" header, and is committed (not gitignored).
+- [ ] `CLAUDE.md` exists and carries the current role design: the **"PLANNER + REVIEWER, not builder"** block (review against Reference, Fidelity QA gate, sync phase status to Notion; do not implement unless asked), the progress-flow rule (Codex writes checkboxes, Claude Code writes Notion), and the design/ rules with the conflict order. An old-style CLAUDE.md that tells Claude Code to build and update Notion after phases is a ✗, not a pass.
+- [ ] `CLAUDE.md` names the **skills-source path** (the line `fix-and-enhance` uses for durable rule updates) — and that path exists on this machine. Missing line or dead path = ✗ (durable updates will stall on guessing).
+- [ ] `AGENTS.md` exists, is committed (not gitignored), and opens as the **execution contract**: the "You are the EXECUTOR" preamble, the read-order (Reference → Task Plan → this file), and the Non-negotiables (conflict order, Fidelity gate, reuse-not-rebuild, checkbox protocol). A summaries-only or headerless AGENTS.md is a ✗ — the executor is missing its rules.
+- [ ] If per-app split is in use (`apps/*/AGENTS.md` exist): each is generated (not hand-edited) and the root one still carries the coordinator rules (`fix-and-enhance`).
+- [ ] `package.json` has BOTH `"sync-skills"` and a `"postinstall"` that runs it — postinstall missing = fresh clones start stale.
+- [ ] `.github/workflows/skills-drift.yml` exists (the CI check that fails pushes with a stale AGENTS.md). Missing = drift is possible silently; report as a warning if the repo has no CI at all.
 - [ ] `.skills-source/` exists (synced) and IS gitignored; `.skills-source/.pinned-sha` present — report the pinned short SHA and whether it's behind skills-source main.
-- [ ] `design/prototypes/` exists. If it has files, confirm they follow the `screen--*.html` / `logo--*.html` convention and are committed; flag any untracked prototype files (uncommitted contract = QA checklist has no frozen target).
-- [ ] If `[PROJECT]Reference.md` + Task Plan exist: spot-check the pairing — companion-doc headers present, and every `screen--*.html` has a matching §3/§4 subsection. Report missing pairs.
-- Fix for stale sync: `npm run sync-skills`. Fix for missing docs: `/gen-build-docs [ProjectName]`.
+- [ ] `design/` has all three subfolders (`prototypes/`, `system/`, `planning/`). Report which contain files.
+- [ ] Prototype files follow the `screen--*.html` / `logo--*.html` convention and are **committed** — flag any untracked file under `design/` (uncommitted contract = the Fidelity QA "side-by-side" check has no frozen target). Flag `design/` being gitignored as a critical error.
+- [ ] Sanity: `design/prototypes/` non-empty while `design/system/` is empty is a warning (Reference §1 will be inferred, not exported).
+- [ ] If `[PROJECT]Reference.md` + Task Plan exist: spot-check the pairing — companion-doc headers present, the Task Plan opens with the **"Executor: Codex"** header block, and every `screen--*.html` has a matching §3/§4 subsection. Report missing pairs.
+- Fix for stale sync: `npm run sync-skills`. Fix for missing docs: `/gen-build-docs [ProjectName]`. Fix for old-style CLAUDE.md / missing workflows: copy the current blocks from the boilerplate (Phase 4 of task_agent_stack.md).
 
 ## 4. Notion state layer
 
