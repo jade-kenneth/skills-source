@@ -28,7 +28,7 @@ echo "Smoke-testing AGENTS.md generation"
 SKILLS_SOURCE_SHA="0000000000000000000000000000000000000000" \
   node "$ROOT/scripts/build-agents-md.js" "$TEMP_DIR/AGENTS.md"
 node "$ROOT/scripts/validate-generated-agents.js" "$TEMP_DIR/AGENTS.md" "$ROOT"
-rg -q 'Source revision: `jade-kenneth/skills-source@0000000000000000000000000000000000000000`' \
+grep -Fq 'Source revision: `jade-kenneth/skills-source@0000000000000000000000000000000000000000`' \
   "$TEMP_DIR/AGENTS.md"
 
 echo "Smoke-testing isolated global installation"
