@@ -35,13 +35,28 @@ Notion and Claude Design MCP servers and may open their OAuth flows.
 ## Generate a downstream AGENTS.md
 
 ```bash
-node scripts/build-agents-md.js /path/to/project/AGENTS.md
+SKILLS_SOURCE_SHA="$(git rev-parse HEAD)" \
+  node scripts/build-agents-md.js /path/to/project/AGENTS.md
 ```
 
-The generated document embeds every convention and adds a routed index pointing
-to full skill instructions under the downstream project's `.skills-source/`
-snapshot. Consumer projects are responsible for syncing this repository into
-that location.
+The generated document embeds every convention, records the source revision, and
+adds a routed index pointing to full skill instructions under the downstream
+project's `.skills-source/` snapshot. Consumer projects hydrate that snapshot from
+a committed lock file so normal installs and CI use the same reviewed revision.
+
+## Downstream synchronization
+
+`app-boilerplate` separates normal synchronization from intentional upgrades:
+
+- `npm run sync-skills` hydrates and generates from the committed lock.
+- `npm run update-skills` advances the lock and regenerates `AGENTS.md`.
+- `npm run check-skills` verifies that committed generated output matches the lock.
+
+After changes land on `main`, `notify-app-boilerplate.yml` dispatches an update to
+the downstream repository. Configure a fine-grained token named
+`APP_BOILERPLATE_SYNC_TOKEN` with access to `jade-kenneth/app-boilerplate` and the
+`Contents: Read and write` permission. The downstream workflow uses its own
+`GITHUB_TOKEN` to create the reviewable update branch and draft pull request.
 
 ## Validate changes
 
@@ -50,8 +65,9 @@ that location.
 ```
 
 The validation script checks shell and JavaScript syntax, validates every skill
-manifest, runs the project-learning-auditor self-test, smoke-tests `AGENTS.md`
-generation, and verifies the isolated global installer output.
+manifest and eval file, runs the project-learning-auditor self-test, verifies every
+generated skill description and route, smoke-tests `AGENTS.md` generation, and
+verifies the isolated global installer output.
 
 ## Contribution rules
 
