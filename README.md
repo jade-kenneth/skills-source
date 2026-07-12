@@ -52,11 +52,13 @@ a committed lock file so normal installs and CI use the same reviewed revision.
 - `npm run update-skills` advances the lock and regenerates `AGENTS.md`.
 - `npm run check-skills` verifies that committed generated output matches the lock.
 
-After changes land on `main`, `notify-app-boilerplate.yml` dispatches an update to
-the downstream repository. Configure a fine-grained token named
+After changes land on `main`, `notify-app-boilerplate.yml` dispatches an update
+notification to the downstream repository. Configure a fine-grained token named
 `APP_BOILERPLATE_SYNC_TOKEN` with access to `jade-kenneth/app-boilerplate` and the
-`Contents: Read and write` permission. The downstream workflow uses its own
-`GITHUB_TOKEN` to create the reviewable update branch and draft pull request.
+`Contents: Read and write` permission required by GitHub's repository-dispatch
+endpoint. The downstream workflow is intentionally read-only: it reports the exact
+available SHA and the reviewed update commands instead of executing fetched code
+while holding repository write permissions.
 
 ## Validate changes
 
