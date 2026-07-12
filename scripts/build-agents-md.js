@@ -7,23 +7,28 @@ const path = require("path");
 
 const root = path.join(__dirname, "..");
 const out = process.argv[2] || "AGENTS.md";
+const sourceRevision = process.env.SKILLS_SOURCE_SHA || "";
 
 function frontmatter(md) {
-  const m = md.match(/^---\n([\s\S]*?)\n---/);
-  if (!m) return {};
-  const o = {};
-  const lines = m[1].split("\n");
+  const match = md.match(/^---\n([\s\S]*?)\n---/);
+  if (!match) return {};
+
+  const result = {};
+  const lines = match[1].split("\n");
   for (let lineNumber = 0; lineNumber < lines.length; lineNumber += 1) {
     const line = lines[lineNumber];
-    const i = line.indexOf(":");
-    if (i <= 0 || /^\s/.test(line)) continue;
+    const separator = line.indexOf(":");
+    if (separator <= 0 || /^\s/.test(line)) continue;
 
-    const key = line.slice(0, i).trim();
-    let value = line.slice(i + 1).trim();
+    const key = line.slice(0, separator).trim();
+    let value = line.slice(separator + 1).trim();
 
     if ([">", ">-", "|", "|-"].includes(value)) {
       const parts = [];
-      while (lineNumber + 1 < lines.length && /^\s+/.test(lines[lineNumber + 1])) {
+      while (
+        lineNumber + 1 < lines.length &&
+        /^\s+/.test(lines[lineNumber + 1])
+      ) {
         parts.push(lines[(lineNumber += 1)].trim());
       }
       value = parts.join(value.startsWith("|") ? "\n" : " ");
@@ -37,9 +42,10 @@ function frontmatter(md) {
       if (quote === "'") value = value.replace(/''/g, "'");
     }
 
-    o[key] = value;
+    result[key] = value;
   }
-  return o;
+
+  return result;
 }
 
 function findSkillFiles(dir) {
@@ -53,7 +59,6 @@ function findSkillFiles(dir) {
 
     const child = path.join(dir, entry.name);
     const skillFile = path.join(child, "SKILL.md");
-
     if (fs.existsSync(skillFile)) {
       files.push(skillFile);
     } else {
@@ -64,8 +69,12 @@ function findSkillFiles(dir) {
   return files;
 }
 
-let doc = `# AGENTS.md — execution contract (generated from skills-source; do not edit)
+const revisionNotice = sourceRevision
+  ? `\nSource revision: \`jade-kenneth/skills-source@${sourceRevision}\`\n`
+  : "";
 
+let doc = `# AGENTS.md — execution contract (generated from skills-source; do not edit)
+${revisionNotice}
 You are the EXECUTOR on this project. Claude Design produced the UI/UX and plan;
 Claude Code distilled them into the two docs below. Your job is to build, faithfully.
 
@@ -89,30 +98,45 @@ Claude Code distilled them into the two docs below. Your job is to build, faithf
 
 ## How to use the skill index
 Each skill below lists WHEN it applies and WHERE its full instructions live
-(inside .skills-source/, which is synced into this repo on npm install).
+(inside .skills-source/, which is hydrated from the committed lock file).
 Before working on a surface or component a skill covers, OPEN and READ its
 full instructions at the listed path. The one-line description is a router,
 not the rule set. If .skills-source/ is missing, run: npm run sync-skills
 
 `;
 
-// 1) Full conventions inline
 doc += "## Conventions\n\n";
-for (const f of fs.readdirSync(path.join(root, "conventions")).sort()) {
-  doc += fs.readFileSync(path.join(root, "conventions", f), "utf8") + "\n\n";
+const conventionFiles = fs
+  .readdirSync(path.join(root, "conventions"))
+  .filter((file) => file.endsWith(".md"))
+  .sort();
+for (const file of conventionFiles) {
+  doc +=
+    fs.readFileSync(path.join(root, "conventions", file), "utf8").trimEnd() +
+    "\n\n";
 }
 
-// 2) Skill summaries. Full bodies remain available to Claude Code and in the
-// synced producer; keeping them out of AGENTS.md avoids exhausting Codex context.
 doc +=
   "## Stack skills (routed index — read the full file before touching its surface)\n\n";
-const skillsDir = path.join(root, "skills");
-for (const p of findSkillFiles(skillsDir)) {
-  const s = path.basename(path.dirname(p));
-  const md = fs.readFileSync(p, "utf8");
-  const fm = frontmatter(md);
-  const source = path.relative(root, p).split(path.sep).join("/");
-  doc += `### ${fm.name || s}\n_${fm.description || ""}_\n\n`;
+const seenNames = new Set();
+const invalidDescriptions = new Set(["", ">", ">-", "|", "|-"]);
+for (const skillFile of findSkillFiles(path.join(root, "skills"))) {
+  const fallbackName = path.basename(path.dirname(skillFile));
+  const markdown = fs.readFileSync(skillFile, "utf8");
+  const metadata = frontmatter(markdown);
+  const name = metadata.name || fallbackName;
+  const description = metadata.description || "";
+
+  if (seenNames.has(name)) {
+    throw new Error(`Duplicate skill name: ${name}`);
+  }
+  if (invalidDescriptions.has(description.trim())) {
+    throw new Error(`Invalid or empty description for skill: ${name}`);
+  }
+  seenNames.add(name);
+
+  const source = path.relative(root, skillFile).split(path.sep).join("/");
+  doc += `### ${name}\n_${description}_\n\n`;
   doc += `Full instructions: \`.skills-source/${source}\`\n\n`;
 }
 
