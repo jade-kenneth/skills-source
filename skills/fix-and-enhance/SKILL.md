@@ -49,7 +49,7 @@ When a durable rule spans surfaces, update each affected companion skill in its 
 
 ### Durable guidance — how to actually do it
 
-**Location of the upstream repository:** `~/dev/skills-source`
+**Location of the upstream repository:** `/Users/jadekennethdarunday/personal/skills-sources`
 (If this path does not exist, check the current project's `CLAUDE.md` for a "skills-source" line; if still not found, ask the user for the path instead of guessing or skipping the update.)
 
 **Procedure — propose first, never edit unprompted:**
