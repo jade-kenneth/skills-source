@@ -44,6 +44,22 @@ adds a routed index pointing to full skill instructions under the downstream
 project's `.skills-source/` snapshot. Consumer projects hydrate that snapshot from
 a committed lock file so normal installs and CI use the same reviewed revision.
 
+## Generate Claude Design build docs
+
+After a product repository contains its Claude Design export under
+`design/prototypes/`, `design/system/`, and `design/planning/`, run the
+canonical command in Claude Code:
+
+```text
+/gen-build-docs <project name>
+```
+
+The command inventories every design source, surfaces missing prototypes, confirms
+the product's app mapping and stack, and writes the paired
+`[PROJECT]Reference.md` and `[PROJECT] Task Plan.md`. Database configuration is
+described by environment-variable name and sanitized target only; never provide or
+commit connection strings, credentials, tokens, or other secret values.
+
 ## Downstream synchronization
 
 `app-boilerplate` separates normal synchronization from intentional upgrades:

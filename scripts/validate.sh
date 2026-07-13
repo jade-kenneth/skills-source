@@ -11,6 +11,18 @@ node --check "$ROOT/scripts/build-agents-md.js"
 node --check "$ROOT/scripts/validate-generated-agents.js"
 bash -n "$ROOT/scripts/install-global.sh" "$ROOT/scripts/setup-mcp.sh" "$0"
 
+echo "Validating canonical build-doc command"
+GEN_BUILD_DOCS="$ROOT/commands/gen-build-docs.md"
+test -f "$GEN_BUILD_DOCS"
+grep -Fq 'design/prototypes/' "$GEN_BUILD_DOCS"
+grep -Fq '[PROJECT]Reference.md' "$GEN_BUILD_DOCS"
+grep -Fq '[PROJECT] Task Plan.md' "$GEN_BUILD_DOCS"
+grep -Fq 'Never ask for, print, copy, or write the connection string or credentials.' "$GEN_BUILD_DOCS"
+if grep -Eq 'ask me for the exact connection string|mongodb\+srv://user:pass' "$GEN_BUILD_DOCS"; then
+  echo "gen-build-docs must never request or embed database credentials." >&2
+  exit 1
+fi
+
 echo "Validating skills"
 while IFS= read -r -d '' skill_file; do
   python3 "$VALIDATOR" "$(dirname "$skill_file")"
