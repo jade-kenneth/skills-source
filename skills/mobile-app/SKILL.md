@@ -171,7 +171,10 @@ When generating or modifying code, always follow this order:
 2. Choose the simplest implementation that fits.
 3. Follow `references/folder-structure.md` for placement; keep screen entry files thin.
 4. Colocate code by feature unless clearly shared.
-5. Invoke `mobile-native-ui-design` before writing any UI.
+5. Invoke `mobile-native-ui-design` before writing any UI. When implementing from
+   an HTML prototype, read only its `data-app-root` as the visual/behavior contract;
+   exclude preview shells and translate it to React Native primitives rather than
+   a WebView or copied DOM/CSS.
 6. Use hooks, providers, and server-state tools consistently.
 7. Check project shared components before building custom ones.
 8. Add loading, empty, and error states for every async flow (`references/error-handling.md`, `references/ux-patterns.md` § Screen States).
@@ -207,6 +210,8 @@ Do not:
 - Build custom components before checking shared primitives
 - Add native dependencies when an Expo-compatible option already fits
 - Copy iOS UI exactly into Android or Material UI exactly into iOS
+- Ship prototype HTML in a WebView, recreate a DOM/CSS tree in React Native, or
+  include a fake device frame/fixed preview canvas in the production screen
 - Create separate screens per platform unless truly required
 - Use hardcoded hex colors on icon `color` props — always use `useThemeColors()` tokens
 - Import Ionicons, FontAwesome, Feather, or any icon library other than MaterialIcons

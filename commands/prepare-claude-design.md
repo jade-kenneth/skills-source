@@ -80,6 +80,35 @@ surface. Use descriptive Design Component filenames such as
 `Home.dc.html`, `Profile Settings.dc.html`, and `Admin Users.dc.html`. Logo option
 exploration may use `logo--options.html`.
 
+Every screen prototype must declare exactly one target surface and one production
+boundary:
+
+```html
+<body data-prototype-surface="mobile">
+  <div data-preview-shell>
+    <main data-app-root>
+      <!-- Actual application screen -->
+    </main>
+  </div>
+</body>
+```
+
+Use `data-prototype-surface="web"`, `"mobile"`, `"tablet"`, or `"desktop"`.
+`data-app-root` encloses only UI that belongs in the shipped application.
+`data-preview-shell` may simulate a device or center the screen for review, but it
+is never production UI. Put labels, measurement notes, alternate devices, browser
+chrome, and other annotations outside `data-app-root` and mark them
+`data-handoff="presentation-only"`. A presentation-only element must never contain
+the app root.
+
+For mobile prototypes, design the app root as a responsive viewport rather than a
+fixed-width phone component. A reference size such as 390 × 844 is a review target,
+not a production width. Declare safe-area ownership, system status/navigation bars,
+keyboard behavior, scrolling boundaries, orientation support, native gestures,
+and iOS/Android differences. HTML expresses visual and behavioral intent only;
+production Expo/React Native code must use native primitives rather than a WebView
+or copied DOM/CSS.
+
 Every prototype must specify and visibly implement:
 
 - exact layout, element order, alignment, responsive behavior, and breakpoints;
@@ -189,7 +218,9 @@ Require a final export report containing:
 - all supported states for each screen;
 - planned but not prototyped items;
 - unresolved decisions and design-system/prototype discrepancies;
-- target surfaces and responsive coverage;
+- target surfaces, each prototype's `data-prototype-surface`, and its `data-app-root` boundary;
+- presentation-only shells or annotations that production must exclude;
+- responsive coverage, including the reference viewport and tested size range;
 - accessibility checks completed and remaining risks.
 
 The exported files must contain no passwords, API keys, tokens, connection strings,

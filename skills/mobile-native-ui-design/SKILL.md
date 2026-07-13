@@ -130,6 +130,11 @@ medium rather than the final platform implementation:
 - Keep mockups self-contained unless the task provides an approved asset or
   dependency pipeline.
 - State which behaviors are approximations that native implementation must replace.
+- Mark the target surface with `data-prototype-surface="mobile"` and place exactly
+  one `data-app-root` around the real screen. Keep device frames, desktop preview
+  canvases, labels, and annotations outside that boundary.
+- Treat reference device dimensions as comparison targets, never as a fixed-width
+  container that ships inside the app.
 
 ## Completion checklist
 

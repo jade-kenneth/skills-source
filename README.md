@@ -73,7 +73,7 @@ canonical command in Claude Code:
 
 The command inventories every design source, requires Claude Design's exported
 Design Reference and Design Handoff Plan, confirms the product's app mapping and stack, and
-reconciles those documents into the canonical repository-root `Product Specification.md` and `Implementation Plan.md`. Database configuration is
+reconciles those documents into the canonical repository-root `Product Specification.md` and `Implementation Plan.md`. Prototype fidelity is bounded by each screen's `data-app-root`: preview shells never ship, and mobile HTML is translated into native Expo/React Native primitives. Database configuration is
 described by environment-variable name and sanitized target only; never provide or
 commit connection strings, credentials, tokens, or other secret values.
 
