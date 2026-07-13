@@ -28,17 +28,17 @@ if grep -Eqi 'ask the user to (provide|paste|enter).*(password|api key|token|con
   exit 1
 fi
 
-echo "Validating canonical build-doc command"
-GEN_BUILD_DOCS="$ROOT/commands/gen-build-docs.md"
-test -f "$GEN_BUILD_DOCS"
-grep -Fq 'design/prototypes/' "$GEN_BUILD_DOCS"
-grep -Fq '[PROJECT]Reference.md' "$GEN_BUILD_DOCS"
-grep -Fq '[PROJECT] Task Plan.md' "$GEN_BUILD_DOCS"
-grep -Fq 'design/handoff/[PROJECT] Design Reference.md' "$GEN_BUILD_DOCS"
-grep -Fq 'design/handoff/[PROJECT] Design Handoff Plan.md' "$GEN_BUILD_DOCS"
-grep -Fq 'Never ask for, print, copy, or write the connection string or credentials.' "$GEN_BUILD_DOCS"
-if grep -Eq 'ask me for the exact connection string|mongodb\+srv://user:pass' "$GEN_BUILD_DOCS"; then
-  echo "gen-build-docs must never request or embed database credentials." >&2
+echo "Validating canonical build-doc finalization command"
+FINALIZE_BUILD_DOCS="$ROOT/commands/finalize-build-docs.md"
+test -f "$FINALIZE_BUILD_DOCS"
+grep -Fq 'design/prototypes/' "$FINALIZE_BUILD_DOCS"
+grep -Fq '[PROJECT]Reference.md' "$FINALIZE_BUILD_DOCS"
+grep -Fq '[PROJECT] Task Plan.md' "$FINALIZE_BUILD_DOCS"
+grep -Fq 'design/handoff/[PROJECT] Design Reference.md' "$FINALIZE_BUILD_DOCS"
+grep -Fq 'design/handoff/[PROJECT] Design Handoff Plan.md' "$FINALIZE_BUILD_DOCS"
+grep -Fq 'Never ask for, print, copy, or write the connection string or credentials.' "$FINALIZE_BUILD_DOCS"
+if grep -Eq 'ask me for the exact connection string|mongodb\+srv://user:pass' "$FINALIZE_BUILD_DOCS"; then
+  echo "finalize-build-docs must never request or embed database credentials." >&2
   exit 1
 fi
 
@@ -61,6 +61,8 @@ SKILLS_SOURCE_SHA="0000000000000000000000000000000000000000" \
 node "$ROOT/scripts/validate-generated-agents.js" "$TEMP_DIR/AGENTS.md" "$ROOT"
 grep -Fq 'Source revision: `jade-kenneth/skills-source@0000000000000000000000000000000000000000`' \
   "$TEMP_DIR/AGENTS.md"
+grep -Fq 'Automatic project context — no repeated user instruction required' "$TEMP_DIR/AGENTS.md"
+grep -Fq 'The user does not need to repeat' "$TEMP_DIR/AGENTS.md"
 if grep -Fq '.agents/skills/' "$ROOT/conventions/project-structure.md" "$TEMP_DIR/AGENTS.md"; then
   echo "Legacy .agents/skills/ path found; downstream snapshots live in .skills-source/." >&2
   exit 1

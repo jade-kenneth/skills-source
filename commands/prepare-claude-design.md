@@ -7,7 +7,7 @@ argument-hint: [project name]
 
 **Project name:** $ARGUMENTS
 
-Use this command before `/gen-build-docs`. It prepares the prompt that creates the
+Use this command before `/finalize-build-docs`. It prepares the prompt that creates the
 product's design source; it does not design screens, write application code, or
 generate the Reference and Task Plan itself.
 
@@ -164,7 +164,7 @@ because Claude Design does not own the application architecture.
 
 Both files must link to each other. The Design Reference owns look and
 interaction; the Design Handoff Plan owns design-derived sequencing. The later
-`/gen-build-docs` pass reconciles them against the actual boilerplate and writes
+`/finalize-build-docs` pass reconciles them against the actual boilerplate and writes
 the canonical repository-root `[PROJECT]Reference.md` and
 `[PROJECT] Task Plan.md` without changing the untouched design export.
 
@@ -214,8 +214,8 @@ npm run design:validate
 Then, in Claude Code:
 
 ```text
-/gen-build-docs <project name>
+/finalize-build-docs <project name>
 ```
 
-Do not run `/gen-build-docs` until the prototype export exists and validation
+Do not run `/finalize-build-docs` until the prototype export exists and validation
 passes.

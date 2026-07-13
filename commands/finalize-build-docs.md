@@ -3,7 +3,7 @@ description: Reconcile Claude Design's Design Reference and Design Handoff Plan 
 argument-hint: [project name]
 ---
 
-# /gen-build-docs — reconcile the paired Reference + Task Plan
+# /finalize-build-docs — finalize the repository build documents
 
 **Project name:** $ARGUMENTS
 

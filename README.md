@@ -61,14 +61,14 @@ design, and import the export under `design/prototypes/`, `design/system/`, and
 `prompts/claude-design-handoff.md`; the full workflow remains canonical under
 `commands/`.
 
-## Generate Claude Design build docs
+## Finalize the repository build docs
 
 After a product repository contains its Claude Design export under
 `design/prototypes/`, `design/system/`, and `design/planning/`, run the
 canonical command in Claude Code:
 
 ```text
-/gen-build-docs <project name>
+/finalize-build-docs <project name>
 ```
 
 The command inventories every design source, requires Claude Design's exported
