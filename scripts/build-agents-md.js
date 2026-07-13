@@ -81,8 +81,8 @@ Claude Code reconciled it with this repository. Your job is to build faithfully.
 ## Automatic project context — no repeated user instruction required
 Before planning, editing, reviewing, or implementing application code:
 
-1. Locate exactly one repository-root file matching `*Reference.md` and exactly
-   one matching `* Task Plan.md`. Exclude `design/`, `.skills-source/`,
+1. Locate exactly one repository-root file matching \`*Reference.md\` and exactly
+   one matching \`* Task Plan.md\`. Exclude \`design/\`, \`.skills-source/\`,
    dependency folders, generated output, and nested copies.
 2. Read both files completely. The Reference owns verified UI and behavior; the
    Task Plan owns dependency order, scope, phase status, and Fidelity QA.
@@ -93,8 +93,8 @@ Before planning, editing, reviewing, or implementing application code:
 The user does not need to repeat “read AGENTS.md, the Reference, and the Task
 Plan.” Treat that context load as the default start of every application task.
 For an implementation request, follow the phase the user names; otherwise resume
-the single `[~]` phase, or start the first unblocked `[ ]` phase when none is in
-progress. Check `[ ]` → `[~]` → `[x]` only after the phase's QA rows pass.
+the single \`[~]\` phase, or start the first unblocked \`[ ]\` phase when none is in
+progress. Check \`[ ]\` → \`[~]\` → \`[x]\` only after the phase's QA rows pass.
 
 ## Non-negotiables
 - Conflict order: design/prototypes > design/system > design/planning >
