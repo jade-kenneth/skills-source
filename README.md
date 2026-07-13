@@ -55,8 +55,9 @@ Before design work begins, run the canonical Claude Code command:
 It gathers the product brief and writes a copy-ready
 `design/CLAUDE_DESIGN_PROMPT.md`. Paste that file into Claude Design, complete the
 design, and import the export under `design/prototypes/`, `design/system/`, and
-`design/planning/`, including the design-root `[PROJECT]Reference.md` and
-`[PROJECT] Task Plan.md`. The compatibility pointer is
+`design/planning/`, including
+`design/handoff/[PROJECT] Design Reference.md` and
+`design/handoff/[PROJECT] Design Handoff Plan.md`. The compatibility pointer is
 `prompts/claude-design-handoff.md`; the full workflow remains canonical under
 `commands/`.
 
@@ -71,7 +72,7 @@ canonical command in Claude Code:
 ```
 
 The command inventories every design source, requires Claude Design's exported
-Reference and Task Plan, confirms the product's app mapping and stack, and
+Design Reference and Design Handoff Plan, confirms the product's app mapping and stack, and
 reconciles those documents into canonical repository-root copies. Database configuration is
 described by environment-variable name and sanitized target only; never provide or
 commit connection strings, credentials, tokens, or other secret values.

@@ -141,30 +141,32 @@ Planning describes scope and intent, not substitute markup. `screen-inventory.md
 must map every planned screen to its prototype filename and mark anything not yet
 designed as `needs design`.
 
-### Paired build-document drafts
+### Design handoff documents
 
-Require Claude Design to export both of these Markdown files at the design root:
+Require Claude Design to export both of these Markdown files under a dedicated
+handoff folder:
 
 ```text
-design/[PROJECT]Reference.md
-design/[PROJECT] Task Plan.md
+design/handoff/[PROJECT] Design Reference.md
+design/handoff/[PROJECT] Design Handoff Plan.md
 ```
 
-The exported Reference must consolidate the exact design system, identity, screens,
-copy, interactions, states, responsive behavior, accessibility rules, canonical
-demo data, prototype source mapping, and planned-but-not-prototyped gaps. Prototype
-code remains the authority if its summary differs from the Reference.
+The **Design Reference** must consolidate the exact design system, identity,
+screens, copy, interactions, states, responsive behavior, accessibility rules,
+canonical demo data, prototype source mapping, and planned-but-not-prototyped
+gaps. Prototype code remains the authority if its summary differs.
 
-The exported Task Plan must translate the confirmed design scope into dependency-
-ordered phases with screen and flow coverage, design dependencies, an MVP cut, and
-per-screen Fidelity QA. It must label repository structure, backend operations,
-integrations, and reuse/removal decisions as `VERIFY IN REPO` because Claude
-Design does not own the application architecture.
+The **Design Handoff Plan** must describe screen and flow coverage, design
+dependencies, the MVP boundary, unresolved design work, and per-screen Fidelity
+QA. It is not the engineering Task Plan. Repository structure, backend operations,
+integrations, and reuse/removal decisions must be labeled `VERIFY IN REPO`
+because Claude Design does not own the application architecture.
 
-Both files must link to each other. The Reference owns look and interaction; the
-Task Plan owns the design-derived sequence. The later `/gen-build-docs` pass
-reconciles both against the actual boilerplate and produces the canonical
-repository-root copies without changing the untouched design export.
+Both files must link to each other. The Design Reference owns look and
+interaction; the Design Handoff Plan owns design-derived sequencing. The later
+`/gen-build-docs` pass reconciles them against the actual boilerplate and writes
+the canonical repository-root `[PROJECT]Reference.md` and
+`[PROJECT] Task Plan.md` without changing the untouched design export.
 
 ### Export contract
 
@@ -175,8 +177,9 @@ design/
 ├── prototypes/              # *.dc.html screen contracts and logo--*.html options
 ├── system/                  # normative design-system Markdown
 ├── planning/                # scope, IA, flows, journeys, inventory, open decisions
-├── [PROJECT]Reference.md     # design-authored UI and behavior source
-└── [PROJECT] Task Plan.md    # design-derived phased plan; architecture unverified
+└── handoff/
+    ├── [PROJECT] Design Reference.md
+    └── [PROJECT] Design Handoff Plan.md
 ```
 
 Require a final export report containing:
@@ -200,7 +203,8 @@ After writing `design/CLAUDE_DESIGN_PROMPT.md`:
 2. Explain that its full contents should be pasted into Claude Design.
 3. Explain that Claude Design's completed export must include
    `design/prototypes/`, `design/system/`, `design/planning/`,
-   `design/[PROJECT]Reference.md`, and `design/[PROJECT] Task Plan.md`.
+   `design/handoff/[PROJECT] Design Reference.md`, and
+   `design/handoff/[PROJECT] Design Handoff Plan.md`.
 4. Give the next commands:
 
 ```bash

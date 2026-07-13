@@ -20,8 +20,8 @@ grep -Fq 'design/CLAUDE_DESIGN_PROMPT.md' "$PREPARE_DESIGN"
 grep -Fq 'design/prototypes/' "$PREPARE_DESIGN"
 grep -Fq 'design/system/' "$PREPARE_DESIGN"
 grep -Fq 'design/planning/' "$PREPARE_DESIGN"
-grep -Fq 'design/[PROJECT]Reference.md' "$PREPARE_DESIGN"
-grep -Fq 'design/[PROJECT] Task Plan.md' "$PREPARE_DESIGN"
+grep -Fq 'design/handoff/[PROJECT] Design Reference.md' "$PREPARE_DESIGN"
+grep -Fq 'design/handoff/[PROJECT] Design Handoff Plan.md' "$PREPARE_DESIGN"
 grep -Fq 'commands/prepare-claude-design.md' "$DESIGN_PROMPT_POINTER"
 if grep -Eqi 'ask the user to (provide|paste|enter).*(password|api key|token|connection string)' "$PREPARE_DESIGN"; then
   echo "prepare-claude-design must never request secrets." >&2
@@ -34,8 +34,8 @@ test -f "$GEN_BUILD_DOCS"
 grep -Fq 'design/prototypes/' "$GEN_BUILD_DOCS"
 grep -Fq '[PROJECT]Reference.md' "$GEN_BUILD_DOCS"
 grep -Fq '[PROJECT] Task Plan.md' "$GEN_BUILD_DOCS"
-grep -Fq 'design/[PROJECT]Reference.md' "$GEN_BUILD_DOCS"
-grep -Fq 'design/[PROJECT] Task Plan.md' "$GEN_BUILD_DOCS"
+grep -Fq 'design/handoff/[PROJECT] Design Reference.md' "$GEN_BUILD_DOCS"
+grep -Fq 'design/handoff/[PROJECT] Design Handoff Plan.md' "$GEN_BUILD_DOCS"
 grep -Fq 'Never ask for, print, copy, or write the connection string or credentials.' "$GEN_BUILD_DOCS"
 if grep -Eq 'ask me for the exact connection string|mongodb\+srv://user:pass' "$GEN_BUILD_DOCS"; then
   echo "gen-build-docs must never request or embed database credentials." >&2

@@ -1,5 +1,5 @@
 ---
-description: Reconcile Claude Design's exported [PROJECT]Reference.md and [PROJECT] Task Plan.md with the actual boilerplate into canonical build docs
+description: Reconcile Claude Design's Design Reference and Design Handoff Plan with the actual boilerplate into canonical Reference and Task Plan build docs
 argument-hint: [project name]
 ---
 
@@ -29,14 +29,14 @@ You are finalizing the canonical build documentation for **$ARGUMENTS**. Do not 
 | `design/prototypes/` | `screen--<name>.html`, `logo--<name>.html`            | **Pixel/behavior contract — ported verbatim**                              | Reference §2, §3, §4               |
 | `design/system/`     | tokens, type scale, color, style moves, motion, voice | **Normative** — the values in §1 must match exactly                        | Reference §1                       |
 | `design/planning/`   | flows, IA, user journeys, scope notes, PRD fragments  | **Context, not contract** — read for understanding; never ported as markup | Reference §5, §6; Task Plan phases |
-| `design/[PROJECT]Reference.md` | Claude Design's paired design summary | **Baseline summary** — preserve verified detail; prototypes win conflicts | Canonical repo-root Reference |
-| `design/[PROJECT] Task Plan.md` | Claude Design's design-derived phases | **Planning input** — preserve design dependencies; verify architecture | Canonical repo-root Task Plan |
+| `design/handoff/[PROJECT] Design Reference.md` | Claude Design's UI/behavior summary | **Baseline summary** — preserve verified detail; prototypes win conflicts | Canonical repo-root Reference |
+| `design/handoff/[PROJECT] Design Handoff Plan.md` | Design coverage and sequencing | **Planning input, not engineering plan** — verify all architecture | Canonical repo-root Task Plan |
 
-Require exactly one matching exported Reference and Task Plan at the design root.
-Read every source file and both paired documents. Quote nothing you have not
-verified. Then **list the files you're basing this on**, grouped by folder, before
-writing anything. Do not edit the design-root pair; produce reconciled copies at
-the repository root.
+Require exactly one Design Reference and one Design Handoff Plan in
+`design/handoff/`. Read every source file and both handoff documents. Quote
+nothing you have not verified. Then **list the files you're basing this on**,
+grouped by folder, before writing anything. Do not edit the handoff pair; produce
+reconciled canonical documents at the repository root.
 
 **Prototype filename patterns:** prototype files may land as `screen--<name>.html` / `logo--<name>.html` **or** as Design Component exports named `<Screen Name>.dc.html` (e.g. `Video Factory Prototype.dc.html`). Treat every `*.dc.html` file exactly like a `screen--*.html` file — each one is a screen contract subject to the Completeness rule below; never skip a prototype because its filename doesn't match `screen--*`.
 
@@ -56,7 +56,7 @@ the repository root.
 4. Repo conventions (`CLAUDE.md`, `AGENTS.md`, `.skills-source/conventions/`) — win on code structure, naming, and stack patterns. **Never on UI.**
 5. Boilerplate UI — never wins. It is discarded (see Step 2).
 
-Use the exported Reference and Task Plan as the starting documents, not disposable notes. Preserve all verified design detail, terminology, screen mappings, states, and dependencies. Replace or mark only claims disproved by the prototypes, design system, planning sources, or actual repository scan. Also read any other task/plan/PRD files in the repo. The **logo prototype file** (`logo--*.html` and its chosen option) is the mark's source of truth; it is ported verbatim like any other screen.
+Use the exported Design Reference and Design Handoff Plan as starting documents, not disposable notes. Preserve all verified design detail, terminology, screen mappings, states, and dependencies. Replace or mark only claims disproved by the prototypes, design system, planning sources, or actual repository scan. Also read any other task/plan/PRD files in the repo. The **logo prototype file** (`logo--*.html` and its chosen option) is the mark's source of truth; it is ported verbatim like any other screen.
 
 If the visual direction or scope is ambiguous after reading all three folders, ask me focused questions first.
 
@@ -95,7 +95,7 @@ Make seeding **idempotent and re-runnable** (e.g. an `npm run seed` script), and
 
 ### Step 3 — Finalize the TWO paired files
 
-**File A — `[PROJECT]Reference.md` (UI & behavior source of truth).** Begin with the exported `design/[PROJECT]Reference.md`, preserve verified design detail, resolve discrepancies against literal prototype code, and ensure these sections:
+**File A — `[PROJECT]Reference.md` (UI & behavior source of truth).** Begin with the exported `design/handoff/[PROJECT] Design Reference.md`, preserve verified design detail, resolve discrepancies against literal prototype code, and ensure these sections:
 
 0. **What it is** + product stack + an "API convention (read this first)" callout + a "⚠ the `design/` export from Claude Design is the origin of this product's UI, behavior, and scope; the boilerplate contributes backend plumbing only — build on it, don't scaffold from scratch, and discard its UI entirely" directive + the confirmed database environment-variable name and sanitized target (never its secret value) + a "database is always seeded (login + display data)" note. Include the conflict-resolution order from Step 1.
 1. **Design system** — sourced from `design/system/` (and any values only present in the prototypes). Reproduce _exactly_: type scale/weights, a color-token table with hex + usage, the signature style moves (borders, shadows, radii, rotations, badges), key surface/background rendering, an explicit **imagery rule** (placeholders vs. real assets — no hand-drawn art), motion/animation specs, and voice/tone. Where `design/system/` and a prototype disagree, the prototype wins — note the discrepancy inline so I can fix the export.
@@ -106,7 +106,7 @@ Make seeding **idempotent and re-runnable** (e.g. an `npm run seed` script), and
 6. **Build order** — condensed phase list mirroring File B, marking boilerplate phases. Derive scope and sequencing from `design/planning/`. Include the **"Planned but not prototyped"** callout listing anything `design/planning/` describes that has no prototype file (these are `⚠ needs design`, blocked before implementation).
 7. **Non-negotiables checklist** — the must-nots and must-haves, including "backend boilerplate reused, boilerplate UI discarded", "UI is a **total faithful copy** of the prototype HTML — exact fonts, layout, spacing, colors, micro-details, and functions; nothing approximated or omitted", "screens are ported from the prototype markup, not rebuilt from prose", "no default/scaffold theme survives", "app wired through the confirmed database environment variable without exposing its value", and "database seeded with a working login + initial display data before any demo".
 
-**File B — `[PROJECT] Task Plan.md` (phased implementation).** Begin with the exported `design/[PROJECT] Task Plan.md`, preserve its verified design dependencies and phase intent, replace `VERIFY IN REPO` assumptions using the actual boilerplate scan, and open the file with an **"Executor: Codex"** header block stating: work one phase at a time top-to-bottom; check `[ ]` → `[~]` → `[x]` only after that phase's Fidelity QA rows pass; AGENTS.md governs code structure, the Reference governs everything visual; stop and ask on ambiguity rather than inventing. Then a dependency-ordered phase checklist (`[ ]/[~]/[x]`) covering setup (including wiring the confirmed database environment variable without recording its value) → auth/accounts → **seed data (login account + initial display data, re-runnable)** → media → core domain → discovery/core loop → social → moderation/safety → notifications → admin → polish/a11y → QA/launch. Include an explicit early phase that (a) executes the **Boilerplate Trim List** from §2.1 (embed the per-app tables in File B) and (b) discards any boilerplate UI and rebuilds screens to match §1–§4 of the reference. For each item use the **real operation names** in the chosen convention (queries/mutations/subscriptions, not generic "endpoints"). Mark boilerplate-provided items **[BP] / verify & reuse**. End with a suggested build order + dependency graph, an **MVP cut**, and the **Fidelity QA checklist** below.
+**File B — `[PROJECT] Task Plan.md` (phased implementation).** Begin with the exported `design/handoff/[PROJECT] Design Handoff Plan.md`, preserve its verified design dependencies and phase intent, replace `VERIFY IN REPO` assumptions using the actual boilerplate scan, and open the file with an **"Executor: Codex"** header block stating: work one phase at a time top-to-bottom; check `[ ]` → `[~]` → `[x]` only after that phase's Fidelity QA rows pass; AGENTS.md governs code structure, the Reference governs everything visual; stop and ask on ambiguity rather than inventing. Then a dependency-ordered phase checklist (`[ ]/[~]/[x]`) covering setup (including wiring the confirmed database environment variable without recording its value) → auth/accounts → **seed data (login account + initial display data, re-runnable)** → media → core domain → discovery/core loop → social → moderation/safety → notifications → admin → polish/a11y → QA/launch. Include an explicit early phase that (a) executes the **Boilerplate Trim List** from §2.1 (embed the per-app tables in File B) and (b) discards any boilerplate UI and rebuilds screens to match §1–§4 of the reference. For each item use the **real operation names** in the chosen convention (queries/mutations/subscriptions, not generic "endpoints"). Mark boilerplate-provided items **[BP] / verify & reuse**. End with a suggested build order + dependency graph, an **MVP cut**, and the **Fidelity QA checklist** below.
 
 **Fidelity QA checklist (append to File B; run per screen before a screen is marked done).** A repeatable, checkbox gate that proves each built screen is a total faithful copy of its prototype — not "close enough". Structure it as one row per screen × these checks, plus a global row:
 
@@ -145,7 +145,7 @@ Global: [ ] boilerplate UI fully removed · [ ] no default/scaffold theme leakin
 ### Fallbacks
 
 - If `design/prototypes/` is empty or missing, **stop and tell me** — the export didn't land. Offer to work from the codebase / screenshots instead, but never invent UI.
-- If the design-root `[PROJECT]Reference.md` or `[PROJECT] Task Plan.md` is missing, **stop and tell me** to complete the Claude Design export with `/prepare-claude-design`; do not silently create a replacement pair from scratch.
+- If `design/handoff/[PROJECT] Design Reference.md` or `design/handoff/[PROJECT] Design Handoff Plan.md` is missing, **stop and tell me** to complete the Claude Design export with `/prepare-claude-design`; do not silently create replacement documents from scratch.
 - If `design/system/` is missing, derive §1 from the prototypes themselves (extract the recurring tokens) and tell me it was inferred, so I can export the real system.
 - If `design/planning/` is missing, derive scope and build order from the prototypes alone and flag that phase sequencing is your inference, not mine.
 - For a single-surface product, drop File A §4 and the admin phase.
