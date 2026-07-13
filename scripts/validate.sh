@@ -11,6 +11,21 @@ node --check "$ROOT/scripts/build-agents-md.js"
 node --check "$ROOT/scripts/validate-generated-agents.js"
 bash -n "$ROOT/scripts/install-global.sh" "$ROOT/scripts/setup-mcp.sh" "$0"
 
+echo "Validating canonical Claude Design preparation command"
+PREPARE_DESIGN="$ROOT/commands/prepare-claude-design.md"
+DESIGN_PROMPT_POINTER="$ROOT/prompts/claude-design-handoff.md"
+test -f "$PREPARE_DESIGN"
+test -f "$DESIGN_PROMPT_POINTER"
+grep -Fq 'design/CLAUDE_DESIGN_PROMPT.md' "$PREPARE_DESIGN"
+grep -Fq 'design/prototypes/' "$PREPARE_DESIGN"
+grep -Fq 'design/system/' "$PREPARE_DESIGN"
+grep -Fq 'design/planning/' "$PREPARE_DESIGN"
+grep -Fq 'commands/prepare-claude-design.md' "$DESIGN_PROMPT_POINTER"
+if grep -Eqi 'ask (for|the user for).*(password|api key|token|connection string)' "$PREPARE_DESIGN"; then
+  echo "prepare-claude-design must never request secrets." >&2
+  exit 1
+fi
+
 echo "Validating canonical build-doc command"
 GEN_BUILD_DOCS="$ROOT/commands/gen-build-docs.md"
 test -f "$GEN_BUILD_DOCS"

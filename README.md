@@ -44,6 +44,21 @@ adds a routed index pointing to full skill instructions under the downstream
 project's `.skills-source/` snapshot. Consumer projects hydrate that snapshot from
 a committed lock file so normal installs and CI use the same reviewed revision.
 
+## Prepare the Claude Design prompt
+
+Before design work begins, run the canonical Claude Code command:
+
+```text
+/prepare-claude-design <project name>
+```
+
+It gathers the product brief and writes a copy-ready
+`design/CLAUDE_DESIGN_PROMPT.md`. Paste that file into Claude Design, complete the
+design, and import the export under `design/prototypes/`, `design/system/`, and
+`design/planning/`. The compatibility pointer is
+`prompts/claude-design-handoff.md`; the full workflow remains canonical under
+`commands/`.
+
 ## Generate Claude Design build docs
 
 After a product repository contains its Claude Design export under
