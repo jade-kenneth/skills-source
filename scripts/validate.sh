@@ -30,6 +30,10 @@ SKILLS_SOURCE_SHA="0000000000000000000000000000000000000000" \
 node "$ROOT/scripts/validate-generated-agents.js" "$TEMP_DIR/AGENTS.md" "$ROOT"
 grep -Fq 'Source revision: `jade-kenneth/skills-source@0000000000000000000000000000000000000000`' \
   "$TEMP_DIR/AGENTS.md"
+if grep -Fq '.agents/skills/' "$ROOT/conventions/project-structure.md" "$TEMP_DIR/AGENTS.md"; then
+  echo "Legacy .agents/skills/ path found; downstream snapshots live in .skills-source/." >&2
+  exit 1
+fi
 
 echo "Smoke-testing isolated global installation"
 HOME="$TEMP_DIR/home" bash "$ROOT/scripts/install-global.sh" >/dev/null

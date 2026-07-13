@@ -28,7 +28,8 @@ jobs:
           printf '{"event_type":"skills-source-updated","client_payload":{"sha":"%s"}}' "$SOURCE_SHA" \
             | gh api --method POST repos/jade-kenneth/app-boilerplate/dispatches --input -
 
-      - name: Explain missing token
+      - name: Fail when the downstream token is missing
         if: env.GH_TOKEN == ''
         run: |
-          echo "::warning::APP_BOILERPLATE_SYNC_TOKEN is not configured; downstream update was skipped."
+          echo "::error::APP_BOILERPLATE_SYNC_TOKEN is not configured; downstream notification cannot run."
+          exit 1
