@@ -32,8 +32,8 @@ echo "Validating canonical build-doc finalization command"
 FINALIZE_BUILD_DOCS="$ROOT/commands/finalize-build-docs.md"
 test -f "$FINALIZE_BUILD_DOCS"
 grep -Fq 'design/prototypes/' "$FINALIZE_BUILD_DOCS"
-grep -Fq '[PROJECT]Reference.md' "$FINALIZE_BUILD_DOCS"
-grep -Fq '[PROJECT] Task Plan.md' "$FINALIZE_BUILD_DOCS"
+grep -Fq 'Product Specification.md' "$FINALIZE_BUILD_DOCS"
+grep -Fq 'Implementation Plan.md' "$FINALIZE_BUILD_DOCS"
 grep -Fq 'design/handoff/[PROJECT] Design Reference.md' "$FINALIZE_BUILD_DOCS"
 grep -Fq 'design/handoff/[PROJECT] Design Handoff Plan.md' "$FINALIZE_BUILD_DOCS"
 grep -Fq 'Never ask for, print, copy, or write the connection string or credentials.' "$FINALIZE_BUILD_DOCS"
@@ -63,6 +63,8 @@ grep -Fq 'Source revision: `jade-kenneth/skills-source@0000000000000000000000000
   "$TEMP_DIR/AGENTS.md"
 grep -Fq 'Automatic project context — no repeated user instruction required' "$TEMP_DIR/AGENTS.md"
 grep -Fq 'The user does not need to repeat' "$TEMP_DIR/AGENTS.md"
+grep -Fq '`Product Specification.md`' "$TEMP_DIR/AGENTS.md"
+grep -Fq '`Implementation Plan.md`' "$TEMP_DIR/AGENTS.md"
 if grep -Fq '.agents/skills/' "$ROOT/conventions/project-structure.md" "$TEMP_DIR/AGENTS.md"; then
   echo "Legacy .agents/skills/ path found; downstream snapshots live in .skills-source/." >&2
   exit 1

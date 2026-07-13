@@ -1,5 +1,5 @@
 ---
-description: Reconcile Claude Design's Design Reference and Design Handoff Plan with the actual boilerplate into canonical Reference and Task Plan build docs
+description: Reconcile Claude Design's Design Reference and Design Handoff Plan with the actual boilerplate into canonical Product Specification and Implementation Plan documents
 argument-hint: [project name]
 ---
 
@@ -26,11 +26,11 @@ You are finalizing the canonical build documentation for **$ARGUMENTS**. Do not 
 
 | Folder               | Contents                                              | Authority                                                                  | Feeds                              |
 | -------------------- | ----------------------------------------------------- | -------------------------------------------------------------------------- | ---------------------------------- |
-| `design/prototypes/` | `screen--<name>.html`, `logo--<name>.html`            | **Pixel/behavior contract — ported verbatim**                              | Reference §2, §3, §4               |
-| `design/system/`     | tokens, type scale, color, style moves, motion, voice | **Normative** — the values in §1 must match exactly                        | Reference §1                       |
-| `design/planning/`   | flows, IA, user journeys, scope notes, PRD fragments  | **Context, not contract** — read for understanding; never ported as markup | Reference §5, §6; Task Plan phases |
-| `design/handoff/[PROJECT] Design Reference.md` | Claude Design's UI/behavior summary | **Baseline summary** — preserve verified detail; prototypes win conflicts | Canonical repo-root Reference |
-| `design/handoff/[PROJECT] Design Handoff Plan.md` | Design coverage and sequencing | **Planning input, not engineering plan** — verify all architecture | Canonical repo-root Task Plan |
+| `design/prototypes/` | `screen--<name>.html`, `logo--<name>.html`            | **Pixel/behavior contract — ported verbatim**                              | Product Specification §2, §3, §4   |
+| `design/system/`     | tokens, type scale, color, style moves, motion, voice | **Normative** — the values in §1 must match exactly                        | Product Specification §1           |
+| `design/planning/`   | flows, IA, user journeys, scope notes, PRD fragments  | **Context, not contract** — read for understanding; never ported as markup | Product Specification §5, §6; Implementation Plan phases |
+| `design/handoff/[PROJECT] Design Reference.md` | Claude Design's UI/behavior summary | **Baseline summary** — preserve verified detail; prototypes win conflicts | Canonical repo-root Product Specification |
+| `design/handoff/[PROJECT] Design Handoff Plan.md` | Design coverage and sequencing | **Planning input, not engineering plan** — verify all architecture | Canonical repo-root Implementation Plan |
 
 Require exactly one Design Reference and one Design Handoff Plan in
 `design/handoff/`. Read every source file and both handoff documents. Quote
@@ -42,9 +42,9 @@ reconciled canonical documents at the repository root.
 
 **Prototypes (`design/prototypes/`)** are the **pixel-exact, behavior-exact contract**, not loose inspiration. Extract the _actual code_: every font-family/size/weight/line-height, every hex color, every px of padding/margin/gap, every border/shadow/radius/rotation, every element and its order, every state, interaction, handler, and animation. Do not summarize a screen into prose that drops details — if a value is in the prototype, it must survive into the docs verbatim.
 
-**Completeness rule:** every prototype file (`screen--*.html` and `*.dc.html`) MUST produce its own §3 (or §4) subsection in the Reference. Before writing, map each prototype file to a planned section; if any file has no section, or `design/planning/` describes a screen that has no prototype file, surface the gap to me explicitly instead of silently omitting or inventing it.
+**Completeness rule:** every prototype file (`screen--*.html` and `*.dc.html`) MUST produce its own §3 (or §4) subsection in the Product Specification. Before writing, map each prototype file to a planned section; if any file has no section, or `design/planning/` describes a screen that has no prototype file, surface the gap to me explicitly instead of silently omitting or inventing it.
 
-**Scope rule:** `design/planning/` may describe screens, flows, or features that were never prototyped. Those are **not** silently dropped and **not** designed by you — list them in a "Planned but not prototyped" callout in File A §6 and give them Task Plan phases marked `⚠ needs design` (blocked on a prototype before implementation).
+**Scope rule:** `design/planning/` may describe screens, flows, or features that were never prototyped. Those are **not** silently dropped and **not** designed by you — list them in a "Planned but not prototyped" callout in File A §6 and give them Implementation Plan phases marked `⚠ needs design` (blocked on a prototype before implementation).
 
 **Fidelity mandate (read first, applies to everything below):** the goal is a **total, faithful copy** of the provided prototype HTML — same fonts, same layout, same spacing, same colors, same micro-details, same functions/interactions. The implementation must look and behave identically to the prototype; the only thing that changes is that mock/hard-coded data becomes real data from the database configured through the confirmed environment variable. Engineers should **port the prototype's markup + styles as the starting DOM and wire data into it**, NOT rebuild each screen from a written description. When in doubt, the prototype's literal code wins over any paraphrase — and over anything in `design/planning/` or `design/system/`.
 
@@ -70,7 +70,7 @@ Boilerplate: **`github.com/jade-kenneth/app-boilerplate` (main)** — apps: `app
 
 App mapping: as confirmed in **Runtime inputs #3**. **Rename every surviving app after $ARGUMENTS** (`app-web` → `[project]-web`, `app-api` → `[project]-api`) so the workspace reads as the product, not the boilerplate. Renames/removals must list their ripples (nx/workspace config, package names, codegen paths, CI, docker-compose, root docs) as explicit tasks. Treat backend/plumbing boilerplate (GraphQL client+server, TanStack Query, auth, authz, S3, CI) as **reuse-not-rebuild**: for every feature, find the existing primitive and extend it in the established pattern; never re-implement auth, authz, or the client/codegen pipeline. Mark foundation tasks as already-provided rather than to-build.
 
-**Boilerplate UI is the ONE exception — disregard it entirely.** Any starter/scaffold/default UI, theme, component library styling, or example screens from the boilerplate must be discarded and replaced. The prototypes and design system (§1) are the sole source of truth for look and interaction; never let a boilerplate default theme, layout, or component override the design. If a boilerplate screen conflicts with the reference, the reference wins and the boilerplate UI is rebuilt to match.
+**Boilerplate UI is the ONE exception — disregard it entirely.** Any starter/scaffold/default UI, theme, component library styling, or example screens from the boilerplate must be discarded and replaced. The prototypes and design system (§1) are the sole source of truth for look and interaction; never let a boilerplate default theme, layout, or component override the design. If a boilerplate screen conflicts with the Product Specification, the Product Specification wins and the boilerplate UI is rebuilt to match.
 
 ### Step 2.1 — Boilerplate trim audit (always required)
 
@@ -95,7 +95,7 @@ Make seeding **idempotent and re-runnable** (e.g. an `npm run seed` script), and
 
 ### Step 3 — Finalize the TWO paired files
 
-**File A — `[PROJECT]Reference.md` (UI & behavior source of truth).** Begin with the exported `design/handoff/[PROJECT] Design Reference.md`, preserve verified design detail, resolve discrepancies against literal prototype code, and ensure these sections:
+**File A — `Product Specification.md` (UI & behavior source of truth).** Begin with the exported `design/handoff/[PROJECT] Design Reference.md`, preserve verified design detail, resolve discrepancies against literal prototype code, and ensure these sections:
 
 0. **What it is** + product stack + an "API convention (read this first)" callout + a "⚠ the `design/` export from Claude Design is the origin of this product's UI, behavior, and scope; the boilerplate contributes backend plumbing only — build on it, don't scaffold from scratch, and discard its UI entirely" directive + the confirmed database environment-variable name and sanitized target (never its secret value) + a "database is always seeded (login + display data)" note. Include the conflict-resolution order from Step 1.
 1. **Design system** — sourced from `design/system/` (and any values only present in the prototypes). Reproduce _exactly_: type scale/weights, a color-token table with hex + usage, the signature style moves (borders, shadows, radii, rotations, badges), key surface/background rendering, an explicit **imagery rule** (placeholders vs. real assets — no hand-drawn art), motion/animation specs, and voice/tone. Where `design/system/` and a prototype disagree, the prototype wins — note the discrepancy inline so I can fix the export.
@@ -106,7 +106,7 @@ Make seeding **idempotent and re-runnable** (e.g. an `npm run seed` script), and
 6. **Build order** — condensed phase list mirroring File B, marking boilerplate phases. Derive scope and sequencing from `design/planning/`. Include the **"Planned but not prototyped"** callout listing anything `design/planning/` describes that has no prototype file (these are `⚠ needs design`, blocked before implementation).
 7. **Non-negotiables checklist** — the must-nots and must-haves, including "backend boilerplate reused, boilerplate UI discarded", "UI is a **total faithful copy** of the prototype HTML — exact fonts, layout, spacing, colors, micro-details, and functions; nothing approximated or omitted", "screens are ported from the prototype markup, not rebuilt from prose", "no default/scaffold theme survives", "app wired through the confirmed database environment variable without exposing its value", and "database seeded with a working login + initial display data before any demo".
 
-**File B — `[PROJECT] Task Plan.md` (phased implementation).** Begin with the exported `design/handoff/[PROJECT] Design Handoff Plan.md`, preserve its verified design dependencies and phase intent, replace `VERIFY IN REPO` assumptions using the actual boilerplate scan, and open the file with an **"Executor: Codex"** header block stating: work one phase at a time top-to-bottom; check `[ ]` → `[~]` → `[x]` only after that phase's Fidelity QA rows pass; AGENTS.md governs code structure, the Reference governs everything visual; stop and ask on ambiguity rather than inventing. Then a dependency-ordered phase checklist (`[ ]/[~]/[x]`) covering setup (including wiring the confirmed database environment variable without recording its value) → auth/accounts → **seed data (login account + initial display data, re-runnable)** → media → core domain → discovery/core loop → social → moderation/safety → notifications → admin → polish/a11y → QA/launch. Include an explicit early phase that (a) executes the **Boilerplate Trim List** from §2.1 (embed the per-app tables in File B) and (b) discards any boilerplate UI and rebuilds screens to match §1–§4 of the reference. For each item use the **real operation names** in the chosen convention (queries/mutations/subscriptions, not generic "endpoints"). Mark boilerplate-provided items **[BP] / verify & reuse**. End with a suggested build order + dependency graph, an **MVP cut**, and the **Fidelity QA checklist** below.
+**File B — `Implementation Plan.md` (phased implementation).** Begin with the exported `design/handoff/[PROJECT] Design Handoff Plan.md`, preserve its verified design dependencies and phase intent, replace `VERIFY IN REPO` assumptions using the actual boilerplate scan, and open the file with an **"Executor: Codex"** header block stating: work one phase at a time top-to-bottom; check `[ ]` → `[~]` → `[x]` only after that phase's Fidelity QA rows pass; AGENTS.md governs code structure, the Product Specification governs everything visual; stop and ask on ambiguity rather than inventing. Then a dependency-ordered phase checklist (`[ ]/[~]/[x]`) covering setup (including wiring the confirmed database environment variable without recording its value) → auth/accounts → **seed data (login account + initial display data, re-runnable)** → media → core domain → discovery/core loop → social → moderation/safety → notifications → admin → polish/a11y → QA/launch. Include an explicit early phase that (a) executes the **Boilerplate Trim List** from §2.1 (embed the per-app tables in File B) and (b) discards any boilerplate UI and rebuilds screens to match §1–§4 of the Product Specification. For each item use the **real operation names** in the chosen convention (queries/mutations/subscriptions, not generic "endpoints"). Mark boilerplate-provided items **[BP] / verify & reuse**. End with a suggested build order + dependency graph, an **MVP cut**, and the **Fidelity QA checklist** below.
 
 **Fidelity QA checklist (append to File B; run per screen before a screen is marked done).** A repeatable, checkbox gate that proves each built screen is a total faithful copy of its prototype — not "close enough". Structure it as one row per screen × these checks, plus a global row:
 
@@ -128,9 +128,9 @@ Global: [ ] boilerplate UI fully removed · [ ] no default/scaffold theme leakin
 
 ### Step 4 — Wire the two docs together (bidirectional)
 
-- Top of **each** file: a "📋 Companion doc" header naming the other, stating the split (Reference = look & behavior truth; Task Plan = build order & approach) and the tie-break rule: **reference wins on look/interaction, task plan wins on build order/approach.**
-- **Task Plan → Reference:** every phase header carries a `UI: §…` pointer to the reference section(s) it implements.
-- **Reference → Task Plan:** every screen/section ends with `Production mapping (Phase N)`.
+- Top of **each** file: a "📋 Companion doc" header naming the other, stating the split (Product Specification = verified look and behavior; Implementation Plan = build order and approach) and the tie-break rule: **Product Specification wins on look and interaction; Implementation Plan wins on build order and approach.**
+- **Implementation Plan → Product Specification:** every phase header carries a `UI: §…` pointer to the Product Specification section(s) it implements.
+- **Product Specification → Implementation Plan:** every screen/section ends with `Production mapping (Phase N)`.
 - Note in both that scope changes must update both docs together so the §/Phase links stay valid.
 
 ### Output rules
@@ -139,8 +139,8 @@ Global: [ ] boilerplate UI fully removed · [ ] no default/scaffold theme leakin
 - Never write secret values, connection strings, passwords, tokens, or credentials into either generated document; refer to environment-variable names and sanitized identifiers only.
 - Every color/copy/interaction detail must come from the actual sources, not invented.
 - Keep both files consistent with each other (same phase numbers, same demo data, same terminology).
-- Write both files to the repo root as `[PROJECT]Reference.md` and `[PROJECT] Task Plan.md`.
-- After writing, open the reference file for me and give a 3–4 sentence summary of what each doc owns and how they link.
+- Write both files to the repo root as `Product Specification.md` and `Implementation Plan.md`.
+- After writing, open `Product Specification.md` for me and give a 3–4 sentence summary of what each doc owns and how they link.
 
 ### Fallbacks
 
