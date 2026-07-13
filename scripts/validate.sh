@@ -21,7 +21,7 @@ grep -Fq 'design/prototypes/' "$PREPARE_DESIGN"
 grep -Fq 'design/system/' "$PREPARE_DESIGN"
 grep -Fq 'design/planning/' "$PREPARE_DESIGN"
 grep -Fq 'commands/prepare-claude-design.md' "$DESIGN_PROMPT_POINTER"
-if grep -Eqi 'ask (for|the user for).*(password|api key|token|connection string)' "$PREPARE_DESIGN"; then
+if grep -Eqi 'ask the user to (provide|paste|enter).*(password|api key|token|connection string)' "$PREPARE_DESIGN"; then
   echo "prepare-claude-design must never request secrets." >&2
   exit 1
 fi
