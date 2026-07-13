@@ -20,6 +20,9 @@ grep -Fq 'design/CLAUDE_DESIGN_PROMPT.md' "$PREPARE_DESIGN"
 grep -Fq 'design/prototypes/' "$PREPARE_DESIGN"
 grep -Fq 'design/system/' "$PREPARE_DESIGN"
 grep -Fq 'design/planning/' "$PREPARE_DESIGN"
+grep -Fq 'data-prototype-surface="mobile"' "$PREPARE_DESIGN"
+grep -Fq 'data-app-root' "$PREPARE_DESIGN"
+grep -Fq 'data-handoff="presentation-only"' "$PREPARE_DESIGN"
 grep -Fq 'design/handoff/[PROJECT] Design Reference.md' "$PREPARE_DESIGN"
 grep -Fq 'design/handoff/[PROJECT] Design Handoff Plan.md' "$PREPARE_DESIGN"
 grep -Fq 'commands/prepare-claude-design.md' "$DESIGN_PROMPT_POINTER"
@@ -36,7 +39,14 @@ grep -Fq 'Product Specification.md' "$FINALIZE_BUILD_DOCS"
 grep -Fq 'Implementation Plan.md' "$FINALIZE_BUILD_DOCS"
 grep -Fq 'design/handoff/[PROJECT] Design Reference.md' "$FINALIZE_BUILD_DOCS"
 grep -Fq 'design/handoff/[PROJECT] Design Handoff Plan.md' "$FINALIZE_BUILD_DOCS"
+grep -Fq 'Platform-aware fidelity mandate' "$FINALIZE_BUILD_DOCS"
+grep -Fq 'data-app-root' "$FINALIZE_BUILD_DOCS"
+grep -Fq 'must not ship prototype HTML in a WebView' "$ROOT/scripts/build-agents-md.js"
 grep -Fq 'Never ask for, print, copy, or write the connection string or credentials.' "$FINALIZE_BUILD_DOCS"
+if grep -Fq "port the prototype's markup + styles as the starting DOM" "$FINALIZE_BUILD_DOCS"; then
+  echo "finalize-build-docs must preserve outcomes without forcing cross-platform markup copying." >&2
+  exit 1
+fi
 if grep -Eq 'ask me for the exact connection string|mongodb\+srv://user:pass' "$FINALIZE_BUILD_DOCS"; then
   echo "finalize-build-docs must never request or embed database credentials." >&2
   exit 1
