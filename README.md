@@ -44,6 +44,39 @@ adds a routed index pointing to full skill instructions under the downstream
 project's `.skills-source/` snapshot. Consumer projects hydrate that snapshot from
 a committed lock file so normal installs and CI use the same reviewed revision.
 
+## Prepare the Claude Design prompt
+
+Before design work begins, run the canonical Claude Code command:
+
+```text
+/prepare-claude-design <project name>
+```
+
+It gathers the product brief and writes a copy-ready
+`design/CLAUDE_DESIGN_PROMPT.md`. Paste that file into Claude Design, complete the
+design, and import the export under `design/prototypes/`, `design/system/`, and
+`design/planning/`, including
+`design/handoff/[PROJECT] Design Reference.md` and
+`design/handoff/[PROJECT] Design Handoff Plan.md`. The compatibility pointer is
+`prompts/claude-design-handoff.md`; the full workflow remains canonical under
+`commands/`.
+
+## Finalize the repository build docs
+
+After a product repository contains its Claude Design export under
+`design/prototypes/`, `design/system/`, and `design/planning/`, run the
+canonical command in Claude Code:
+
+```text
+/finalize-build-docs <project name>
+```
+
+The command inventories every design source, requires Claude Design's exported
+Design Reference and Design Handoff Plan, confirms the product's app mapping and stack, and
+reconciles those documents into canonical repository-root copies. Database configuration is
+described by environment-variable name and sanitized target only; never provide or
+commit connection strings, credentials, tokens, or other secret values.
+
 ## Downstream synchronization
 
 `app-boilerplate` separates normal synchronization from intentional upgrades:

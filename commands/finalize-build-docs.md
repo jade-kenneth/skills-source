@@ -1,16 +1,16 @@
 ---
-description: Generate paired [PROJECT]Reference.md + [PROJECT] Task Plan.md build docs from the Claude Design export in design/ (prototypes, system, planning)
+description: Reconcile Claude Design's Design Reference and Design Handoff Plan with the actual boilerplate into canonical Reference and Task Plan build docs
 argument-hint: [project name]
 ---
 
-# /gen-build-docs — Paired "Reference + Task Plan" build docs
+# /finalize-build-docs — finalize the repository build documents
 
 **Project name:** $ARGUMENTS
 
 ## Runtime inputs (resolve these FIRST, before any writing)
 
 1. **Project name** — taken from the arguments above. If empty, ask me for it.
-2. **MONGODB_URI** — ask me for the exact connection string (e.g. `mongodb+srv://user:pass@cluster.mongodb.net/<db>`). Never proceed with a placeholder; every data task in the plan wires against this exact database (via env var, never hard-coded).
+2. **Database target** — confirm the environment variable name (default: `MONGODB_URI`), the intended non-secret database name, and whether that variable is configured in the current environment. Never ask for, print, copy, or write the connection string or credentials. The docs must contain only the environment-variable name and a sanitized database identifier. If it is not configured, record a blocked setup task instead of requesting a secret.
 3. **App mapping** — ask me which boilerplate app becomes which product surface, including renames and full-app removals (e.g. `apps/app-web` → `[project]-web` hosting BOTH the consumer app and `/admin`; `apps/app-mobile` removed with its push/auth needs re-covered via Capacitor). Do not assume a mapping.
 4. **Stack overrides** — confirm the target stack. Default if I confirm no changes: Capacitor-wrapped Next.js web client (consumer app + `/admin` dashboard in ONE web app) · NestJS GraphQL API · MongoDB · AWS S3, with all app data over GraphQL via TanStack Query + graphql-request + GraphQL Code Generator; only S3 presigned + CDN are REST.
 
@@ -18,19 +18,25 @@ If the boilerplate's client stack differs from the confirmed target stack (e.g. 
 
 ---
 
-You are producing the canonical build documentation for **$ARGUMENTS**. Do not design new UI or write app code — your job is to **read what already exists and distill it into two paired Markdown files** that any engineer or AI agent can build from faithfully.
+You are finalizing the canonical build documentation for **$ARGUMENTS**. Do not design new UI or write app code. Start from Claude Design's exported paired documents, verify every design claim against the export, reconcile engineering claims against the actual repository, and write the reviewed canonical copies to the repository root.
 
 ### Step 1 — Explore before writing
 
-**Where the truth lives.** All product planning and UI/UX for this project was done in **Claude Design** and exported into `design/`. That export — not the boilerplate, not any prior repo — is the origin of the product's look, behavior, and scope. The boilerplate is a **headless recipient**: it contributes backend plumbing only. Read all three subfolders, but with **different authority**:
+**Where the truth lives.** All product planning and UI/UX for this project was done in **Claude Design** and exported into `design/`. That export — not the boilerplate, not any prior repo — is the origin of the product's look, behavior, and scope. The boilerplate contributes reusable implementation architecture. Read the three source folders and the exported paired documents with different authority:
 
 | Folder               | Contents                                              | Authority                                                                  | Feeds                              |
 | -------------------- | ----------------------------------------------------- | -------------------------------------------------------------------------- | ---------------------------------- |
 | `design/prototypes/` | `screen--<name>.html`, `logo--<name>.html`            | **Pixel/behavior contract — ported verbatim**                              | Reference §2, §3, §4               |
 | `design/system/`     | tokens, type scale, color, style moves, motion, voice | **Normative** — the values in §1 must match exactly                        | Reference §1                       |
 | `design/planning/`   | flows, IA, user journeys, scope notes, PRD fragments  | **Context, not contract** — read for understanding; never ported as markup | Reference §5, §6; Task Plan phases |
+| `design/handoff/[PROJECT] Design Reference.md` | Claude Design's UI/behavior summary | **Baseline summary** — preserve verified detail; prototypes win conflicts | Canonical repo-root Reference |
+| `design/handoff/[PROJECT] Design Handoff Plan.md` | Design coverage and sequencing | **Planning input, not engineering plan** — verify all architecture | Canonical repo-root Task Plan |
 
-Read every file in all three. Quote nothing you haven't verified. Then **list the files you're basing this on**, grouped by folder, before writing anything.
+Require exactly one Design Reference and one Design Handoff Plan in
+`design/handoff/`. Read every source file and both handoff documents. Quote
+nothing you have not verified. Then **list the files you're basing this on**,
+grouped by folder, before writing anything. Do not edit the handoff pair; produce
+reconciled canonical documents at the repository root.
 
 **Prototype filename patterns:** prototype files may land as `screen--<name>.html` / `logo--<name>.html` **or** as Design Component exports named `<Screen Name>.dc.html` (e.g. `Video Factory Prototype.dc.html`). Treat every `*.dc.html` file exactly like a `screen--*.html` file — each one is a screen contract subject to the Completeness rule below; never skip a prototype because its filename doesn't match `screen--*`.
 
@@ -40,7 +46,7 @@ Read every file in all three. Quote nothing you haven't verified. Then **list th
 
 **Scope rule:** `design/planning/` may describe screens, flows, or features that were never prototyped. Those are **not** silently dropped and **not** designed by you — list them in a "Planned but not prototyped" callout in File A §6 and give them Task Plan phases marked `⚠ needs design` (blocked on a prototype before implementation).
 
-**Fidelity mandate (read first, applies to everything below):** the goal is a **total, faithful copy** of the provided prototype HTML — same fonts, same layout, same spacing, same colors, same micro-details, same functions/interactions. The implementation must look and behave identically to the prototype; the only thing that changes is that mock/hard-coded data becomes real data from the confirmed **MONGODB_URI**. Engineers should **port the prototype's markup + styles as the starting DOM and wire data into it**, NOT rebuild each screen from a written description. When in doubt, the prototype's literal code wins over any paraphrase — and over anything in `design/planning/` or `design/system/`.
+**Fidelity mandate (read first, applies to everything below):** the goal is a **total, faithful copy** of the provided prototype HTML — same fonts, same layout, same spacing, same colors, same micro-details, same functions/interactions. The implementation must look and behave identically to the prototype; the only thing that changes is that mock/hard-coded data becomes real data from the database configured through the confirmed environment variable. Engineers should **port the prototype's markup + styles as the starting DOM and wire data into it**, NOT rebuild each screen from a written description. When in doubt, the prototype's literal code wins over any paraphrase — and over anything in `design/planning/` or `design/system/`.
 
 **Conflict resolution (strict order):**
 
@@ -50,14 +56,14 @@ Read every file in all three. Quote nothing you haven't verified. Then **list th
 4. Repo conventions (`CLAUDE.md`, `AGENTS.md`, `.skills-source/conventions/`) — win on code structure, naming, and stack patterns. **Never on UI.**
 5. Boilerplate UI — never wins. It is discarded (see Step 2).
 
-Also read: any existing task/plan/PRD files in the repo (reuse their phase structure rather than inventing one). The **logo prototype file** (`logo--*.html` and its chosen option) is the mark's source of truth; it is ported verbatim like any other screen.
+Use the exported Design Reference and Design Handoff Plan as starting documents, not disposable notes. Preserve all verified design detail, terminology, screen mappings, states, and dependencies. Replace or mark only claims disproved by the prototypes, design system, planning sources, or actual repository scan. Also read any other task/plan/PRD files in the repo. The **logo prototype file** (`logo--*.html` and its chosen option) is the mark's source of truth; it is ported verbatim like any other screen.
 
 If the visual direction or scope is ambiguous after reading all three folders, ask me focused questions first.
 
 ### Step 2 — Lock the stack & constraints
 
 Target stack: as confirmed in **Runtime inputs #4**.
-Database connection: the **MONGODB_URI** confirmed in **Runtime inputs #2** — the plan must wire the app to this exact connection string (via env var, never hard-coded) and every data task reads/writes against this database.
+Database connection: use the environment-variable name and sanitized database target confirmed in **Runtime inputs #2**. The plan must wire every data task through that variable, must never contain its value, and must mark configuration as blocked when the variable is unavailable.
 API/data conventions: as confirmed in **Runtime inputs #4** (default: all app data over GraphQL via TanStack Query + graphql-request + GraphQL Code Generator; only S3 presigned + CDN are REST).
 
 Boilerplate: **`github.com/jade-kenneth/app-boilerplate` (main)** — apps: `apps/app-web` (Next.js) · `apps/app-api` (NestJS GraphQL) · `apps/app-mobile` (Expo RN). **Scan the actual repo folder-by-folder** (every app, every subfolder); never describe it from memory — this list is a starting point, not a substitute for reading the tree. It provides: monorepo, GraphQL client+server+codegen, TanStack Query, auth/roles, S3 plumbing, push notifications, DataTable, CI.
@@ -80,27 +86,27 @@ Output the audit as a **"Boilerplate Trim List"** — one keep/adapt/remove tabl
 
 ### Step 2.5 — Seed data (always required)
 
-The plan **must always** include a database seed step that populates the confirmed **MONGODB_URI** so the app is demonstrable on first run — no empty states at demo time. Seed at minimum:
+The plan **must always** include a database seed step that populates the configured non-production database so the app is demonstrable on first run — no empty states at demo time. Seed at minimum:
 
 - **A working login account** (seeded user with known email + password, credentials stated explicitly in the plan) so the app can be signed into immediately.
 - **Initial display data** for every primary screen: the canonical demo entities from §5 (users/handles, posts, ratings, comments, notifications, map pins, etc.) so each screen renders populated on first load.
 
 Make seeding **idempotent and re-runnable** (e.g. an `npm run seed` script), and cross-reference the seeded records to the canonical demo data in File A §5 so both surfaces tell one coherent story.
 
-### Step 3 — Produce TWO paired files
+### Step 3 — Finalize the TWO paired files
 
-**File A — `[PROJECT]Reference.md` (UI & behavior source of truth).** Sections:
+**File A — `[PROJECT]Reference.md` (UI & behavior source of truth).** Begin with the exported `design/handoff/[PROJECT] Design Reference.md`, preserve verified design detail, resolve discrepancies against literal prototype code, and ensure these sections:
 
-0. **What it is** + product stack + an "API convention (read this first)" callout + a "⚠ the `design/` export from Claude Design is the origin of this product's UI, behavior, and scope; the boilerplate contributes backend plumbing only — build on it, don't scaffold from scratch, and discard its UI entirely" directive + the confirmed **MONGODB_URI** connection + a "database is always seeded (login + display data)" note. Include the conflict-resolution order from Step 1.
+0. **What it is** + product stack + an "API convention (read this first)" callout + a "⚠ the `design/` export from Claude Design is the origin of this product's UI, behavior, and scope; the boilerplate contributes backend plumbing only — build on it, don't scaffold from scratch, and discard its UI entirely" directive + the confirmed database environment-variable name and sanitized target (never its secret value) + a "database is always seeded (login + display data)" note. Include the conflict-resolution order from Step 1.
 1. **Design system** — sourced from `design/system/` (and any values only present in the prototypes). Reproduce _exactly_: type scale/weights, a color-token table with hex + usage, the signature style moves (borders, shadows, radii, rotations, badges), key surface/background rendering, an explicit **imagery rule** (placeholders vs. real assets — no hand-drawn art), motion/animation specs, and voice/tone. Where `design/system/` and a prototype disagree, the prototype wins — note the discrepancy inline so I can fix the export.
 2. **Logo & identity** — name the **logo prototype file + chosen option** as the source of truth (e.g. `design/prototypes/logo--options.html` option `1a`); the mark is **ported verbatim from that file** (nested divs, not a re-traced SVG), with its exact variants (hero, horizontal lockup, reversed app-icon tile, small header). List everywhere it is reused (splash, header, onboarding, admin, app icon, notification avatar) and call out which options are NOT chosen.
 3. **Every primary screen** (client) — one subsection per `screen--*.html` file, treated as a **faithful port spec**, not a description. For each screen include: (a) the **source prototype file + element/section** it comes from, so an engineer can copy the real markup; (b) exact layout with real values (font-family/size/weight/line-height, hex colors, px spacing/gaps, borders, shadows, radii, rotations — lifted from the prototype, not approximated); (c) exact copy, verbatim; (d) **every** state, interaction, handler, and animation (nothing "minor" omitted — hover/press/active states, transitions, empty/loading/error states, toggles, moderation blocks, etc.); and (e) a closing **"Production mapping (Phase N)"** paragraph translating the screen into concrete backend/data operations on the stack. End each screen with a one-line **fidelity check**: "matches [prototype file] exactly — fonts, layout, spacing, colors, states, functions."
 4. **Secondary surface(s)** (e.g. admin/desktop) — same treatment.
 5. **Canonical demo data** — shared names/entities so all surfaces tell one coherent story. Draw entities and terminology from `design/planning/` and the copy visible in the prototypes.
 6. **Build order** — condensed phase list mirroring File B, marking boilerplate phases. Derive scope and sequencing from `design/planning/`. Include the **"Planned but not prototyped"** callout listing anything `design/planning/` describes that has no prototype file (these are `⚠ needs design`, blocked before implementation).
-7. **Non-negotiables checklist** — the must-nots and must-haves, including "backend boilerplate reused, boilerplate UI discarded", "UI is a **total faithful copy** of the prototype HTML — exact fonts, layout, spacing, colors, micro-details, and functions; nothing approximated or omitted", "screens are ported from the prototype markup, not rebuilt from prose", "no default/scaffold theme survives", "app wired to the confirmed MONGODB_URI via env var", and "database seeded with a working login + initial display data before any demo".
+7. **Non-negotiables checklist** — the must-nots and must-haves, including "backend boilerplate reused, boilerplate UI discarded", "UI is a **total faithful copy** of the prototype HTML — exact fonts, layout, spacing, colors, micro-details, and functions; nothing approximated or omitted", "screens are ported from the prototype markup, not rebuilt from prose", "no default/scaffold theme survives", "app wired through the confirmed database environment variable without exposing its value", and "database seeded with a working login + initial display data before any demo".
 
-**File B — `[PROJECT] Task Plan.md` (phased implementation).** Open the file with an **"Executor: Codex"** header block stating: work one phase at a time top-to-bottom; check `[ ]` → `[~]` → `[x]` only after that phase's Fidelity QA rows pass; AGENTS.md governs code structure, the Reference governs everything visual; stop and ask on ambiguity rather than inventing. Then a dependency-ordered phase checklist (`[ ]/[~]/[x]`) covering setup (incl. wiring the confirmed **MONGODB_URI**) → auth/accounts → **seed data (login account + initial display data, re-runnable)** → media → core domain → discovery/core loop → social → moderation/safety → notifications → admin → polish/a11y → QA/launch. Include an explicit early phase that (a) executes the **Boilerplate Trim List** from §2.1 (embed the per-app tables in File B) and (b) discards any boilerplate UI and rebuilds screens to match §1–§4 of the reference. For each item use the **real operation names** in the chosen convention (queries/mutations/subscriptions, not generic "endpoints"). Mark boilerplate-provided items **[BP] / verify & reuse**. End with a suggested build order + dependency graph, an **MVP cut**, and the **Fidelity QA checklist** below.
+**File B — `[PROJECT] Task Plan.md` (phased implementation).** Begin with the exported `design/handoff/[PROJECT] Design Handoff Plan.md`, preserve its verified design dependencies and phase intent, replace `VERIFY IN REPO` assumptions using the actual boilerplate scan, and open the file with an **"Executor: Codex"** header block stating: work one phase at a time top-to-bottom; check `[ ]` → `[~]` → `[x]` only after that phase's Fidelity QA rows pass; AGENTS.md governs code structure, the Reference governs everything visual; stop and ask on ambiguity rather than inventing. Then a dependency-ordered phase checklist (`[ ]/[~]/[x]`) covering setup (including wiring the confirmed database environment variable without recording its value) → auth/accounts → **seed data (login account + initial display data, re-runnable)** → media → core domain → discovery/core loop → social → moderation/safety → notifications → admin → polish/a11y → QA/launch. Include an explicit early phase that (a) executes the **Boilerplate Trim List** from §2.1 (embed the per-app tables in File B) and (b) discards any boilerplate UI and rebuilds screens to match §1–§4 of the reference. For each item use the **real operation names** in the chosen convention (queries/mutations/subscriptions, not generic "endpoints"). Mark boilerplate-provided items **[BP] / verify & reuse**. End with a suggested build order + dependency graph, an **MVP cut**, and the **Fidelity QA checklist** below.
 
 **Fidelity QA checklist (append to File B; run per screen before a screen is marked done).** A repeatable, checkbox gate that proves each built screen is a total faithful copy of its prototype — not "close enough". Structure it as one row per screen × these checks, plus a global row:
 
@@ -115,7 +121,7 @@ Make seeding **idempotent and re-runnable** (e.g. an `npm run seed` script), and
 - [ ] **State consistency** — an action updates ALL dependent state as in the prototype (e.g. costs → ledger + budget chip + progress bar; status changes → badges, dots, counts, buttons, event log); edits invalidate stale approvals/QC exactly as the prototype does.
 - [ ] **Guardrails** — caps/limits from the prototype (e.g. budget 90% auto-pause, 100% hard stop, operator override; item caps) hold through every action; nothing spends or proceeds past a cap silently.
 - [ ] **Imagery** — placeholder rule honored; no hand-drawn/invented art; real assets slotted where provided.
-- [ ] **Data** — screen renders populated from seeded MONGODB_URI data (no mock/hard-coded values, no empty states at demo).
+- [ ] **Data** — screen renders populated from the seeded configured database (no mock/hard-coded values, no empty states at demo).
 - [ ] **Side-by-side** — built screen and its `design/prototypes/screen--*.html` compared directly; any visible diff filed and fixed before sign-off.
 
 Global: [ ] boilerplate UI fully removed · [ ] no default/scaffold theme leaking · [ ] seed login works end-to-end · [ ] every screen passes all rows above.
@@ -130,6 +136,7 @@ Global: [ ] boilerplate UI fully removed · [ ] no default/scaffold theme leakin
 ### Output rules
 
 - Plain Markdown, skimmable, tables where they help.
+- Never write secret values, connection strings, passwords, tokens, or credentials into either generated document; refer to environment-variable names and sanitized identifiers only.
 - Every color/copy/interaction detail must come from the actual sources, not invented.
 - Keep both files consistent with each other (same phase numbers, same demo data, same terminology).
 - Write both files to the repo root as `[PROJECT]Reference.md` and `[PROJECT] Task Plan.md`.
@@ -138,6 +145,7 @@ Global: [ ] boilerplate UI fully removed · [ ] no default/scaffold theme leakin
 ### Fallbacks
 
 - If `design/prototypes/` is empty or missing, **stop and tell me** — the export didn't land. Offer to work from the codebase / screenshots instead, but never invent UI.
+- If `design/handoff/[PROJECT] Design Reference.md` or `design/handoff/[PROJECT] Design Handoff Plan.md` is missing, **stop and tell me** to complete the Claude Design export with `/prepare-claude-design`; do not silently create replacement documents from scratch.
 - If `design/system/` is missing, derive §1 from the prototypes themselves (extract the recurring tokens) and tell me it was inferred, so I can export the real system.
 - If `design/planning/` is missing, derive scope and build order from the prototypes alone and flag that phase sequencing is your inference, not mine.
 - For a single-surface product, drop File A §4 and the admin phase.

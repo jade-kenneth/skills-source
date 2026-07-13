@@ -11,6 +11,37 @@ node --check "$ROOT/scripts/build-agents-md.js"
 node --check "$ROOT/scripts/validate-generated-agents.js"
 bash -n "$ROOT/scripts/install-global.sh" "$ROOT/scripts/setup-mcp.sh" "$0"
 
+echo "Validating canonical Claude Design preparation command"
+PREPARE_DESIGN="$ROOT/commands/prepare-claude-design.md"
+DESIGN_PROMPT_POINTER="$ROOT/prompts/claude-design-handoff.md"
+test -f "$PREPARE_DESIGN"
+test -f "$DESIGN_PROMPT_POINTER"
+grep -Fq 'design/CLAUDE_DESIGN_PROMPT.md' "$PREPARE_DESIGN"
+grep -Fq 'design/prototypes/' "$PREPARE_DESIGN"
+grep -Fq 'design/system/' "$PREPARE_DESIGN"
+grep -Fq 'design/planning/' "$PREPARE_DESIGN"
+grep -Fq 'design/handoff/[PROJECT] Design Reference.md' "$PREPARE_DESIGN"
+grep -Fq 'design/handoff/[PROJECT] Design Handoff Plan.md' "$PREPARE_DESIGN"
+grep -Fq 'commands/prepare-claude-design.md' "$DESIGN_PROMPT_POINTER"
+if grep -Eqi 'ask the user to (provide|paste|enter).*(password|api key|token|connection string)' "$PREPARE_DESIGN"; then
+  echo "prepare-claude-design must never request secrets." >&2
+  exit 1
+fi
+
+echo "Validating canonical build-doc finalization command"
+FINALIZE_BUILD_DOCS="$ROOT/commands/finalize-build-docs.md"
+test -f "$FINALIZE_BUILD_DOCS"
+grep -Fq 'design/prototypes/' "$FINALIZE_BUILD_DOCS"
+grep -Fq '[PROJECT]Reference.md' "$FINALIZE_BUILD_DOCS"
+grep -Fq '[PROJECT] Task Plan.md' "$FINALIZE_BUILD_DOCS"
+grep -Fq 'design/handoff/[PROJECT] Design Reference.md' "$FINALIZE_BUILD_DOCS"
+grep -Fq 'design/handoff/[PROJECT] Design Handoff Plan.md' "$FINALIZE_BUILD_DOCS"
+grep -Fq 'Never ask for, print, copy, or write the connection string or credentials.' "$FINALIZE_BUILD_DOCS"
+if grep -Eq 'ask me for the exact connection string|mongodb\+srv://user:pass' "$FINALIZE_BUILD_DOCS"; then
+  echo "finalize-build-docs must never request or embed database credentials." >&2
+  exit 1
+fi
+
 echo "Validating skills"
 while IFS= read -r -d '' skill_file; do
   python3 "$VALIDATOR" "$(dirname "$skill_file")"
@@ -30,6 +61,8 @@ SKILLS_SOURCE_SHA="0000000000000000000000000000000000000000" \
 node "$ROOT/scripts/validate-generated-agents.js" "$TEMP_DIR/AGENTS.md" "$ROOT"
 grep -Fq 'Source revision: `jade-kenneth/skills-source@0000000000000000000000000000000000000000`' \
   "$TEMP_DIR/AGENTS.md"
+grep -Fq 'Automatic project context — no repeated user instruction required' "$TEMP_DIR/AGENTS.md"
+grep -Fq 'The user does not need to repeat' "$TEMP_DIR/AGENTS.md"
 if grep -Fq '.agents/skills/' "$ROOT/conventions/project-structure.md" "$TEMP_DIR/AGENTS.md"; then
   echo "Legacy .agents/skills/ path found; downstream snapshots live in .skills-source/." >&2
   exit 1
