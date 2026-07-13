@@ -58,7 +58,9 @@ notification to the downstream repository. Configure a fine-grained token named
 `Contents: Read and write` permission required by GitHub's repository-dispatch
 endpoint. The downstream workflow is intentionally read-only: it reports the exact
 available SHA and the reviewed update commands instead of executing fetched code
-while holding repository write permissions.
+while holding repository write permissions. The notification workflow fails when
+the required token is missing so a broken downstream connection is not silently
+treated as successful.
 
 ## Validate changes
 

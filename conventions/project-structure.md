@@ -12,7 +12,7 @@
 │   └── app-mobile/             # Expo React Native application
 ├── packages/
 │   └── shared-constants/       # Cross-app types, constants, schemas, and pure logic
-├── .agents/skills/             # Agent tooling and workspace instructions
+├── .skills-source/             # Locked reusable skills and conventions
 ├── AGENTS.md                   # Repository-wide agent rules
 ├── nx.json                     # Nx plugins and task configuration
 ├── package.json                # Root scripts and npm workspaces
@@ -78,7 +78,7 @@ Rules:
 ## Agent instructions
 
 - Treat the root `AGENTS.md` as the repository-wide authority.
-- Use relevant instructions under `.agents/skills/` when the task matches them.
+- Use relevant instructions under `.skills-source/skills/` when the task matches them.
 - Keep reusable guidance product-neutral; do not hardcode paths from another project.
 - Update instructions only when a durable repository rule changes, not for one-off implementation details.
 
