@@ -81,17 +81,18 @@ Claude Code reconciled it with this repository. Your job is to build faithfully.
 ## Automatic project context — no repeated user instruction required
 Before planning, editing, reviewing, or implementing application code:
 
-1. Locate exactly one repository-root file matching \`*Reference.md\` and exactly
-   one matching \`* Task Plan.md\`. Exclude \`design/\`, \`.skills-source/\`,
-   dependency folders, generated output, and nested copies.
-2. Read both files completely. The Reference owns verified UI and behavior; the
-   Task Plan owns dependency order, scope, phase status, and Fidelity QA.
+1. Read the repository-root \`Product Specification.md\` and
+   \`Implementation Plan.md\`. Do not use similarly named files under
+   \`design/\`, \`.skills-source/\`, dependencies, generated output, or nested copies.
+2. The Product Specification owns verified UI and behavior. The Implementation
+   Plan owns dependency order, scope, phase status, and Fidelity QA.
 3. Read this AGENTS.md for code structure, naming, stack patterns, and skills.
-4. If either root document is missing or more than one candidate exists, stop and
-   ask which canonical pair governs the work instead of guessing.
+4. If either canonical root document is missing, stop and ask for
+   \`/finalize-build-docs <project name>\` instead of guessing or using a legacy file.
 
-The user does not need to repeat “read AGENTS.md, the Reference, and the Task
-Plan.” Treat that context load as the default start of every application task.
+The user does not need to repeat “read AGENTS.md, Product Specification.md, and
+Implementation Plan.md.” Treat that context load as the default start of every
+application task.
 For an implementation request, follow the phase the user names; otherwise resume
 the single \`[~]\` phase, or start the first unblocked \`[ ]\` phase when none is in
 progress. Check \`[ ]\` → \`[~]\` → \`[x]\` only after the phase's QA rows pass.
@@ -100,11 +101,11 @@ progress. Check \`[ ]\` → \`[~]\` → \`[x]\` only after the phase's QA rows p
 - Conflict order: design/prototypes > design/system > design/planning >
   this file (code structure ONLY) > boilerplate UI (never wins, always discarded).
 - Fidelity: a screen is done only when it passes every row of the Fidelity QA
-  checklist at the end of the Task Plan. "Close enough" is a failure.
+  checklist at the end of the Implementation Plan. "Close enough" is a failure.
 - Reuse-not-rebuild: auth, authz, GraphQL client/server, codegen, S3, CI are
   provided ([BP]) — extend the existing primitive, never re-implement it.
 - Do not mark a phase [x] without running its QA rows. Do not skip ahead.
-- If the Reference and this file disagree on anything visual, the Reference wins.
+- If the Product Specification and this file disagree on anything visual, the Product Specification wins.
 - If something is genuinely ambiguous, stop and ask instead of inventing.
 
 ## How to use the skill index

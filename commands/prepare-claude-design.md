@@ -9,7 +9,7 @@ argument-hint: [project name]
 
 Use this command before `/finalize-build-docs`. It prepares the prompt that creates the
 product's design source; it does not design screens, write application code, or
-generate the Reference and Task Plan itself.
+generate `Product Specification.md` or `Implementation Plan.md` itself.
 
 ## 1. Resolve the product brief
 
@@ -158,15 +158,15 @@ gaps. Prototype code remains the authority if its summary differs.
 
 The **Design Handoff Plan** must describe screen and flow coverage, design
 dependencies, the MVP boundary, unresolved design work, and per-screen Fidelity
-QA. It is not the engineering Task Plan. Repository structure, backend operations,
+QA. It is not the engineering Implementation Plan. Repository structure, backend operations,
 integrations, and reuse/removal decisions must be labeled `VERIFY IN REPO`
 because Claude Design does not own the application architecture.
 
 Both files must link to each other. The Design Reference owns look and
 interaction; the Design Handoff Plan owns design-derived sequencing. The later
 `/finalize-build-docs` pass reconciles them against the actual boilerplate and writes
-the canonical repository-root `[PROJECT]Reference.md` and
-`[PROJECT] Task Plan.md` without changing the untouched design export.
+the canonical repository-root `Product Specification.md` and
+`Implementation Plan.md` without changing the untouched design export.
 
 ### Export contract
 
