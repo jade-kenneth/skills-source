@@ -61,6 +61,24 @@ design, and import the export under `design/prototypes/`, `design/system/`, and
 `prompts/claude-design-handoff.md`; the full workflow remains canonical under
 `commands/`.
 
+## Adapt an existing Claude Design export
+
+If screens were already designed before the current handoff contract—either
+still inside Claude Design or already exported—run:
+
+```text
+/adapt-design-export <project name>
+```
+
+It writes `design/CLAUDE_DESIGN_ADAPTATION_PROMPT.md`. When no export exists
+yet, the prompt makes Claude Design inventory and correct its live project before
+the first export. When files were already exported, it also inventories those
+files. Paste the prompt into the existing Claude Design project so it can add
+platform and production-boundary metadata, split combined screen exports when
+needed, and refresh the paired handoff documents without redesigning the product.
+Import the corrected result, run
+`npm run design:validate`, then use `/finalize-build-docs <project name>`.
+
 ## Finalize the repository build docs
 
 After a product repository contains its Claude Design export under

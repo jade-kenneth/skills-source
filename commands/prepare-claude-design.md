@@ -11,6 +11,10 @@ Use this command before `/finalize-build-docs`. It prepares the prompt that crea
 product's design source; it does not design screens, write application code, or
 generate `Product Specification.md` or `Implementation Plan.md` itself.
 
+If usable screens already exist under `design/prototypes/`, do not overwrite them
+or start a replacement design. Run `/adapt-design-export <project name>` instead
+to prepare a compatibility pass for the existing Claude Design project.
+
 ## 1. Resolve the product brief
 
 If the project name is empty, ask for it. Then gather only missing information,
