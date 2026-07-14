@@ -77,6 +77,7 @@ grep -Fq 'data-app-root' "$FINALIZE_BUILD_DOCS"
 grep -Fq '/adapt-design-export <project name>' "$FINALIZE_BUILD_DOCS"
 grep -Fq '/sync-build-docs <project name>' "$FINALIZE_BUILD_DOCS"
 grep -Fq '"status": "final"' "$FINALIZE_BUILD_DOCS"
+grep -Fq 'npm run design:validate-final' "$FINALIZE_BUILD_DOCS"
 grep -Fq 'must not ship prototype HTML in a WebView' "$ROOT/scripts/build-agents-md.js"
 grep -Fq 'Never ask for, print, copy, or write the connection string or credentials.' "$FINALIZE_BUILD_DOCS"
 if grep -Fq "port the prototype's markup + styles as the starting DOM" "$FINALIZE_BUILD_DOCS"; then
