@@ -14,7 +14,8 @@ argument-hint: [project name]
 
 ## Final release requirement
 
-Run `npm run design:validate` first. Require `design/design-release.json` with
+Run `npm run design:validate-final` first. This accepts only an unchanged,
+already synchronized final release. Require `design/design-release.json` with
 `"status": "final"`. Required MVP scope must have no `stillInDesign`,
 `planned`, `in-design`, or `revision-required` entries. If the release is
 incremental or required design remains unfinished, stop and run
