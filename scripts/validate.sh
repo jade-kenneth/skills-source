@@ -27,6 +27,8 @@ grep -Fq 'design/handoff/[PROJECT] Design Reference.md' "$PREPARE_DESIGN"
 grep -Fq 'design/handoff/[PROJECT] Design Handoff Plan.md' "$PREPARE_DESIGN"
 grep -Fq 'commands/prepare-claude-design.md' "$DESIGN_PROMPT_POINTER"
 grep -Fq '/adapt-design-export <project name>' "$PREPARE_DESIGN"
+grep -Fq 'design/design-release.json' "$PREPARE_DESIGN"
+grep -Fq '/sync-build-docs <project name>' "$PREPARE_DESIGN"
 if grep -Eqi 'ask the user to (provide|paste|enter).*(password|api key|token|connection string)' "$PREPARE_DESIGN"; then
   echo "prepare-claude-design must never request secrets." >&2
   exit 1
@@ -43,10 +45,24 @@ grep -Fq 'data-handoff="presentation-only"' "$ADAPT_DESIGN"
 grep -Fq 'design/handoff/[PROJECT] Design Reference.md' "$ADAPT_DESIGN"
 grep -Fq 'design/handoff/[PROJECT] Design Handoff Plan.md' "$ADAPT_DESIGN"
 grep -Fq '/finalize-build-docs <project name>' "$ADAPT_DESIGN"
+grep -Fq 'design/design-release.json' "$ADAPT_DESIGN"
+grep -Fq '/sync-build-docs <project name>' "$ADAPT_DESIGN"
 if grep -Eqi 'ask (the user|me) (to provide|for|to paste|to enter).*(password|api key|token|connection string)' "$ADAPT_DESIGN"; then
   echo "adapt-design-export must never request secrets." >&2
   exit 1
 fi
+
+echo "Validating incremental build-doc synchronization command"
+SYNC_BUILD_DOCS="$ROOT/commands/sync-build-docs.md"
+test -f "$SYNC_BUILD_DOCS"
+grep -Fq 'design/design-release.json' "$SYNC_BUILD_DOCS"
+grep -Fq 'design/design-sync.lock.json' "$SYNC_BUILD_DOCS"
+grep -Fq 'readyForBuild' "$SYNC_BUILD_DOCS"
+grep -Fq 'npm run design:validate' "$SYNC_BUILD_DOCS"
+grep -Fq 'npm run design:ack' "$SYNC_BUILD_DOCS"
+grep -Fq 'Product Specification.md' "$SYNC_BUILD_DOCS"
+grep -Fq 'Implementation Plan.md' "$SYNC_BUILD_DOCS"
+grep -Fq '/finalize-build-docs <project name>' "$SYNC_BUILD_DOCS"
 
 echo "Validating canonical build-doc finalization command"
 FINALIZE_BUILD_DOCS="$ROOT/commands/finalize-build-docs.md"
@@ -59,6 +75,8 @@ grep -Fq 'design/handoff/[PROJECT] Design Handoff Plan.md' "$FINALIZE_BUILD_DOCS
 grep -Fq 'Platform-aware fidelity mandate' "$FINALIZE_BUILD_DOCS"
 grep -Fq 'data-app-root' "$FINALIZE_BUILD_DOCS"
 grep -Fq '/adapt-design-export <project name>' "$FINALIZE_BUILD_DOCS"
+grep -Fq '/sync-build-docs <project name>' "$FINALIZE_BUILD_DOCS"
+grep -Fq '"status": "final"' "$FINALIZE_BUILD_DOCS"
 grep -Fq 'must not ship prototype HTML in a WebView' "$ROOT/scripts/build-agents-md.js"
 grep -Fq 'Never ask for, print, copy, or write the connection string or credentials.' "$FINALIZE_BUILD_DOCS"
 if grep -Fq "port the prototype's markup + styles as the starting DOM" "$FINALIZE_BUILD_DOCS"; then
