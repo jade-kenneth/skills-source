@@ -215,6 +215,47 @@ design/
     └── [PROJECT] Design Handoff Plan.md
 ```
 
+### Incremental design release contract
+
+Do not wait for the entire app design before the first export. As soon as the
+design foundation and at least one complete end-to-end MVP slice are coherent,
+export Design Batch 1 and continue designing later scope.
+
+Every export must create or update `design/design-release.json` using this schema:
+
+```json
+{
+  "schemaVersion": 1,
+  "project": "[PROJECT]",
+  "batch": 1,
+  "revision": 0,
+  "previousBatch": 0,
+  "releaseId": "design-batch-001",
+  "status": "incremental",
+  "readyForBuild": [
+    {
+      "screen": "Sign in",
+      "prototype": "prototypes/Sign In.dc.html",
+      "change": "added"
+    }
+  ],
+  "stillInDesign": [],
+  "planned": [],
+  "removedOrSuperseded": [],
+  "notes": "First buildable design slice."
+}
+```
+
+Batch numbers advance when new buildable scope is released. Corrections to the
+same scope increment `revision`. Keep prototype filenames stable. Claude Design
+must never create or edit `design/design-sync.lock.json`; the repository writes
+that file only after `/sync-build-docs` succeeds.
+
+`design/planning/screen-inventory.md` must include each screen's prototype,
+surface, design status, first-ready batch, and last-updated batch. Use only:
+`planned`, `in-design`, `ready-for-build`, `revision-required`, or
+`superseded`.
+
 Require a final export report containing:
 
 - all files grouped by folder;
@@ -246,11 +287,13 @@ After writing `design/CLAUDE_DESIGN_PROMPT.md`:
 npm run design:validate
 ```
 
-Then, in Claude Code:
+Then, in Claude Code for every design release:
 
 ```text
-/finalize-build-docs <project name>
+/sync-build-docs <project name>
 ```
 
-Do not run `/finalize-build-docs` until the prototype export exists and validation
-passes.
+Use `/finalize-build-docs <project name>` only after the final MVP design release.
+
+Do not wait for every screen before the first sync. Sync only validated releases,
+and finalize only after the required MVP design is complete.
