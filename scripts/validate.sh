@@ -26,8 +26,25 @@ grep -Fq 'data-handoff="presentation-only"' "$PREPARE_DESIGN"
 grep -Fq 'design/handoff/[PROJECT] Design Reference.md' "$PREPARE_DESIGN"
 grep -Fq 'design/handoff/[PROJECT] Design Handoff Plan.md' "$PREPARE_DESIGN"
 grep -Fq 'commands/prepare-claude-design.md' "$DESIGN_PROMPT_POINTER"
+grep -Fq '/adapt-design-export <project name>' "$PREPARE_DESIGN"
 if grep -Eqi 'ask the user to (provide|paste|enter).*(password|api key|token|connection string)' "$PREPARE_DESIGN"; then
   echo "prepare-claude-design must never request secrets." >&2
+  exit 1
+fi
+
+echo "Validating existing Claude Design adaptation command"
+ADAPT_DESIGN="$ROOT/commands/adapt-design-export.md"
+test -f "$ADAPT_DESIGN"
+grep -Fq 'design/CLAUDE_DESIGN_ADAPTATION_PROMPT.md' "$ADAPT_DESIGN"
+grep -Fq 'data-prototype-surface="web"' "$ADAPT_DESIGN"
+grep -Fq 'data-app-root' "$ADAPT_DESIGN"
+grep -Fq 'data-preview-shell' "$ADAPT_DESIGN"
+grep -Fq 'data-handoff="presentation-only"' "$ADAPT_DESIGN"
+grep -Fq 'design/handoff/[PROJECT] Design Reference.md' "$ADAPT_DESIGN"
+grep -Fq 'design/handoff/[PROJECT] Design Handoff Plan.md' "$ADAPT_DESIGN"
+grep -Fq '/finalize-build-docs <project name>' "$ADAPT_DESIGN"
+if grep -Eqi 'ask (the user|me) (to provide|for|to paste|to enter).*(password|api key|token|connection string)' "$ADAPT_DESIGN"; then
+  echo "adapt-design-export must never request secrets." >&2
   exit 1
 fi
 
@@ -41,6 +58,7 @@ grep -Fq 'design/handoff/[PROJECT] Design Reference.md' "$FINALIZE_BUILD_DOCS"
 grep -Fq 'design/handoff/[PROJECT] Design Handoff Plan.md' "$FINALIZE_BUILD_DOCS"
 grep -Fq 'Platform-aware fidelity mandate' "$FINALIZE_BUILD_DOCS"
 grep -Fq 'data-app-root' "$FINALIZE_BUILD_DOCS"
+grep -Fq '/adapt-design-export <project name>' "$FINALIZE_BUILD_DOCS"
 grep -Fq 'must not ship prototype HTML in a WebView' "$ROOT/scripts/build-agents-md.js"
 grep -Fq 'Never ask for, print, copy, or write the connection string or credentials.' "$FINALIZE_BUILD_DOCS"
 if grep -Fq "port the prototype's markup + styles as the starting DOM" "$FINALIZE_BUILD_DOCS"; then
