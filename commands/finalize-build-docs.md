@@ -148,8 +148,8 @@ Global: [ ] boilerplate UI fully removed · [ ] no default/scaffold theme leakin
 ### Fallbacks
 
 - If `design/prototypes/` is empty or missing, **stop and tell me** — the export didn't land. Offer to work from the codebase / screenshots instead, but never invent UI.
-- If a screen prototype lacks exactly one supported `data-prototype-surface` or exactly one `data-app-root`, **stop and return it to Claude Design**. Do not guess which phone frame, preview canvas, or subtree belongs in production.
-- If `design/handoff/[PROJECT] Design Reference.md` or `design/handoff/[PROJECT] Design Handoff Plan.md` is missing, **stop and tell me** to complete the Claude Design export with `/prepare-claude-design`; do not silently create replacement documents from scratch.
+- If a screen prototype lacks exactly one supported `data-prototype-surface` or exactly one `data-app-root`, **stop and run `/adapt-design-export <project name>`** to prepare the compatibility prompt for the existing Claude Design project. Do not guess which phone frame, preview canvas, or subtree belongs in production.
+- If `design/handoff/[PROJECT] Design Reference.md` or `design/handoff/[PROJECT] Design Handoff Plan.md` is missing, **stop and tell me** to complete the export. Use `/adapt-design-export <project name>` when prototypes already exist, or `/prepare-claude-design <project name>` when design has not started; do not silently create replacement documents from scratch.
 - If `design/system/` is missing, derive §1 from the prototypes themselves (extract the recurring tokens) and tell me it was inferred, so I can export the real system.
 - If `design/planning/` is missing, derive scope and build order from the prototypes alone and flag that phase sequencing is your inference, not mine.
 - For a single-surface product, drop File A §4 and the admin phase.
