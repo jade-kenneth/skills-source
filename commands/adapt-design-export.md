@@ -7,19 +7,30 @@ argument-hint: [project name]
 
 **Project name:** $ARGUMENTS
 
-Use this command when Claude Design screens already exist under
-`design/prototypes/` but were created before the current export contract. This
-workflow prepares a compatibility prompt for the existing Claude Design project.
-It does not redesign screens, edit prototype files, write application code, or
-generate the repository-root build documents.
+Use this command when screens already exist in a Claude Design project, whether
+they are still only inside Claude Design or have already been exported under
+`design/prototypes/`. This workflow prepares a compatibility prompt for that
+existing Claude Design project. It does not redesign screens, edit prototype
+files, write application code, or generate the repository-root build documents.
 
-## 1. Inspect the existing export
+## 1. Resolve where the existing design lives
 
-If the project name is empty, ask for it. Confirm that `design/prototypes/`
-contains at least one `*.dc.html`, `screen--*.html`, or logo prototype. If it
-does not, stop and use `/prepare-claude-design <project name>` for a new design.
+If the project name is empty, ask for it. Then choose one mode:
 
-Read all available files under:
+- **Still in Claude Design:** the screens exist in the current Claude Design
+  project but have not been exported. Confirm this with the user, read the
+  available product brief, brand files, requirements, and planning documents in
+  the repository, and generate the adaptation prompt before the first export.
+  The prompt must tell Claude Design to inventory its current screens, states,
+  flows, assets, and platform targets before changing export structure.
+- **Already exported:** `design/prototypes/` contains at least one
+  `*.dc.html`, `screen--*.html`, or logo prototype. Inspect those files and
+  tailor the adaptation prompt to the observed export.
+
+If there is no existing Claude Design project and no existing export, stop and
+use `/prepare-claude-design <project name>` for a new design.
+
+For an existing export, read all available files under:
 
 - `design/prototypes/`
 - `design/system/`
@@ -27,14 +38,17 @@ Read all available files under:
 - `design/handoff/`
 - `design/assets/`
 
-Also read any product brief or design notes that explain the existing work.
-Inventory every screen, filename, intended target surface, existing device or
-browser frame, presentation canvas, annotation, and current handoff metadata.
-Record whether a file combines multiple screens.
+In either mode, also read any product brief or design notes that explain the
+existing work. When an export exists, inventory every screen, filename, intended
+target surface, existing device or browser frame, presentation canvas,
+annotation, and current handoff metadata, including whether a file combines
+multiple screens. When the design is still only in Claude Design, put this
+inventory task into the generated prompt so Claude Design performs it against
+its live project before adapting the export.
 
-Ask only focused questions when the intended target surface or the boundary of
-the actual shipped application UI cannot be determined from the export. Never
-guess the app root. Never request passwords, API keys, tokens, connection
+Ask only focused questions when the intended target surface cannot be determined
+from repository context. Never guess the app root; when it is visible only in
+Claude Design, require Claude Design to identify and report it. Never request passwords, API keys, tokens, connection
 strings, private production data, or other secrets.
 
 ## 2. Write the adaptation prompt
@@ -50,7 +64,10 @@ exactly. Explicitly forbid redesigning, restyling, simplifying, changing copy,
 changing flows, removing states, changing interactions, or inventing missing
 product behavior merely to satisfy the file contract.
 
-Include the observed inventory and require these compatibility changes:
+Include the observed repository/export inventory. If the screens are still only
+in Claude Design, explicitly state that Claude Design must first list its current
+screen inventory and report any ambiguity without changing the design. Then
+require these compatibility changes:
 
 1. Export one screen or materially distinct surface per `*.dc.html` or
    `screen--*.html` file. Split combined files without changing the designs.
@@ -116,7 +133,8 @@ After writing `design/CLAUDE_DESIGN_ADAPTATION_PROMPT.md`:
 1. Open the file for the user.
 2. Tell them to paste its full contents into the existing Claude Design project,
    not a new blank design.
-3. Tell them to re-export and replace the corresponding files under `design/`.
+3. Tell them to export the corrected project into `design/` for the first time,
+   or replace the corresponding files there when an older export exists.
 4. Run:
 
 ```bash
