@@ -5,7 +5,26 @@ argument-hint: [project name]
 
 # /finalize-build-docs — finalize the repository build documents
 
+> Final completeness gate. For the first or any partial design release, use
+> `/sync-build-docs <project name>` so Codex can start ready slices while Claude
+> Design continues later screens.
+
+
 **Project name:** $ARGUMENTS
+
+## Final release requirement
+
+Run `npm run design:validate-final` first. This accepts only an unchanged,
+already synchronized final release. Require `design/design-release.json` with
+`"status": "final"`. Required MVP scope must have no `stillInDesign`,
+`planned`, `in-design`, or `revision-required` entries. If the release is
+incremental or required design remains unfinished, stop and run
+`/sync-build-docs <project name>` instead.
+
+Read `design/design-sync.lock.json`. Reconcile the final release if it is newer
+than the lock, then run `npm run design:ack` only after both root documents are
+consistent. Preserve earlier synchronized phase history and completed engineering
+decisions.
 
 ## Runtime inputs (resolve these FIRST, before any writing)
 
@@ -147,6 +166,7 @@ Global: [ ] boilerplate UI fully removed · [ ] no default/scaffold theme leakin
 
 ### Fallbacks
 
+- If `design/design-release.json` is missing, incremental, or still lists unfinished required MVP scope, **stop and run `/sync-build-docs <project name>`**. Finalization is not the first-build gate.
 - If `design/prototypes/` is empty or missing, **stop and tell me** — the export didn't land. Offer to work from the codebase / screenshots instead, but never invent UI.
 - If a screen prototype lacks exactly one supported `data-prototype-surface` or exactly one `data-app-root`, **stop and run `/adapt-design-export <project name>`** to prepare the compatibility prompt for the existing Claude Design project. Do not guess which phone frame, preview canvas, or subtree belongs in production.
 - If `design/handoff/[PROJECT] Design Reference.md` or `design/handoff/[PROJECT] Design Handoff Plan.md` is missing, **stop and tell me** to complete the export. Use `/adapt-design-export <project name>` when prototypes already exist, or `/prepare-claude-design <project name>` when design has not started; do not silently create replacement documents from scratch.

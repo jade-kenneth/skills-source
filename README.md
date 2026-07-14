@@ -76,14 +76,30 @@ the first export. When files were already exported, it also inventories those
 files. Paste the prompt into the existing Claude Design project so it can add
 platform and production-boundary metadata, split combined screen exports when
 needed, and refresh the paired handoff documents without redesigning the product.
-Import the corrected result, run
-`npm run design:validate`, then use `/finalize-build-docs <project name>`.
+Import the corrected result, run `npm run design:validate`, then use
+`/sync-build-docs <project name>` for each release. Use
+`/finalize-build-docs <project name>` only for the final completeness gate.
+
+## Synchronize incremental design releases
+
+Claude Design does not need to finish the whole app before implementation starts.
+Every export declares its batch and revision in `design/design-release.json`.
+After importing and validating a release, run:
+
+```text
+/sync-build-docs <project name>
+```
+
+The command creates or updates the same root `Product Specification.md` and
+`Implementation Plan.md`, unblocks only `readyForBuild` screens, preserves
+existing phase status, writes a batch sync report, and acknowledges the release
+through `design/design-sync.lock.json`. Claude Design can continue later screens
+while Codex implements already released slices.
 
 ## Finalize the repository build docs
 
-After a product repository contains its Claude Design export under
-`design/prototypes/`, `design/system/`, and `design/planning/`, run the
-canonical command in Claude Code:
+After all required MVP design releases have been synchronized and Claude Design
+marks the release manifest as final, run the canonical command in Claude Code:
 
 ```text
 /finalize-build-docs <project name>

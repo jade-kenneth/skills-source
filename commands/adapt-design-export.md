@@ -113,6 +113,47 @@ Claude Design must not create or replace root `Product Specification.md` or
 `Implementation Plan.md`; `/finalize-build-docs` creates those after repository
 verification.
 
+### Incremental design release contract
+
+Do not wait for the entire app design before the first export. As soon as the
+design foundation and at least one complete end-to-end MVP slice are coherent,
+export Design Batch 1 and continue designing later scope.
+
+Every export must create or update `design/design-release.json` using this schema:
+
+```json
+{
+  "schemaVersion": 1,
+  "project": "[PROJECT]",
+  "batch": 1,
+  "revision": 0,
+  "previousBatch": 0,
+  "releaseId": "design-batch-001",
+  "status": "incremental",
+  "readyForBuild": [
+    {
+      "screen": "Sign in",
+      "prototype": "prototypes/Sign In.dc.html",
+      "change": "added"
+    }
+  ],
+  "stillInDesign": [],
+  "planned": [],
+  "removedOrSuperseded": [],
+  "notes": "First buildable design slice."
+}
+```
+
+Batch numbers advance when new buildable scope is released. Corrections to the
+same scope increment `revision`. Keep prototype filenames stable. Claude Design
+must never create or edit `design/design-sync.lock.json`; the repository writes
+that file only after `/sync-build-docs` succeeds.
+
+`design/planning/screen-inventory.md` must include each screen's prototype,
+surface, design status, first-ready batch, and last-updated batch. Use only:
+`planned`, `in-design`, `ready-for-build`, `revision-required`, or
+`superseded`.
+
 End the generated prompt by requiring an adaptation report with:
 
 - every file changed or created;
@@ -144,8 +185,10 @@ npm run design:validate
 5. After validation passes, run in Claude Code:
 
 ```text
-/finalize-build-docs <project name>
+/sync-build-docs <project name>
 ```
 
-Do not finalize build documentation until the adapted export is present and
-validation passes.
+6. Use `/finalize-build-docs <project name>` only for the final complete MVP design.
+
+Do not wait for the whole app before syncing the first buildable batch. Finalize
+only after the required MVP design is complete.
