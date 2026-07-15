@@ -1,125 +1,150 @@
 ---
-description: Adapt an existing Claude Design export to the platform-aware app-boilerplate handoff contract without redesigning it
+description: Audit, rehabilitate, and adapt an existing Claude Design project to the platform-aware app-boilerplate handoff contract without discarding valid design decisions
 argument-hint: [project name]
 ---
 
-# /adapt-design-export — adapt an existing Claude Design export
+# /adapt-design-export — rehabilitate an existing Claude Design project
 
 **Project name:** $ARGUMENTS
 
-Use this command when screens already exist in a Claude Design project, whether
-they are still only inside Claude Design or have already been exported under
-`design/prototypes/`. This workflow prepares a compatibility prompt for that
-existing Claude Design project. It does not redesign screens, edit prototype
-files, write application code, or generate the repository-root build documents.
+Use this command when screens already exist in Claude Design or under
+`design/prototypes/`, including older work that is incomplete, inconsistent, or
+does not follow the current handoff contract. Preserve valid product and visual
+decisions, but do not preserve missing states, broken flows, accessibility
+failures, inconsistent components, incorrect platform behavior, or incomplete
+required scope merely because they exist in the old design.
 
-## 1. Resolve where the existing design lives
+This workflow writes a self-contained prompt for the existing Claude Design
+project. It does not directly edit prototypes, application code, or the
+repository-root Product Specification and Implementation Plan.
 
-If the project name is empty, ask for it. Then choose one mode:
+## 1. Resolve the existing design and product evidence
 
-- **Still in Claude Design:** the screens exist in the current Claude Design
-  project but have not been exported. Confirm this with the user, read the
-  available product brief, brand files, requirements, and planning documents in
-  the repository, and generate the adaptation prompt before the first export.
-  The prompt must tell Claude Design to inventory its current screens, states,
-  flows, assets, and platform targets before changing export structure.
-- **Already exported:** `design/prototypes/` contains at least one
-  `*.dc.html`, `screen--*.html`, or logo prototype. Inspect those files and
-  tailor the adaptation prompt to the observed export.
+If the project name is empty, ask for it. Choose one mode:
 
-If there is no existing Claude Design project and no existing export, stop and
-use `/prepare-claude-design <project name>` for a new design.
+- **Still in Claude Design:** confirm that the user has an existing Claude Design
+  project. Read repository product briefs, brand files, requirements, planning
+  notes, and other approved scope. Require Claude Design to inventory the live
+  project before modifying its export.
+- **Already exported:** inspect every available file under
+  `design/prototypes/`, `design/system/`, `design/planning/`,
+  `design/handoff/`, and `design/assets/`. Inventory screens, states, flows,
+  assets, target surfaces, filenames, combined screens, preview shells,
+  annotations, and existing handoff metadata.
 
-For an existing export, read all available files under:
+If neither an existing design project nor an export exists, stop and use
+`/prepare-claude-design <project name>`.
 
-- `design/prototypes/`
-- `design/system/`
-- `design/planning/`
-- `design/handoff/`
-- `design/assets/`
+Treat approved product requirements and existing coherent flows as evidence.
+Do not infer business rules from generic design conventions. Ask focused
+questions only when an unresolved decision would materially change product
+behavior. Never request secrets or private production data.
 
-In either mode, also read any product brief or design notes that explain the
-existing work. When an export exists, inventory every screen, filename, intended
-target surface, existing device or browser frame, presentation canvas,
-annotation, and current handoff metadata, including whether a file combines
-multiple screens. When the design is still only in Claude Design, put this
-inventory task into the generated prompt so Claude Design performs it against
-its live project before adapting the export.
+## 2. Require a design standards and completeness audit
 
-Ask only focused questions when the intended target surface cannot be determined
-from repository context. Never guess the app root; when it is visible only in
-Claude Design, require Claude Design to identify and report it. Never request passwords, API keys, tokens, connection
-strings, private production data, or other secrets.
+The generated prompt must require Claude Design to audit the existing project
+before producing a release. Cover:
 
-## 2. Write the adaptation prompt
+- required screens and every user-flow step;
+- loading, empty, error, success, validation, disabled, permission, and
+  destructive-action states where applicable;
+- navigation continuity, back/cancel behavior, recovery paths, and edge cases;
+- mobile safe areas, keyboard behavior, scrolling, orientation, gestures,
+  offline handling, and relevant iOS/Android differences;
+- web responsive breakpoints, overflow, focus, keyboard navigation, and
+  accessible interaction;
+- component, typography, spacing, color, icon, motion, and copy consistency;
+- accessibility intent, touch targets, contrast, semantic labels, and focus
+  order;
+- duplicate, combined, obsolete, or contradictory screens.
 
-Create `design/CLAUDE_DESIGN_ADAPTATION_PROMPT.md`. If it already exists, show
-the proposed changes and ask before replacing it. Do not directly rewrite,
-move, restyle, or split the prototypes; Claude Design owns those source changes.
+Require `design/planning/design-gap-audit.md` with every screen or gap assigned
+exactly one classification:
 
-The generated file must be a self-contained prompt addressed to Claude Design
-and tailored to the inspected export. It must tell Claude Design to update the
-existing design project and re-export it while preserving the current design
-exactly. Explicitly forbid redesigning, restyling, simplifying, changing copy,
-changing flows, removing states, changing interactions, or inventing missing
-product behavior merely to satisfy the file contract.
+- **ready** — complete and compliant; eligible for `readyForBuild`;
+- **needs-correction** — exists but must be repaired before release;
+- **missing-defined** — absent, but approved requirements define enough behavior
+  for Claude Design to create it;
+- **ambiguous** — requires a product or business decision; ask the user and keep
+  it blocked;
+- **planned** — valid scope intentionally deferred to a later batch;
+- **superseded** — obsolete and excluded from implementation.
 
-Include the observed repository/export inventory. If the screens are still only
-in Claude Design, explicitly state that Claude Design must first list its current
-screen inventory and report any ambiguity without changing the design. Then
-require these compatibility changes:
+Each row must include evidence, required action, affected flow, target surface,
+and intended release batch when known. Do not mark a screen ready merely because
+an HTML file exists.
 
-1. Export one screen or materially distinct surface per `*.dc.html` or
-   `screen--*.html` file. Split combined files without changing the designs.
-2. Declare exactly one supported target surface on every screen prototype:
-   `data-prototype-surface="web"`, `"mobile"`, `"tablet"`, or
-   `"desktop"`.
-3. Wrap exactly the UI that belongs in the shipped application with one
-   `data-app-root`.
-4. Mark any device frame, browser frame, centered review canvas, or other preview
-   container with `data-preview-shell`. It must remain outside the production
-   boundary.
-5. Keep labels, measurement notes, alternate-device examples, annotations, and
-   other presentation material outside `data-app-root` and mark them
-   `data-handoff="presentation-only"`. A presentation-only element must never
-   contain the app root.
-6. Preserve the current visual and behavioral result: layout, typography, color,
-   spacing, assets, copy, states, navigation, controls, motion, responsive
-   behavior, and accessibility intent.
+Claude Design may repair `needs-correction` items and design
+`missing-defined` items by following the approved requirements and the
+project's established design system. It must not invent behavior for
+`ambiguous` items. Ask the user only for those unresolved decisions, record the
+answer, then continue.
 
-For mobile designs, require fixed reference dimensions to live on the preview
-shell, never on the application root. Require the handoff to document the
-reference viewport, tested size range, safe-area ownership, status/navigation
-bars, keyboard behavior, scrolling boundaries, orientation, gestures, and
-relevant iOS/Android differences. State that exported HTML is a visual and
-behavioral contract only: production Expo/React Native must use native
-primitives, not a WebView or copied DOM/CSS.
+## 3. Write the rehabilitation prompt
 
-Require Claude Design to preserve and refresh the existing system and planning
-documents where present. It must export exactly these project-named handoff
-documents:
+Create `design/CLAUDE_DESIGN_ADAPTATION_PROMPT.md`. If it exists, show proposed
+changes and ask before replacing it. Address the prompt to the same existing
+Claude Design project, never a new blank project.
+
+The prompt must:
+
+1. Preserve valid layout, branding, copy, flows, interactions, states, and assets.
+2. Correct standards failures and complete approved missing scope without
+   restyling unrelated, already-valid work.
+3. Report before/after changes and cite the requirement or standard that
+   justified every intentional design change.
+4. Stop and ask for clarification instead of inventing undefined business rules.
+5. Export one screen or materially distinct surface per `*.dc.html` or
+   `screen--*.html`, splitting combined exports without changing their intended
+   behavior.
+6. Declare exactly one `data-prototype-surface="web"`, `"mobile"`,
+   `"tablet"`, or `"desktop"` per screen.
+7. Wrap exactly the shipped application UI with one `data-app-root`.
+8. Keep device/browser frames and review canvases outside the app root and mark
+   them `data-preview-shell`.
+9. Keep annotations, measurements, alternate examples, and other presentation
+   content outside the app root and mark them
+   `data-handoff="presentation-only"`.
+
+For mobile, fixed reference dimensions belong on the preview shell, never the
+application root. Document reference viewport, tested size range, safe-area
+ownership, system bars, keyboard, scrolling, orientation, gestures, and
+platform differences. Exported HTML is a visual and behavioral contract;
+production Expo/React Native uses native primitives, not WebView or copied
+DOM/CSS.
+
+For web, document supported breakpoints, responsive reflow, overflow, focus and
+keyboard behavior, and accessible semantics. Do not treat a fixed presentation
+canvas as the production viewport.
+
+## 4. Refresh the handoff contract
+
+Require Claude Design to preserve and refresh system, planning, and asset
+documents, and export exactly:
 
 ```text
 design/handoff/[PROJECT] Design Reference.md
 design/handoff/[PROJECT] Design Handoff Plan.md
 ```
 
-The Design Reference owns the original design source, exact visual and
-interaction contract, prototype mappings, surface declarations, production
-boundaries, and presentation-only exclusions. The Design Handoff Plan owns
-design-derived scope, coverage, sequencing, dependencies, open design work, and
-per-screen fidelity QA. Engineering architecture must remain `VERIFY IN REPO`.
+The Design Reference owns the verified design source, visual and interaction
+contract, prototype mappings, surfaces, application boundaries, and
+presentation-only exclusions. The Design Handoff Plan owns design-derived scope,
+gap recovery, coverage, sequencing, dependencies, open design work, and
+per-screen fidelity QA. Engineering architecture remains `VERIFY IN REPO`.
+
 Claude Design must not create or replace root `Product Specification.md` or
-`Implementation Plan.md`; `/finalize-build-docs` creates those after repository
-verification.
+`Implementation Plan.md`.
 
-### Incremental design release contract
+## 5. Release repaired work incrementally
 
-Do not wait for the entire app design before the first export. As soon as the
-design foundation and at least one complete end-to-end MVP slice are coherent,
-export Design Batch 1 and continue designing later scope.
+Do not wait for every gap to be repaired. Export the first coherent end-to-end
+slice as soon as its design foundation, required states, and flow are complete.
+Only `ready` audit items may appear in `readyForBuild`. Map
+`needs-correction` and unresolved `ambiguous` items to `stillInDesign`, and
+deferred scope to `planned`.
 
-Every export must create or update `design/design-release.json` using this schema:
+Every export creates or updates `design/design-release.json`:
 
 ```json
 {
@@ -140,55 +165,49 @@ Every export must create or update `design/design-release.json` using this schem
   "stillInDesign": [],
   "planned": [],
   "removedOrSuperseded": [],
-  "notes": "First buildable design slice."
+  "notes": "First rehabilitated buildable slice."
 }
 ```
 
-Batch numbers advance when new buildable scope is released. Corrections to the
-same scope increment `revision`. Keep prototype filenames stable. Claude Design
-must never create or edit `design/design-sync.lock.json`; the repository writes
-that file only after `/sync-build-docs` succeeds.
+Advance `batch` for newly buildable scope. Increment `revision` for
+corrections to the current batch. Keep prototype filenames stable. Claude Design
+must never create or edit `design/design-sync.lock.json`.
 
-`design/planning/screen-inventory.md` must include each screen's prototype,
-surface, design status, first-ready batch, and last-updated batch. Use only:
-`planned`, `in-design`, `ready-for-build`, `revision-required`, or
-`superseded`.
+Refresh `design/planning/screen-inventory.md` with prototype, surface, design
+status, first-ready batch, and last-updated batch. Use only `planned`,
+`in-design`, `ready-for-build`, `revision-required`, or `superseded`.
 
-End the generated prompt by requiring an adaptation report with:
+## 6. Require a rehabilitation report
 
-- every file changed or created;
-- old-to-new filename mappings for split or renamed exports;
-- each screen's target surface and `data-app-root` boundary;
-- every preview-only shell or presentation-only element;
-- a confirmation that design, copy, flows, states, and interactions were not
-  intentionally changed;
-- all remaining ambiguities or items that still need design;
-- the refreshed system, planning, and paired handoff document inventory.
+End the generated prompt by requiring:
 
-Require the re-export to contain no secrets or private production data.
+- the completed design gap audit and all remaining ambiguous decisions;
+- every repaired, created, unchanged, deferred, and superseded screen;
+- evidence for intentional changes and confirmation that unrelated valid design
+  decisions were preserved;
+- old-to-new filename mappings;
+- each screen's surface and `data-app-root`;
+- preview-only and presentation-only exclusions;
+- refreshed system, planning, handoff, and asset inventories;
+- the first release batch and why each included screen is ready.
 
-## 3. Hand off to the user
+The export must contain no secrets or private production data.
+
+## 7. Hand off to implementation
 
 After writing `design/CLAUDE_DESIGN_ADAPTATION_PROMPT.md`:
 
-1. Open the file for the user.
-2. Tell them to paste its full contents into the existing Claude Design project,
-   not a new blank design.
-3. Tell them to export the corrected project into `design/` for the first time,
-   or replace the corresponding files there when an older export exists.
-4. Run:
+1. Open it for the user.
+2. Tell them to paste it into the same existing Claude Design project.
+3. Let Claude Design audit, clarify ambiguous decisions, repair known gaps, and
+   export the first ready batch into `design/`.
+4. Run `npm run design:validate`.
+5. After validation passes, run
+   `/sync-build-docs <project name>`.
+6. Repeat for later batches and revisions.
+7. Use `/finalize-build-docs <project name>` only after the required MVP design
+   is complete.
 
-```bash
-npm run design:validate
-```
-
-5. After validation passes, run in Claude Code:
-
-```text
-/sync-build-docs <project name>
-```
-
-6. Use `/finalize-build-docs <project name>` only for the final complete MVP design.
-
-Do not wait for the whole app before syncing the first buildable batch. Finalize
-only after the required MVP design is complete.
+Do not block implementation on unfinished later batches. Do not release a screen
+until its required states, flow, platform behavior, and accessibility intent are
+complete.
