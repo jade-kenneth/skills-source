@@ -21,6 +21,13 @@
 
 The repository uses npm workspaces for `apps/*` and `packages/*`. Run projects through Nx and keep app-specific code inside the owning application.
 
+## Stable architecture paths
+
+- Preserve `apps/app-web`, `apps/app-api`, `apps/app-mobile`, `packages/shared-constants`, and their Nx project/package identifiers in every product created from the boilerplate.
+- These are upstream integration identifiers, not customer-facing product names. Keeping them stable lets boilerplate changes apply to the same paths and avoids duplicate folders, missed patches, and unnecessary merge conflicts.
+- Put the product identity in display names, root package metadata, URL/app slugs, mobile bundle identifiers, database names, domains, environment configuration, branding, and product copy.
+- Do not add app-directory or Nx-project renames to generated build plans. A structural rename is allowed only as an explicit, separately reviewed migration that also defines how future upstream boilerplate changes will be mapped.
+
 ## Ownership rules
 
 - Put web UI, browser behavior, and Next.js routes in `apps/app-web`.

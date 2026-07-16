@@ -68,7 +68,11 @@ Read:
 
 Confirm the database environment-variable name, sanitized database target, app
 mapping, and stack only when they are not already verified in the root documents.
-Never request or record secret values.
+Preserve `apps/app-web`, `apps/app-api`, `apps/app-mobile`,
+`packages/shared-constants`, and their Nx project/package identifiers. Treat them
+as upstream integration paths, not product identity, and remove product-named
+folder or Nx-project renames from generated plans. Never request or record
+secret values.
 
 Treat release status as a build boundary:
 
