@@ -68,10 +68,13 @@ Read:
 
 Confirm the database environment-variable name, sanitized database target, app
 mapping, and stack only when they are not already verified in the root documents.
-Preserve `apps/app-web`, `apps/app-api`, `apps/app-mobile`,
-`packages/shared-constants`, and their Nx project/package identifiers. Treat them
-as upstream integration paths, not product identity, and remove product-named
-folder or Nx-project renames from generated plans. Never request or record
+For every application surface that survives the verified product mapping,
+preserve its boilerplate path and Nx project/package identifier: `apps/app-web`,
+`apps/app-api`, `apps/app-mobile`, and `packages/shared-constants`. Treat these as
+upstream integration paths, not product identity, and remove product-named folder
+or Nx-project renames from generated plans. Preserve an explicitly documented
+whole-app removal only when its responsibilities and workspace, codegen, CI,
+deployment, and documentation cleanup remain covered. Never request or record
 secret values.
 
 Treat release status as a build boundary:
