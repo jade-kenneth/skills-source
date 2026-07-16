@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "id": "2026-07-17-native-permission-verification",
+  "title": "Verify generated native permission metadata",
+  "targetSkills": ["mobile-app"],
+  "kind": "bug-fix",
+  "symptom": "A protected device API fails in a native build.",
+  "rootCause": "Required native permission metadata was not generated.",
+  "reusableRules": ["Configure protected resources through the supported config plugin."],
+  "evidence": [{"path": "apps/app-mobile/app.config.ts", "note": "The config plugin declares the required protected resources."}],
+  "verification": ["Inspect the generated native metadata and rebuild the application."],
+  "excludedProjectDetails": ["Product-specific permission copy."]
+}
