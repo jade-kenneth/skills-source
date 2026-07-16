@@ -1,0 +1,49 @@
+name: receive-project-learning
+
+on:
+  repository_dispatch:
+    types: [project-learning-proposed]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  receive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Extract and validate proposal
+        run: |
+          jq '.client_payload.proposal' "$GITHUB_EVENT_PATH" > "$RUNNER_TEMP/proposal.json"
+          node skills/project-learning-contributor/scripts/proposal.mjs validate \
+            --file "$RUNNER_TEMP/proposal.json"
+      - name: Create or update review issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_REPOSITORY: ${{ github.event.client_payload.source_repository }}
+          SOURCE_SHA: ${{ github.event.client_payload.source_sha }}
+        run: |
+          proposal_id="$(jq -r '.id' "$RUNNER_TEMP/proposal.json")"
+          title="$(jq -r '.title' "$RUNNER_TEMP/proposal.json")"
+          marker="project-learning-id:${SOURCE_REPOSITORY}:${proposal_id}"
+          node skills/project-learning-contributor/scripts/proposal.mjs render \
+            --file "$RUNNER_TEMP/proposal.json" > "$RUNNER_TEMP/rendered.md"
+          {
+            printf '<!-- %s -->\n' "$marker"
+            printf '> Source: `%s@%s`\n\n' "$SOURCE_REPOSITORY" "$SOURCE_SHA"
+            cat "$RUNNER_TEMP/rendered.md"
+          } > "$RUNNER_TEMP/issue.md"
+          existing="$(gh issue list --repo "$GITHUB_REPOSITORY" --state all \
+            --search "${marker} in:body" --json number --jq '.[0].number // empty')"
+          if [ -n "$existing" ]; then
+            gh issue edit "$existing" --repo "$GITHUB_REPOSITORY" \
+              --title "[project learning] $title" --body-file "$RUNNER_TEMP/issue.md"
+          else
+            gh issue create --repo "$GITHUB_REPOSITORY" \
+              --title "[project learning] $title" --body-file "$RUNNER_TEMP/issue.md"
+          fi
