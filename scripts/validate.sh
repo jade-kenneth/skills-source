@@ -16,7 +16,7 @@ echo "Validating project-learning contribution commands"
 test -f "$ROOT/commands/capture-project-learning.md"
 test -f "$ROOT/commands/promote-project-learning.md"
 grep -Fq "skill-contributions/" "$ROOT/commands/capture-project-learning.md"
-grep -Fq "target skill" "$ROOT/commands/promote-project-learning.md"
+grep -Fq "skills/" "$ROOT/commands/promote-project-learning.md"
 
 echo "Validating canonical Claude Design preparation command"
 PREPARE_DESIGN="$ROOT/commands/prepare-claude-design.md"
