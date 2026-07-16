@@ -88,6 +88,7 @@ Every rule area has a dedicated file under `references/`. Each file is self-cont
 | FlatList, search, inline flows, screen states, analytics | `references/ux-patterns.md`                                    |
 | Responsive layout + theming (light + dark)     | `references/responsive-and-theming.md`                                   |
 | Platform behavior + Expo-first + split files   | `references/platform-patterns.md`                                        |
+| Native permissions + generated metadata       | `references/native-permissions.md`                                       |
 | Write-once-feel-native design standard (deep dive) | `references/platform-design-guide.md` — see note below              |
 | Rich text: plain text extraction, Prose render | `references/rich-text.md`                                                |
 | Toast / showToast / ToastHost                  | `references/toast-feedback.md`                                           |
@@ -134,6 +135,7 @@ Each rule lives in a dedicated reference — consult it before implementing:
 | TypeScript (casts, assertions, boundaries)                        | `references/typescript-patterns.md`                                                                     |
 | Responsive layout + light/dark theming                            | `references/responsive-and-theming.md`                                                                  |
 | Platform behavior + Expo-first + platform files                   | `references/platform-patterns.md`                                                                       |
+| Native protected-resource permissions + binary verification       | `references/native-permissions.md`                                                                   |
 | FlatList, search debounce, inline flows, screen states, analytics | `references/ux-patterns.md`                                                                             |
 | Accessibility (labels, 44×44 targets, WCAG AA, no color-only)     | `references/accessibility.md`                                                                           |
 | Every async flow has loading + empty + error states               | `references/error-handling.md` · `references/ux-patterns.md` § Screen States                            |
@@ -182,8 +184,9 @@ When generating or modifying code, always follow this order:
 10. Protect perceived performance: startup first, then input responsiveness, scroll, layout stability (`references/performance.md`).
 11. For performance changes, name the metric and explain why it improves.
 12. For security-sensitive work, verify against `references/security.md`.
-13. For user-facing UI, verify responsiveness, accessibility (`references/accessibility.md`), and both platform behaviors.
-14. For server mutations, prefer targeted cache updates or invalidation over app reload.
+13. For protected device resources, verify native permission metadata and the rebuilt binary against `references/native-permissions.md`.
+14. For user-facing UI, verify responsiveness, accessibility (`references/accessibility.md`), and both platform behaviors.
+15. For server mutations, prefer targeted cache updates or invalidation over app reload.
 
 ---
 
@@ -209,6 +212,7 @@ Do not:
 - Create effect render loops (read + write same state)
 - Build custom components before checking shared primitives
 - Add native dependencies when an Expo-compatible option already fits
+- Assume a runtime permission request also generates native usage descriptions, or declare protected resources the feature does not use
 - Copy iOS UI exactly into Android or Material UI exactly into iOS
 - Ship prototype HTML in a WebView, recreate a DOM/CSS tree in React Native, or
   include a fake device frame/fixed preview canvas in the production screen

@@ -1,0 +1,29 @@
+{
+  "skill_name": "fix-and-enhance",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Fix a verified iOS image-picker privacy crash in a product app. After the native rebuild passes, decide whether anything should be contributed upstream.",
+      "expected_output": "The fix-and-enhance workflow uses mobile-app for implementation, completes native validation, then invokes project-learning-contributor to create a categorized mobile-app proposal without directly editing canonical skills.",
+      "files": [],
+      "expectations": [
+        "Completes and verifies the product fix before evaluating reusable learning",
+        "Routes implementation through mobile-app and learning capture through project-learning-contributor",
+        "Creates a product-neutral proposal targeting mobile-app",
+        "Does not edit .skills-source or auto-merge a canonical skill change"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Polish product-specific onboarding copy and spacing, verify the UI, and finish the enhancement.",
+      "expected_output": "The enhancement is completed using the matching app/UI skills, then the reusable-learning gate rejects the result as product-specific and reports that no proposal was created.",
+      "files": [],
+      "expectations": [
+        "Runs the reusable-learning gate after verification",
+        "Rejects product copy and one-off visual preferences from skills-source",
+        "Does not create a low-value generic proposal",
+        "Reports why no reusable lesson was captured"
+      ]
+    }
+  ]
+}

@@ -24,6 +24,18 @@
         "Treats callback memoization as profiling-dependent rather than automatic",
         "Does not make unrequested code changes"
       ]
+    },
+    {
+      "id": 3,
+      "prompt": "Review an Expo image-picker fix that requests photo-library, camera, and microphone access and passes lint. Decide whether it is ready.",
+      "expected_output": "A native-permission review that applies least privilege, verifies config-plugin generated metadata, rebuilds the affected native target, and tests real permission states.",
+      "files": [],
+      "expectations": [
+        "Requires a user-visible reason for every protected capability",
+        "Questions or disables microphone access when audio recording is not used",
+        "Inspects generated native metadata and the compiled or installed application",
+        "Does not accept lint or TypeScript checks as sufficient native verification"
+      ]
     }
   ]
 }

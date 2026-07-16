@@ -1,6 +1,6 @@
 ---
 name: fix-and-enhance
-description: Repository-agnostic coordinator for bug fixes and enhancements. Uses the project's generated workflow instructions, coordinates Notion-tracked work through the Notion MCP, and delegates implementation standards to the `web-app`, `mobile-app`, and `api-app` skills when their supported surfaces are affected. Use whenever a user asks to fix broken behavior, improve or polish an existing feature, add or change functionality, or implement a scoped feature.
+description: Repository-agnostic coordinator for bug fixes and enhancements. Uses the project's generated workflow instructions, coordinates tracked work, delegates implementation standards to the matching app skills, and routes verified reusable lessons through `project-learning-contributor`. Use whenever a user asks to fix broken behavior, improve or polish an existing feature, add or change functionality, or implement a scoped feature.
 ---
 
 # Fix and Enhance
@@ -41,40 +41,53 @@ Use the **Notion MCP** when the request references Notion or the current project
 
 If the project uses another tracker, apply the same scope, verification, schema-discovery, authorization, and closeout rules through its available integration.
 
-## Durable guidance
+## Continuous reusable-learning handoff
 
-Update the relevant `web-app`, `mobile-app`, or `api-app` guidance only when the change introduces a durable implementation rule for that surface. Update `conventions/workflow.md` **in the skills-source repository** when the reusable change process itself changes; never in a project's synced snapshot.
+`fix-and-enhance` owns the everyday work lifecycle. `project-learning-contributor`
+owns the separate lifecycle that turns a verified result into categorized,
+product-neutral guidance. Keep both skills: integrate their handoff rather than
+duplicating proposal, redaction, dispatch, or promotion logic here.
 
-When a durable rule spans surfaces, update each affected companion skill in its canonical location (the skills-source repository). Keep reusable guidance project-neutral, adapt it to each skill's structure, and do not mirror platform-specific guidance to unrelated skills. After any upstream change, re-run the global install script (skills/commands symlinks pick it up live) and `npm run sync-skills` in affected projects so `AGENTS.md` carries the rule to the executor.
+After a fix or enhancement passes its required validation, always run this gate:
 
-### Durable guidance — how to actually do it
+1. **Check durability.** A candidate qualifies when the lesson should prevent the
+   same bug or improve the same implementation decision in another project and is
+   supported by concrete evidence. Crashes, security corrections, framework
+   integration requirements, reliability fixes, and durable architecture rules
+   are common candidates.
+2. **Reject local-only knowledge.** Do not contribute product behavior, feature
+   requirements, branding/copy, customer details, private URLs, one-off
+   workarounds, or a rule already covered adequately by the current skill.
+3. **Invoke the contributor.** For a qualifying lesson, use
+   `project-learning-contributor` in capture mode. Select exact target directories
+   from `.skills-source/skills/`, generalize the rule, write
+   `skill-contributions/<id>.json`, and run the repository validation command.
+   A local review proposal may be created without a second prompt after the user
+   authorized the fix/enhancement; merging it remains the user's approval to
+   dispatch it externally.
+4. **Do not edit the snapshot.** Never change `.skills-source/`, generated
+   `AGENTS.md`, or canonical skills directly from a product repository.
+5. **Report the decision.** State either the proposal path and target skill(s), or
+   that no reusable lesson was captured and why.
 
-**Locate the upstream repository without assuming a machine-specific path.** If
-this skill is symlinked, resolve the canonical `SKILL.md` location and use the
-repository containing its `skills/` and `conventions/` directories. Otherwise,
-check the current project's `CLAUDE.md` or sync configuration for a
-`skills-source` location. If neither identifies it, ask the user instead of
-guessing or silently skipping the update.
+If the locked snapshot does not yet contain `project-learning-contributor`, report
+the candidate and ask for the normal skills-source/boilerplate update. Do not
+recreate its schema or bypass its validation locally.
 
-**Procedure — propose first, never edit unprompted:**
+Canonical skill updates happen later through the contributor's promotion mode:
+a product proposal creates or updates a skills-source review issue, then a
+separate reviewed PR changes the smallest appropriate reference and eval. Never
+auto-merge that PR.
 
-1. **Propose.** After completing the primary task, state the candidate rule in one or two sentences, name the exact target file (e.g. `skills/api-app/SKILL.md` or `conventions/workflow.md`), and quote the text you intend to add or change. Then stop and wait.
-
-   **If no existing file fits the finding's scope, propose creating a new one.** Do not force a rule into an unrelated skill, and do not drop it just because no file exists. A new-skill proposal must include: the folder (`skills/<skill-name>/` — this repository uses a flat skills layout), the `name` and `description` frontmatter (the description must answer "when should an agent reach for this?" — it is the trigger), and an outline of the initial content. Before proposing new, check for overlap: if an existing skill covers 70% of the scope, propose extending it instead — many small near-duplicate skills are worse than one coherent one. New conventions go to `conventions/<topic>.md` under the same rule. If the new skill is an implementation authority for a surface this coordinator routes to, the proposal must also include adding it to this skill's companion table.
-
-2. **Wait for explicit approval.** Only proceed on a clear yes. If the user declines or does not answer, drop it — do not queue it, do not apply it later in the session without asking again.
-3. **Edit upstream only.** Make the approved change — whether updating an existing file or creating a new skill/convention — in the skills-source repository at the path above. Never write durable rules into the current project's `.skills-source/`, `AGENTS.md`, or `CLAUDE.md` — those are downstream copies. A newly created skill must follow the standard shape: its own folder, a `SKILL.md` with `name` and `description` frontmatter, body written project-neutral.
-4. **Commit and push** in skills-source with a message naming the skill and the rule (e.g. `api-app: propagate error envelope rule`).
-5. **Propagate to the current project** if it consumes the changed guidance: run `npm run sync-skills`, then commit the regenerated `AGENTS.md`. Mention that other projects will pick the rule up via postinstall or the CI drift check. A **new** skill rides the same pipeline with no extra wiring: the global install script symlinks it for Claude Code, and the AGENTS.md generator includes it for the executor automatically.
-6. **Report** the rule, the file it now lives in, and the propagation status in the final handoff.
-
-A durable rule is one that should govern _future_ work in _other_ projects. A fix-local decision (naming in this file, a workaround for this repo's quirk) is not durable — leave it in the project and out of skills-source.
-
+A durable rule is one that should govern future work in other projects. A
+fix-local decision remains in the product.
 ## Integration checklist
 
 - [ ] Applicable generated workflow and repository instructions were followed.
 - [ ] Relevant `web-app`, `mobile-app`, and `api-app` skills were used for affected surfaces.
 - [ ] When Notion is in use, the matching item was read and authorized updates used its existing schema.
-- [ ] Tracker records, companion standards, and the canonical workflow were updated only when required — and only upstream in skills-source, never in `.skills-source/` or generated `AGENTS.md`.
-- [ ] Any durable rule was proposed with its exact target file and wording, and written only after explicit approval; approved rules were committed, pushed, and synced per the procedure above.
+- [ ] Tracker records were updated only when required and authorized.
+- [ ] After successful validation, the reusable-learning gate was run.
+- [ ] A qualifying lesson was routed through `project-learning-contributor` to exact target skills; product-specific or duplicate guidance was not contributed.
+- [ ] `.skills-source/` and generated `AGENTS.md` were never edited as canonical sources.
 - [ ] The handoff states the result, validation, and remaining risks accurately.

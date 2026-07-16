@@ -1,0 +1,29 @@
+{
+  "skill_name": "project-learning-contributor",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "A product fixed an iOS crash by adding Expo photo-library and camera permission descriptions. Capture the verified lesson so future projects benefit, but the product name, exact feature copy, and private repository must not be shared.",
+      "expected_output": "A validated, product-neutral proposal categorized under mobile-app with evidence, reusable permission and native verification rules, and explicit exclusions.",
+      "files": [],
+      "expectations": [
+        "Targets the exact mobile-app skill rather than a generic learning bucket",
+        "Separates reusable permission rules from product-specific wording",
+        "Requires native metadata and rebuilt-binary verification",
+        "Creates a review proposal and does not directly merge a canonical skill change"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "A change fixes a GraphQL nullability mismatch affecting the NestJS server, Next.js web client, and Expo mobile client. Decide where the reusable learning belongs.",
+      "expected_output": "A narrowly categorized proposal that targets api-app for the schema contract and adds client targets only when each needs a distinct actionable generated-type or error-handling rule.",
+      "files": [],
+      "expectations": [
+        "Does not choose every involved skill automatically",
+        "Explains the responsibility owned by every selected target",
+        "Rejects duplicate generic wording across skills",
+        "Requires evidence and review before promotion"
+      ]
+    }
+  ]
+}
