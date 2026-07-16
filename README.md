@@ -111,6 +111,27 @@ reconciles those documents into the canonical repository-root `Product Specifica
 described by environment-variable name and sanitized target only; never provide or
 commit connection strings, credentials, tokens, or other secret values.
 
+## Continuous project learning
+
+Products created from app-boilerplate can contribute verified, reusable lessons
+back to the correct skill category. Run:
+
+```text
+/capture-project-learning <short lesson name>
+```
+
+The command writes a validated proposal under `skill-contributions/`. Target
+skills are exact directory names from the product's locked snapshot, such as
+`mobile-app`, `web-app`, or `api-app`; cross-cutting proposals may name more
+than one target only when each skill needs an actionable rule.
+
+After a proposal reaches the product's default branch,
+`submit-project-learning.yml` dispatches it here using the product secret
+`SKILLS_SOURCE_CONTRIBUTION_TOKEN`. This repository creates or updates a review
+issue. Run `/promote-project-learning <issue>` to generalize the lesson, update
+the smallest appropriate skill reference and eval, validate, and open a separate
+PR. Product events never edit or merge canonical skills automatically.
+
 ## Downstream synchronization
 
 `app-boilerplate` separates normal synchronization from intentional upgrades:
