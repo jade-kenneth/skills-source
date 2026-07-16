@@ -135,7 +135,7 @@ Each rule lives in a dedicated reference — consult it before implementing:
 | TypeScript (casts, assertions, boundaries)                        | `references/typescript-patterns.md`                                                                     |
 | Responsive layout + light/dark theming                            | `references/responsive-and-theming.md`                                                                  |
 | Platform behavior + Expo-first + platform files                   | `references/platform-patterns.md`                                                                       |
-| Native protected-resource permissions + binary verification       | `references/native-permissions.md`
+| Native protected-resource permissions + binary verification       | `references/native-permissions.md`                                                                   |
 | FlatList, search debounce, inline flows, screen states, analytics | `references/ux-patterns.md`                                                                             |
 | Accessibility (labels, 44×44 targets, WCAG AA, no color-only)     | `references/accessibility.md`                                                                           |
 | Every async flow has loading + empty + error states               | `references/error-handling.md` · `references/ux-patterns.md` § Screen States                            |
