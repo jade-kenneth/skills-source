@@ -9,7 +9,14 @@ trap 'rm -rf "$TEMP_DIR"' EXIT
 echo "Checking script syntax"
 node --check "$ROOT/scripts/build-agents-md.js"
 node --check "$ROOT/scripts/validate-generated-agents.js"
+node --check "$ROOT/skills/project-learning-contributor/scripts/proposal.mjs"
 bash -n "$ROOT/scripts/install-global.sh" "$ROOT/scripts/setup-mcp.sh" "$0"
+
+echo "Validating project-learning contribution commands"
+test -f "$ROOT/commands/capture-project-learning.md"
+test -f "$ROOT/commands/promote-project-learning.md"
+grep -Fq "skill-contributions/" "$ROOT/commands/capture-project-learning.md"
+grep -Fq "target skill" "$ROOT/commands/promote-project-learning.md"
 
 echo "Validating canonical Claude Design preparation command"
 PREPARE_DESIGN="$ROOT/commands/prepare-claude-design.md"
@@ -98,6 +105,9 @@ echo "Validating eval JSON"
 while IFS= read -r -d '' eval_file; do
   python3 -m json.tool "$eval_file" >/dev/null
 done < <(find "$ROOT/skills" -path '*/evals/*.json' -type f -print0)
+
+echo "Running project-learning-contributor self-test"
+bash "$ROOT/skills/project-learning-contributor/scripts/selftest.sh" "$ROOT"
 
 echo "Running project-learning-auditor self-test"
 bash "$ROOT/skills/project-learning-auditor/scripts/selftest.sh" "$ROOT"
