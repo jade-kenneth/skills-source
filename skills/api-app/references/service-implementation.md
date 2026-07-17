@@ -26,6 +26,16 @@ When the service downloads a remote object to process it (thumbnails, transcodin
 - Reject a remote body that cannot provide the expected stream instead of silently falling back to buffering; a missing stream is an error, not a slow path.
 - Test the processing path with real readable streams for each supported media type so a regression back to byte-array buffering is observable.
 
+### Deleting records that own external objects
+
+Removing the database row is not the whole operation when the record owns an external object (stored file, thumbnail) and contributes to a usage counter (quota). Dropping only the metadata orphans the object and leaves usage totals overstated forever.
+
+- Authorize before every side effect, then delete the external object(s) **before** persisting the terminal deletion, and make the failure boundary explicit rather than silently orphaning storage. Restrict external deletion to the server-owned storage namespace so a stray key cannot target arbitrary objects.
+- Persist the **server-verified** object size at attachment time and release exactly that amount from usage when deletion succeeds. Never trust or re-derive a client-supplied size at delete time.
+- Clamp usage counters at zero and ignore non-positive adjustments, and reconcile aggregate usage after a cascade, so retries, legacy rows, or partial historical data cannot drive totals negative or leave them drifting.
+- Give a parent-entity cascade the same object-cleanup and usage-release steps as a single-record delete; do not let the bulk path skip them.
+- Cover single-record deletion and parent cascades with tests that assert object cleanup, usage release, authorization ordering, and metadata cleanup together.
+
 ## Side-effect ordering
 
 In multi-step workflows with side effects, perform the side effect first and only persist terminal state after it succeeds. Handle rollback or transactional boundaries explicitly when ordering cannot change.

@@ -84,6 +84,18 @@
         "Rejects a remote body that cannot provide a readable stream rather than falling back to buffering",
         "Adds thumbnail tests that feed real readable streams for each supported media type"
       ]
+    },
+    {
+      "id": 8,
+      "prompt": "A media delete mutation removes the database row for an uploaded file but leaves the stored object and thumbnail in the bucket and never decrements the account's used-storage counter. The parent-entity cascade delete has the same gap. Fix the deletion path and define regression coverage.",
+      "expected_output": "A deletion path that authorizes, removes the external objects in the server-owned namespace, releases the server-verified persisted size from the usage counter, deletes metadata, and reconciles aggregates, with matching cascade behavior and tests.",
+      "files": [],
+      "expectations": [
+        "Authorizes before side effects and deletes the external object and thumbnail before persisting terminal deletion",
+        "Releases exactly the server-verified persisted size from the usage counter and never a client-supplied size",
+        "Clamps the usage counter at zero, ignores non-positive adjustments, and reconciles aggregates after cascades",
+        "Applies the same object cleanup and usage release in the parent cascade and covers single and cascade deletes with tests"
+      ]
     }
   ]
 }
