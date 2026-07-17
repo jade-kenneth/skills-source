@@ -36,6 +36,31 @@ export async function XRepositoryFactory(
 - Exactly **one** `RepositoryFactory` per `.repository.ts` file. Never add a second; create a new file instead.
 - `RepositoryFilter` / `RepositorySort` are always applied to the record type (`XRecord`), not the GraphQL output type.
 
+## Record types and generated contracts
+
+When persisted fields mirror a generated schema-first GraphQL entity, derive
+`XRecord` from that generated entity instead of repeating the public field
+contract by hand. Use `Pick`, `Omit`, or an intersection to model the actual
+storage shape:
+
+```ts
+import { type X } from 'src/graphql/generated/graphql';
+
+export type XRecord = Omit<X, 'computedField'> & {
+  internalField: string;
+};
+```
+
+- Omit resolver-computed fields and add them when mapping a record to the
+  GraphQL result.
+- Reuse the full generated entity only when every required field is persisted
+  with the same nullability and TypeScript type.
+- Keep an explicit persistence type when storage-only, security-sensitive, or
+  internal fields materially differ from the public contract. Never add an
+  internal field to GraphQL merely to reuse a generated type.
+- Regenerate the GraphQL types before changing a derived record and run the API
+  typecheck and repository/service tests so contract drift fails visibly.
+
 ## Wiring into DI
 
 The repository is provided by a sibling `<domain>.repository.module.ts` using a token from `src/types/tokens.ts`:

@@ -65,6 +65,12 @@ input XSortInput {
 ## Pagination rules
 
 - Root GraphQL `Query` fields that can grow with tenant or user data must return a concrete `XConnection!`, not an unbounded `[X!]!`.
+- A service returning `XConnection` obtains the page from
+  `RepositoryList.connection({ first, after })`. Do not call `collect()` and
+  sort, slice, count, or construct `edges` and `pageInfo` in memory.
+- Express tenant, membership, visibility, and other access scope in the
+  repository filter used for the connection. Cursor lookup must apply that same
+  filter and reject an `after` cursor that is outside the active scope.
 - Every cursor or offset paginated repository read must use the shared page-size policy from `src/libs/repository.ts` (`DEFAULT_PAGE_SIZE`, `MAX_PAGE_SIZE`, `clampPageSize`). Do not hand-roll local max/min page-size logic.
 - Dedicated `searchByX` queries may keep their flat list shape, but their `first` argument must be clamped with `clampPageSize(first, DEFAULT_SEARCH_LIMIT)` before reaching repository search.
 - Flat `[X!]!` root lists are allowed only when they are domain-bounded by a small enum/config set or are intentionally capped in the service. Add a short code comment explaining the bound.

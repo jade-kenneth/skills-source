@@ -24,6 +24,42 @@
         "Validates namespaces, MIME allowlists, traversal, and absolute paths",
         "Recommends focused rejected-input and authorization tests"
       ]
+    },
+    {
+      "id": 3,
+      "prompt": "A repository declares a handwritten record type that repeats every field of the generated GraphQL Invoice entity, except the resolver computes balanceDue and the database stores an internal reconciliation key. Review the type design and propose the smallest correction.",
+      "expected_output": "A contract-focused review that derives the persistence record from the generated schema type without exposing internal storage fields or pretending computed fields are persisted.",
+      "files": [],
+      "expectations": [
+        "Derives the shared persisted fields from the generated GraphQL entity",
+        "Omits the resolver-computed field and adds it at the API mapping boundary",
+        "Keeps the internal reconciliation field persistence-only",
+        "Requires regenerated types plus focused typecheck and repository/service tests"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Fix an orders query that returns OrderConnection but currently calls collect(), filters by the current account in the service, sorts and slices the array, and builds cursors manually.",
+      "expected_output": "A repository-level connection implementation that preserves access scope, cursor validity, stable sorting, totals, and shared page-size policy.",
+      "files": [],
+      "expectations": [
+        "Uses RepositoryList.connection({ first, after }) instead of in-memory pagination",
+        "Expresses account visibility in the repository filter",
+        "Validates the after cursor against the same active filter",
+        "Keeps connection metadata and page-size enforcement in the repository abstraction"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "A team feature introduces TeamRole with the same values and permissions as UserRole. The proposal removes membership checks because admins are global, stores copied role values on accepted memberships, and lets ADMIN call an infrastructure-only maintenance endpoint. Review and correct the authorization model.",
+      "expected_output": "An authorization review that reuses the canonical role contract while preserving independent resource scope, synchronized snapshots, migration safety, and elevated infrastructure permissions.",
+      "files": [],
+      "expectations": [
+        "Reuses UserRole when values, permissions, and lifecycle are equivalent",
+        "Retains active resource membership checks in addition to the global role guard",
+        "Synchronizes accepted role snapshots and plans a backfill before deployment",
+        "Keeps platform-only operations behind a distinct elevated role"
+      ]
     }
   ]
 }
