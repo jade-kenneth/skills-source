@@ -96,6 +96,7 @@ These override any default behavior. Grouped by concern — every group applies 
 ### Side effects & scheduling
 
 - **Side-effect ordering** → in multi-step workflows, perform the side effect first and persist terminal state only after it succeeds; handle rollback explicitly when ordering cannot change. See `references/service-implementation.md`.
+- **Deleting owned objects & quota** → when a record owns an external object and contributes to a usage counter, authorize, delete the object(s) in the server-owned namespace, release the server-verified persisted size, then delete metadata and reconcile — clamp counters at zero, and give cascades the same steps. Never drop only the row. See `references/service-implementation.md`.
 - **Scheduled jobs** → recurring jobs acquire the shared scheduler lock and honor the runtime scheduler-enabled flag; once-only reminders persist a dedicated timestamp field, stamped only after the side effect succeeded. See `references/scheduled-work.md`.
 
 ### Code quality
