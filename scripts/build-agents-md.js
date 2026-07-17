@@ -52,7 +52,7 @@ function findSkillFiles(dir) {
   const files = [];
   const entries = fs
     .readdirSync(dir, { withFileTypes: true })
-    .sort((a, b) => a.name.localeCompare(b.name));
+    .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
 
   for (const entry of entries) {
     if (!entry.isDirectory()) continue;
