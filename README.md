@@ -139,6 +139,9 @@ PR. Product events never edit or merge canonical skills automatically.
 - `npm run sync-skills` hydrates and generates from the committed lock.
 - `npm run update-skills` advances the lock and regenerates `AGENTS.md`.
 - `npm run check-skills` verifies that committed generated output matches the lock.
+- Downstream products use `npm run boilerplate:port -- --sha <full-sha>` to
+  apply explicitly reviewed non-merge boilerplate commits on a dedicated branch;
+  porting never acknowledges the reviewed range automatically.
 
 After changes land on `main`, `notify-app-boilerplate.yml` dispatches an update
 notification to the downstream repository. Configure a fine-grained token named
