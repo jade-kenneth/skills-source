@@ -21,7 +21,9 @@
 - `camelCase`: variables, functions, hooks, methods, and object properties.
 - `UPPER_SNAKE_CASE`: constants that represent fixed sets and GraphQL enum values.
 - `kebab-case`: feature directories and general filenames.
+- `PascalCase` directories and filenames only for a component or provider folder that is exported as a unit under the exported component's name (for example `DataTable/DataTable.tsx`, `RichText/RichTextRoot.tsx`, `AuthProvider/AuthProvider.tsx`). Everything else, including route files, feature folders, hooks, and utilities, stays `kebab-case`.
 - Use framework suffixes consistently: `*.module.ts`, `*.resolver.ts`, `*.service.ts`, `*.controller.ts`, `*.repository.ts`, `*.validation.ts`, and `*.spec.ts`.
+- Reuse the domain folder's exact name in every file basename inside an API module, including the SDL schema file; never mix singular and plural forms of the same domain (`sessions/sessions.resolver.ts`, not `sessions/session.resolver.ts`).
 - Use `useX` for React hooks and `XProvider` for context providers.
 - Prefer descriptive domain names over generic names such as `data`, `item`, or `handler` when the meaning is not obvious.
 

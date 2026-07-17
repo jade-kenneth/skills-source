@@ -62,7 +62,7 @@ Rules:
 - Keep resolvers and controllers thin; delegate business behavior to services.
 - Access MongoDB through the repository abstraction, never directly from a resolver or service.
 - Use exactly one repository factory per `.repository.ts` file.
-- Align names across the module, resolver, service, repository, tests, and GraphQL schema.
+- Align names across the module, resolver, service, repository, tests, and GraphQL schema: use the `<domain>` folder name verbatim in every basename, including the `.gql` file and exported class names (`SessionsResolver` in `sessions/sessions.resolver.ts`, never `SessionResolver` in `sessions/session.resolver.ts`).
 - Put reusable transport validation in a feature validation file or a shared validation pipe.
 - Keep tests beside the implementation as `*.spec.ts`.
 
@@ -72,6 +72,7 @@ Rules:
 - Keep route-only components close to their route.
 - Promote a component to shared app-level UI only after it is reused across features.
 - Keep platform-specific implementations separate even when admin and mobile expose the same capability.
+- Colocate client GraphQL documents with their owning feature's data-layer folder (`react-query/<feature>/graphql/`); do not keep a central cross-feature documents folder, and do not leave re-export shims behind when a document moves.
 - Import genuinely shared, product-neutral contracts from `@app/shared-constants`; keep app-specific and single-consumer values in the owning app.
 
 ## GraphQL placement
