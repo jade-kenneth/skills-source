@@ -60,6 +60,18 @@
         "Synchronizes accepted role snapshots and plans a backfill before deployment",
         "Keeps platform-only operations behind a distinct elevated role"
       ]
+    },
+    {
+      "id": 6,
+      "prompt": "Services repeatedly call String(record.id) and String(record.ownerId) because hydrated Mongoose reads and aggregate searches sometimes return ObjectId values even though repository record types declare string identities. The connection builder also accepts any id value when encoding cursors. Fix the boundary and define regression coverage.",
+      "expected_output": "A repository-boundary correction that normalizes promised string identities and MongoDB metadata consistently across read paths, keeps foreign-key types explicit, and validates cursor identity requirements.",
+      "files": [],
+      "expectations": [
+        "Normalizes ObjectId-backed primary identities in both hydrated and aggregate results",
+        "Strips MongoDB-only metadata before records reach services",
+        "Requires a string id before constructing a repository cursor",
+        "Removes scattered service coercions in favor of explicit schema types and repository-level regression tests"
+      ]
     }
   ]
 }
