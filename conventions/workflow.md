@@ -94,6 +94,39 @@ Do not claim a check passed unless it ran successfully. If a check cannot run, r
 - Update documentation or standards only when the change creates a durable rule, public contract, configuration requirement, or reusable workflow.
 - Summarize what changed, what was validated, and any limitation, assumption, migration, or follow-up that remains.
 
+## Port reviewed boilerplate updates into a product
+
+Product repositories keep discovery, code application, and final review as three
+separate decisions:
+
+1. `npm run boilerplate:check` fetches the configured `app-boilerplate` branch
+   and lists unreviewed commits after `boilerplate.lock.json.reviewedThroughSha`.
+   It discovers candidates; it does not copy code or advance the lock.
+2. After inspecting the commit diffs, create a dedicated product branch and run
+   `npm run boilerplate:port -- --sha <full-40-character-sha>` with one `--sha`
+   for every explicitly selected commit. Use `--dry-run` first when useful. The
+   command validates membership in the unreviewed range, orders selections by
+   upstream history, rejects merge commits, and applies each commit with
+   `git cherry-pick -x` so provenance is retained.
+3. Resolve any semantic conflicts manually and run affected product checks. The
+   port command must preserve Git's conflict state and direct the user to
+   `git cherry-pick --continue` or `git cherry-pick --abort`; agents must not
+   resolve conflicts automatically.
+4. Run `npm run boilerplate:ack -- --sha <full-40-character-sha>` only after every
+   commit through that revision was deliberately applied or declined. Acknowledging
+   records the final review boundary; it never copies code.
+
+Never port directly on `main`, `master`, the configured default branch, or a
+detached HEAD. Start with a clean worktree and no unfinished cherry-pick. Never
+select a merge commit or guess its mainline parent; inspect it and explicitly
+select the applicable constituent commits instead. Do not reapply a commit already
+recorded in `appliedUpdates`, already present by ancestry, or already referenced by
+a cherry-pick provenance footer.
+
+The port command records each successfully applied upstream SHA in
+`boilerplate.lock.json.appliedUpdates`, but leaves `reviewedThroughSha` unchanged.
+It does not resolve conflicts, acknowledge updates, or commit the lock file.
+
 ## Task file format
 
 `TASK_<project-slug>.md` is a derived detailed execution tracker: Product Specification owns product/UI behavior, Implementation Plan owns phase scope and order, and the task file owns atomic actions and evidence. Never let it become a competing specification or architecture plan. Preserve protected boilerplate primitives—including GraphQL clients and codegen, TanStack Query setup, authentication, standardized errors, repositories, common libraries, async-event infrastructure, S3, notifications, security, CI, and test foundations—and create `[BP] verify & reuse` tasks instead of replacement tasks.
