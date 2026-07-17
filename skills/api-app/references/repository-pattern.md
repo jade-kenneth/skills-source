@@ -61,6 +61,25 @@ export type XRecord = Omit<X, 'computedField'> & {
 - Regenerate the GraphQL types before changing a derived record and run the API
   typecheck and repository/service tests so contract drift fails visibly.
 
+## Identity normalization
+
+When application record types expose `id` as a string but Mongoose stores it as
+an `ObjectId`, the shared persistence adapter owns that conversion. Normalize
+every repository read path, including hydrated documents and aggregation
+results, before returning records to services.
+
+- Strip MongoDB-only metadata such as `_id` and `__v` at the same boundary so
+  returned values match their declared record types.
+- Keep foreign-key schema types explicit. Services compare correctly typed
+  identities directly instead of scattering defensive `String(...)`
+  conversions through business logic.
+- Before constructing a cursor, require the normalized node to expose a string
+  `id`. A repository that never paginates may still use records without a public
+  `id`.
+- Add repository-level regression coverage for hydrated and aggregate read
+  paths, plus rejection coverage when cursor pagination receives a node without
+  a string `id`.
+
 ## Wiring into DI
 
 The repository is provided by a sibling `<domain>.repository.module.ts` using a token from `src/types/tokens.ts`:
