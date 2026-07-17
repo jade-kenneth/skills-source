@@ -91,6 +91,7 @@ These override any default behavior. Grouped by concern — every group applies 
 - **Tenant scoping** → every tenant-owned read/write threads `tenantId` from `@CurrentTenant()` through resolver → service → repository. Only the platform-wide super-admin role bypasses it. See `references/multi-tenancy.md`.
 - **Auth at the boundary** → protect GraphQL resolvers with the auth guard + roles guard and `@Roles(...)`; REST endpoints with side effects declare auth intent at the method boundary. Never rely on body validation as authorization. See `references/auth-patterns.md`.
 - **Uploads** → presigned upload/file-ingest endpoints validate namespace, reject traversal/absolute keys, enforce a MIME allowlist, and the service generates the final storage key — never the caller. See `references/service-implementation.md`.
+- **Media processing** → when downloading a remote object to process it, stream the unbounded body to a uniquely created temporary file and hand path-based processors the file path; never buffer it into one in-memory byte array. Clean up the task directory in `finally`, and reject a body that cannot provide a stream. See `references/service-implementation.md`.
 
 ### Side effects & scheduling
 

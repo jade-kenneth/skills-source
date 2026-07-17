@@ -17,6 +17,15 @@ For presigned upload or file-ingest endpoints, validate more than presence:
 - Enforce a MIME/type allowlist before signing any write.
 - Do not accept caller-supplied final object keys for shared folders; clients may provide upload *intent* (namespace, content type), but the **service** generates the final unique storage key and extension.
 
+### Processing ingested media server-side
+
+When the service downloads a remote object to process it (thumbnails, transcoding, metadata extraction), the input is user-controlled and unbounded. Do not materialize it as one in-memory byte array:
+
+- Stream the remote body to a uniquely created temporary file, then hand the **file path** to path-based processors. Never buffer an unbounded upload into a single application-memory buffer.
+- Create per-task temporary storage with restrictive permissions and remove the entire task-owned directory in a `finally` block on both success and failure.
+- Reject a remote body that cannot provide the expected stream instead of silently falling back to buffering; a missing stream is an error, not a slow path.
+- Test the processing path with real readable streams for each supported media type so a regression back to byte-array buffering is observable.
+
 ## Side-effect ordering
 
 In multi-step workflows with side effects, perform the side effect first and only persist terminal state after it succeeds. Handle rollback or transactional boundaries explicitly when ordering cannot change.

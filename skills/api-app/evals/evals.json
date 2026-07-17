@@ -72,6 +72,18 @@
         "Requires a string id before constructing a repository cursor",
         "Removes scattered service coercions in favor of explicit schema types and repository-level regression tests"
       ]
+    },
+    {
+      "id": 7,
+      "prompt": "A thumbnail generator downloads a remote image or video object, reads the whole body into a single Buffer with transformToByteArray(), and passes that buffer to the processor. Large user uploads spike memory. Fix the ingest path and define regression coverage.",
+      "expected_output": "A processing path that streams the unbounded remote body to bounded temporary storage, invokes path-based processors, cleans up deterministically, and is covered by stream-backed tests.",
+      "files": [],
+      "expectations": [
+        "Streams the remote body to a uniquely created temporary file instead of buffering it in application memory",
+        "Creates restrictive per-task temporary storage and removes it in a finally block on success and failure",
+        "Rejects a remote body that cannot provide a readable stream rather than falling back to buffering",
+        "Adds thumbnail tests that feed real readable streams for each supported media type"
+      ]
     }
   ]
 }
