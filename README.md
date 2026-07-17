@@ -150,6 +150,29 @@ while holding repository write permissions. The notification workflow fails when
 the required token is missing so a broken downstream connection is not silently
 treated as successful.
 
+### Product boilerplate updates
+
+Products use three intentionally separate commands:
+
+```bash
+npm run boilerplate:check
+npm run boilerplate:port -- --dry-run --sha <full-app-boilerplate-sha>
+npm run boilerplate:port -- --sha <full-app-boilerplate-sha>
+npm run boilerplate:ack -- --sha <full-reviewed-through-sha>
+```
+
+`boilerplate:check` discovers unreviewed commits. `boilerplate:port` applies only
+explicit, full-SHA selections from that unreviewed range on a clean non-default
+branch, in upstream dependency order, using `git cherry-pick -x` and recording
+successful SHAs in `appliedUpdates`. `boilerplate:ack` records the final review
+boundary after every commit through it was applied or deliberately declined.
+
+Porting and acknowledgement never imply each other. The guarded port command
+rejects merge commits instead of guessing a mainline parent and preserves conflict
+state for explicit `git cherry-pick --continue` or `git cherry-pick --abort`.
+Automatic conflict resolution, automatic merge-commit selection, lock commits,
+and automatic advancement of `reviewedThroughSha` are prohibited.
+
 ## Validate changes
 
 ```bash
