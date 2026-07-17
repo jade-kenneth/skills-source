@@ -61,6 +61,32 @@ For full-project execution after the canonical Product Specification and Impleme
 - For user-facing changes, cover applicable loading, empty, error, success, accessibility, and responsive states.
 - Do not hand-edit generated files when a generator exists. Inspect regenerated output for unrelated churn and report a failed or unavailable generator instead of fabricating output.
 
+### Port reviewed boilerplate updates
+
+In a downstream product repository, use the boilerplate synchronization commands
+as a review boundary rather than merging the upstream template:
+
+```bash
+npm run boilerplate:check
+npm run boilerplate:port -- --sha <full-app-boilerplate-sha>
+npm run boilerplate:ack -- --sha <reviewed-through-app-boilerplate-sha>
+```
+
+- Run the port command only on a dedicated product branch and pass every reviewed
+  non-merge revision explicitly. The command orders selections by upstream
+  history, verifies they belong to the unreviewed `boilerplate/main` range,
+  refuses dirty/default-branch worktrees, and preserves `git cherry-pick -x`
+  provenance.
+- Preview a selection with `--dry-run` when useful. Resolve any cherry-pick
+  conflict semantically with `git cherry-pick --continue`, or cancel with
+  `git cherry-pick --abort`; never invent an automatic conflict resolution.
+- Keep acknowledgement separate. Porting records applied revisions but does not
+  advance `reviewedThroughSha`. Acknowledge a target only after every upstream
+  commit through it was deliberately applied or declined and relevant validation
+  passed.
+- Reject merge commits from automatic porting because selecting a mainline would
+  hide scope. Port their reviewed constituent commits instead.
+
 ### 4. Validate in proportion to risk
 
 Run the smallest relevant checks first:
