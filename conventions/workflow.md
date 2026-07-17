@@ -87,6 +87,36 @@ npm run boilerplate:ack -- --sha <reviewed-through-app-boilerplate-sha>
 - Reject merge commits from automatic porting because selecting a mainline would
   hide scope. Port their reviewed constituent commits instead.
 
+### Classify and contribute foundation changes
+
+The reusable architecture surface is declared in `boilerplate-sync.config.json`
+(`foundationPaths`, with the most specific pattern winning over the product
+globs). Changes to it are governed in both directions:
+
+- In pull request CI, `npm run boilerplate:contributions` fails when foundation
+  paths changed without a declared classification. Declare it with a PR label
+  (`foundation:reusable`, `foundation:product-specific`, `foundation:backported`)
+  or a `Foundation-Change: <classification>` line in the PR description. Never
+  bypass the check by reclassifying paths; changing the foundation surface is
+  itself a foundation change requiring maintainer review.
+- Port a change classified reusable or backported upstream from the product
+  repository:
+
+```bash
+npm run boilerplate:contribute -- --dry-run --sha <full-40-character-sha>
+npm run boilerplate:contribute -- --sha <full-40-character-sha> [--branch <name>]
+```
+
+  The command accepts only explicit non-merge commits from the product history
+  that touch foundation paths exclusively — split mixed commits first. It
+  cherry-picks them with provenance onto a worktree branched from
+  `boilerplate/main`; push that branch and open a pull request against
+  `app-boilerplate`, where the maintainer accepts or rejects the standard change.
+- `npm run boilerplate:foundation-drift` (run weekly by the drift workflow)
+  reports foundation files that diverged locally from the reviewed upstream
+  revision versus ported updates pending acknowledgement. Resolve divergence by
+  contributing it upstream or recording why it stays product-specific.
+
 ### 4. Validate in proportion to risk
 
 Run the smallest relevant checks first:
