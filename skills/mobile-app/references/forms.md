@@ -25,6 +25,8 @@ const { fields, append, remove } = useFieldArray({ control, name: 'contacts' });
 ## Rules
 
 - Always pair `useForm` with a `zod` schema — no ad-hoc validation logic.
+- Prototype manual checks describe intended feedback only; translate them into the zod schema and standard API error mapping instead of copying them into submit handlers.
+- Client validation improves feedback, while the API independently enforces persisted business rules, authorization, and security constraints.
 - Use `useFieldArray` for any field that is an array — never `useState` + manual splice.
 - Keep schema definitions outside the component, in the same file or a sibling `schema.ts`.
 - Use `Controller` from react-hook-form to connect controlled native inputs (`TextInput`, pickers, etc.).

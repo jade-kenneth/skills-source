@@ -69,6 +69,18 @@
         "Does not require a theme toggle on every screen when settings is the appropriate surface",
         "Preserves platform back gestures and Android system-back behavior"
       ]
+    },
+    {
+      "id": 7,
+      "prompt": "Build an Expo production screen from a Claude Design HTML prototype that uses a local array as its database, manual field checks, hard-coded role flags, and setTimeout to simulate a save.",
+      "expected_output": "A native, visually faithful screen whose data, mutations, validation, permissions, errors, and cache behavior use the established production architecture instead of copied prototype shortcuts.",
+      "files": [],
+      "expectations": [
+        "Treats the prototype as the visual and observable-behavior contract, not the production runtime",
+        "Maps server state through the custom GraphQL client, generated operation wrapper, and TanStack Query cache",
+        "Uses react-hook-form and zod for feedback while requiring API validation and authorization",
+        "Keeps only ephemeral presentation state local and verifies loading, error, offline, success, invalidation, and rollback behavior"
+      ]
     }
   ]
 }

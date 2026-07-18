@@ -12,6 +12,15 @@ Keep state boundaries clear.
 
 Do not duplicate the same source of truth across multiple layers unless synchronization is explicit and necessary.
 
+## Prototype boundary
+
+Prototype-local state demonstrates the required UI outcome; it does not select
+the production owner. Do not copy mock entities, local permission flags, or
+mutation results into component state, reducers, or Context when they belong to
+the server or session. Map every value first, keep server records in the query
+cache, and implement optimistic changes in that cache with rollback instead of a
+second local source of truth.
+
 Avoid prop drilling through 3 or more levels of intermediate components. Use context, composition, or a state-management library when state is shared broadly.
 
 ---

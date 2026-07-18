@@ -47,6 +47,12 @@ the similarly named handoff files as substitutes.
 Do not invent missing features, screens, APIs, business rules, or architecture.
 Mark unresolved work `⚠ blocked` with the exact decision or source needed.
 
+Prototype implementation details are not architecture. Treat local/mock records,
+component state used as persistence, inline/manual validation, hard-coded
+permissions, fake delays, and simulated requests as design demonstrations only.
+The task tracker must translate their observable outcomes through AGENTS.md and
+the repository's established production patterns.
+
 ## 3. Protect reusable architecture
 
 Before creating tasks, classify the relevant boilerplate code:
@@ -91,6 +97,17 @@ atomic tasks that:
   unverified operation names as decisions instead of inventing them;
 - keep secrets out of the file and refer only to environment-variable names.
 
+For every prototype-backed, data-backed screen, include atomic tasks that first
+record and then implement its production mapping: architecture source; state
+ownership; configured read/write operation and typed wrapper; applicable
+server/application/persistence path; configured client feedback validation plus
+authoritative server validation/authz; cache invalidation or optimistic rollback;
+and loading/error/offline states. Use the protected GraphQL, codegen, TanStack
+Query, form-schema, API, and repository foundations when they exist in the current
+boilerplate; otherwise name the approved configured equivalents. UI construction
+depends on these contract tasks. Never create a task to copy prototype local state
+or manual validation as a temporary production implementation.
+
 Use one checkbox for one verifiable action. Use `[ ]` for pending, `[~]` for
 in progress, `[x]` only after validation passes, and `⚠ blocked` for work that
 cannot start. Do not mark boilerplate-provided foundations as new work; write
@@ -122,6 +139,11 @@ When the task file already exists:
 - Implementation Plan:
 - Generated/reconciled:
 - Current phase:
+
+## Prototype-to-production mapping
+
+| Screen/action | Observable prototype outcome | Architecture source | Production state owner | Read/write path | Validation/auth/error contract | Prototype-only mechanics rejected |
+| --- | --- | --- | --- | --- | --- | --- |
 
 ## Architecture reuse contract
 - KEEP [BP]:

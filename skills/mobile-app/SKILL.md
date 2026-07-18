@@ -140,6 +140,7 @@ Each rule lives in a dedicated reference — consult it before implementing:
 | Accessibility (labels, 44×44 targets, WCAG AA, no color-only)     | `references/accessibility.md`                                                                           |
 | Every async flow has loading + empty + error states               | `references/error-handling.md` · `references/ux-patterns.md` § Screen States                            |
 | State signal clarity and redundancy                               | `references/common-anti-patterns.md`                                                                    |
+| Prototype runtime is never production architecture                | `references/state-management.md` · `references/graphql-patterns.md` · `references/forms.md`             |
 | Icons (MaterialIcons only) + dark mode color tokens               | `../mobile-native-ui-design/references/icons.md` (NON-NEGOTIABLE: hardcoded icon colors are a blocker) |
 
 ---
@@ -177,16 +178,22 @@ When generating or modifying code, always follow this order:
    an HTML prototype, read only its `data-app-root` as the visual/behavior contract;
    exclude preview shells and translate it to React Native primitives rather than
    a WebView or copied DOM/CSS.
-6. Use hooks, providers, and server-state tools consistently.
-7. Check project shared components before building custom ones.
-8. Add loading, empty, and error states for every async flow (`references/error-handling.md`, `references/ux-patterns.md` § Screen States).
-9. Verify keyboard avoidance, safe areas, and scroll behavior on both platforms.
-10. Protect perceived performance: startup first, then input responsiveness, scroll, layout stability (`references/performance.md`).
-11. For performance changes, name the metric and explain why it improves.
-12. For security-sensitive work, verify against `references/security.md`.
-13. For protected device resources, verify native permission metadata and the rebuilt binary against `references/native-permissions.md`.
-14. For user-facing UI, verify responsiveness, accessibility (`references/accessibility.md`), and both platform behaviors.
-15. For server mutations, prefer targeted cache updates or invalidation over app reload.
+6. Before writing the screen, resolve prototype state and actions through project
+   configuration, the approved plan, foundations present in the repository, and
+   nearby exemplars. Reuse the established GraphQL/codegen/TanStack Query,
+   form-schema, API validation/authz, error, and cache paths when provided; use
+   another stack only when the current project explicitly configures it. Never
+   retain mock/local/manual mechanics merely to reproduce the demo quickly.
+7. Use hooks, providers, and server-state tools consistently.
+8. Check project shared components before building custom ones.
+9. Add loading, empty, and error states for every async flow (`references/error-handling.md`, `references/ux-patterns.md` § Screen States).
+10. Verify keyboard avoidance, safe areas, and scroll behavior on both platforms.
+11. Protect perceived performance: startup first, then input responsiveness, scroll, layout stability (`references/performance.md`).
+12. For performance changes, name the metric and explain why it improves.
+13. For security-sensitive work, verify against `references/security.md`.
+14. For protected device resources, verify native permission metadata and the rebuilt binary against `references/native-permissions.md`.
+15. For user-facing UI, verify responsiveness, accessibility (`references/accessibility.md`), and both platform behaviors.
+16. For server mutations, prefer targeted cache updates or invalidation over app reload.
 
 ---
 
@@ -216,6 +223,8 @@ Do not:
 - Copy iOS UI exactly into Android or Material UI exactly into iOS
 - Ship prototype HTML in a WebView, recreate a DOM/CSS tree in React Native, or
   include a fake device frame/fixed preview canvas in the production screen
+- Copy prototype mock arrays, local persistence, manual validation, hard-coded
+  permissions, fake delays, or simulated requests into the production path
 - Create separate screens per platform unless truly required
 - Use hardcoded hex colors on icon `color` props — always use `useThemeColors()` tokens
 - Import Ionicons, FontAwesome, Feather, or any icon library other than MaterialIcons

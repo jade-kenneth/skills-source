@@ -47,6 +47,8 @@ Rules:
 
 - **One `getDefaultValues` helper** — never duplicate default-value literals across create/edit/reset call sites.
 - **Validate in the schema, not the submit handler.** `trim()`, length limits, cross-field `refine`, enum membership (`z.nativeEnum`) all belong in zod.
+- Prototype `if` checks and manually assigned error strings describe intended feedback only. Translate them into this schema and the standard API error mapping; never copy them as the production validation layer.
+- Client schemas provide immediate UX feedback. The API must independently enforce persisted business rules, authorization, and security-sensitive constraints.
 - **Use `transform` + `pipe`** when the raw input value must be normalized before validating (rich text → plain text length, string → parsed number).
 - Do not `as`-cast form values; if the types don't line up, the schema or the values type is wrong.
 

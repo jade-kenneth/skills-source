@@ -113,6 +113,14 @@ and iOS/Android differences. HTML expresses visual and behavioral intent only;
 production Expo/React Native code must use native primitives rather than a WebView
 or copied DOM/CSS.
 
+Prototype code may use local mock data, component state, fake delays, and manual
+checks only to make intended states and interactions reviewable. Require the
+handoff to label those mechanisms as prototype-only and describe the observable
+outcome or business rule they demonstrate. Claude Design must not prescribe local
+state, browser storage, manual validation, direct network calls, authentication,
+authorization, persistence, or cache behavior as production architecture; those
+are verified against the repository during build-document reconciliation.
+
 Every prototype must specify and visibly implement:
 
 - exact layout, element order, alignment, responsive behavior, and breakpoints;
@@ -194,6 +202,12 @@ dependencies, the MVP boundary, unresolved design work, and per-screen Fidelity
 QA. It is not the engineering Implementation Plan. Repository structure, backend operations,
 integrations, and reuse/removal decisions must be labeled `VERIFY IN REPO`
 because Claude Design does not own the application architecture.
+
+For every data-backed interaction, the handoff documents must identify the
+observable result, required UI states, and applicable business rule while marking
+mock records, local state, fake persistence, and manual prototype validation as
+`PROTOTYPE ONLY — MAP TO PRODUCTION ARCHITECTURE`. They must not choose the
+production data owner, transport, cache, validation library, or security layer.
 
 Both files must link to each other. The Design Reference owns look and
 interaction; the Design Handoff Plan owns design-derived sequencing. The later

@@ -96,6 +96,18 @@
         "Clamps the usage counter at zero, ignores non-positive adjustments, and reconciles aggregates after cascades",
         "Applies the same object cleanup and usage release in the parent cascade and covers single and cascade deletes with tests"
       ]
+    },
+    {
+      "id": 9,
+      "prompt": "A production create flow was copied from a UI prototype. The client checks required fields manually and the proposed resolver trusts those checks, writes directly with Mongoose, and relies on a hard-coded client role flag. Correct the implementation plan.",
+      "expected_output": "A schema-first, guarded resolver-to-service-to-repository write path that independently validates and authorizes persisted behavior while preserving the prototype's intended user feedback.",
+      "files": [],
+      "expectations": [
+        "Treats prototype and client validation as UX feedback rather than trusted API protection",
+        "Uses guards and roles at the resolver boundary instead of a client role flag",
+        "Places business validation in the service and persistence behind the repository abstraction",
+        "Defines stable error mapping, generated client types, and focused validation and authorization tests"
+      ]
     }
   ]
 }

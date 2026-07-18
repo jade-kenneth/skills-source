@@ -48,6 +48,53 @@ This scan is non-negotiable. No implementation may begin before it is completed 
 
 Record the scan in the active task file under a `Pattern scan` heading before the first line of implementation: the exemplar file paths consulted, the end-to-end trace followed, and the pattern decisions adopted. A change without this record is treated as unscanned. Reviewers verify the record exists and that the implementation matches it; either failure rejects the phase.
 
+### 2a. Translate prototype outcomes through production architecture
+
+Claude Design prototypes are authoritative for visible outcomes, interaction
+intent, copy, and required states inside `data-app-root`. Their implementation
+mechanics are not production authority. Prototype-local arrays, component state,
+inline handlers, manual submit checks, fake delays, hard-coded permissions,
+browser storage, and mock network behavior exist only to demonstrate the design;
+never copy them into production merely because they make the prototype work.
+
+Before implementing a prototype-backed screen, add a `Production mapping` under
+the active task's pattern scan. Resolve architecture in this order: explicit
+project configuration and the approved Implementation Plan; protected foundations
+that actually exist in the current repository; the nearest end-to-end exemplars;
+then the routed skill for the owning app. A prototype's implementation mechanism
+never participates in that precedence. Record:
+
+1. each state value and its owner: server/cache, persisted client/session, form,
+   or ephemeral UI;
+2. the established read and write path, including the configured transport,
+   generated types or contracts, operation wrapper, server/application layers,
+   persistence boundary, and cache key where applicable;
+3. the configured client validation used for form feedback and the authoritative
+   server-side validation, authorization, and error contract;
+4. loading, empty, error, success, offline, optimistic-update, rollback, and
+   invalidation behavior required by the design; and
+5. the existing end-to-end exemplar being extended.
+
+Use local component/reducer state only for ephemeral presentation state such as
+an open dialog, selected tab, draft gesture, or unsaved field control. Entity
+lists, persisted records, permissions, sessions, and mutation results belong to
+their established production owners. Server state goes through the data client,
+operation layer, cache, and persistence boundaries configured in the current
+repository. When GraphQL, codegen, and TanStack Query are protected foundations,
+reuse them; when the approved project uses another architecture, use its existing
+equivalents. Optimistic state belongs in the configured server-state cache with
+rollback, not in a second local copy. Forms use the repository's configured form
+and validation stack; manual prototype conditions are translated into that stack,
+and the server independently enforces business and security rules. Client
+validation improves feedback but is never authorization or the only protection
+for persisted writes.
+
+If the required production operation or vertical slice does not exist, implement
+it contract-first in dependency order or mark the task blocked. Do not preserve a
+mock/local implementation to make the screen appear complete. Review must trace
+every data-backed action end-to-end and reject hard-coded or duplicated production
+state even when visual fidelity passes.
+
 ### 3. Diagnose or define the change
 
 For a bug fix:
@@ -232,6 +279,16 @@ Use the following compact structure for a small scoped `task.md`; `.skills-sourc
 - Pattern decisions: <naming, placement, validation, error shape, pagination, guards, tests>
 - Deviations: <none, or the minimal deviation and why no exemplar fits>
 
+## Production mapping
+
+- State ownership: <server/cache, persisted client/session, form, ephemeral UI>
+- Architecture source: <project config/plan → protected foundation → exemplar → routed skill>
+- Read path: <configured transport/operation → contract/types → cache wrapper → consumer>
+- Write path: <configured form validation → write operation → server/application layers → persistence → cache update>
+- Validation and errors: <client feedback validation + server validation/auth/error contract>
+- Async states: <loading, empty, error, success, offline, optimistic rollback>
+- Prototype-only mechanics rejected: <mock/local/manual mechanisms not carried over>
+
 ## Phases
 
 ### Phase 1 — <Discovery or contract>
@@ -255,6 +312,7 @@ Use the following compact structure for a small scoped `task.md`; `.skills-sourc
 ## Verification
 
 - [ ] Pattern scan recorded before implementation and the code matches it
+- [ ] Prototype outcomes are preserved through the recorded production mapping; no mock data, server state, or manual-only validation was copied as architecture
 - [ ] Lint passes for the affected project
 - [ ] Typecheck passes for the affected project
 - [ ] Relevant tests pass

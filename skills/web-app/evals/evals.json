@@ -35,6 +35,18 @@
         "Does not configure the GraphQL document or mutation key directly in the component",
         "Keeps targeted cache updates, pending guards, and UI feedback at the appropriate feature boundary"
       ]
+    },
+    {
+      "id": 4,
+      "prompt": "Implement a production admin screen from a polished HTML prototype. The prototype stores records in component state, validates required fields with submit-handler if statements, and mutates the local array after a fake delay.",
+      "expected_output": "A fidelity-preserving implementation that treats prototype runtime code as demonstration only and maps the screen through the repository's real form, GraphQL, TanStack Query, API validation, error, and cache patterns.",
+      "files": [],
+      "expectations": [
+        "Records a prototype-to-production mapping before implementation",
+        "Keeps server records in the established query cache instead of copying the prototype array into local state",
+        "Uses react-hook-form plus zod for client feedback and requires independent API validation and authorization",
+        "Implements the named query/mutation wrapper and targeted cache update or rollback while preserving the prototype's observable states"
+      ]
     }
   ]
 }

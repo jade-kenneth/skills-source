@@ -117,6 +117,12 @@ For web, document supported breakpoints, responsive reflow, overflow, focus and
 keyboard behavior, and accessible semantics. Do not treat a fixed presentation
 canvas as the production viewport.
 
+Audit prototype runtime shortcuts as part of rehabilitation. Preserve the
+observable outcome and the underlying approved business rule, but label local mock
+data, component state used as persistence, fake delays, inline/manual validation,
+hard-coded permissions, and simulated network behavior as prototype-only. Do not
+promote those mechanics into the handoff as engineering requirements.
+
 ## 4. Refresh the handoff contract
 
 Require Claude Design to preserve and refresh system, planning, and asset
@@ -132,6 +138,12 @@ contract, prototype mappings, surfaces, application boundaries, and
 presentation-only exclusions. The Design Handoff Plan owns design-derived scope,
 gap recovery, coverage, sequencing, dependencies, open design work, and
 per-screen fidelity QA. Engineering architecture remains `VERIFY IN REPO`.
+
+For each data-backed interaction, record its observable result, required states,
+and approved business rule, then mark any mock/local/manual implementation as
+`PROTOTYPE ONLY — MAP TO PRODUCTION ARCHITECTURE`. Production state ownership,
+GraphQL operations, cache behavior, validation layers, authorization, persistence,
+and error contracts remain repository decisions.
 
 Claude Design must not create or replace root `Product Specification.md` or
 `Implementation Plan.md`.
