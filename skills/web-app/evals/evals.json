@@ -24,6 +24,17 @@
         "Distinguishes diagnosis from implementation",
         "Recommends the smallest compatible boundary or initialization strategy"
       ]
+    },
+    {
+      "id": 3,
+      "prompt": "Implement a Next.js feature that sends an invitation through GraphQL. The component currently imports the mutation document and declares its TanStack Query mutation key inline.",
+      "expected_output": "A feature operations module owns the typed GraphQL mutation hook while the component consumes that named hook and retains only UI-specific callbacks.",
+      "files": [],
+      "expectations": [
+        "Moves the GraphQL document and mutation key into a named derived operation hook",
+        "Does not configure the GraphQL document or mutation key directly in the component",
+        "Keeps targeted cache updates, pending guards, and UI feedback at the appropriate feature boundary"
+      ]
     }
   ]
 }

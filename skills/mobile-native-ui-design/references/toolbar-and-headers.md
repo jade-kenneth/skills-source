@@ -124,6 +124,24 @@ export default function InboxScreen() {
 - `"right"` - Header right
 - `"bottom"` (default) - Bottom toolbar
 
+## Navigation reachability
+
+Keep route-navigation actions reachable outside scrolling screen content. Use the
+navigator-provided back affordance or a persistent, safe-area-aware header for
+back, close, and other controls required to leave the current route. Do not put
+the only such control inside a `ScrollView` or list header where it disappears
+as the user scrolls.
+
+Use a header action only when it is relevant to the current route. A theme
+toggle, for example, belongs in a persistent header only when immediate
+per-screen access is part of the product flow; otherwise place it in the
+appropriate settings surface. Do not add it to every screen merely to make it
+fixed.
+
+For custom headers, account for top safe-area insets and preserve platform back
+gestures and Android system-back behavior. Never replace a platform back action
+with an inaccessible or scrolling-only control.
+
 ## Components
 
 ### Button

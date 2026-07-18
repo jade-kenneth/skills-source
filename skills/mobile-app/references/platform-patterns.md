@@ -74,3 +74,24 @@ When device-only behavior is required:
 - Defer it to `useEffect` or app initialization flows
 - Keep the first render stable
 - Avoid layout jumps caused by late state hydration
+
+---
+
+## Simulator-only native diagnostics
+
+When a native warning appears only while using a Simulator, first determine
+whether the app owns the call before changing application code or dependencies.
+
+1. Reproduce the warning with the smallest normal interaction, and inspect the
+   log's framework owner and named resource.
+2. Search the app for explicit use of the related device API. A dependency's
+   presence alone does not prove that the app caused a system-framework warning.
+3. If normal behavior works, the warning is owned by a system framework, and the
+   referenced resource is private or absent from the Simulator runtime, verify
+   the affected journey on a physical device and check current vendor guidance
+   before considering an app-side change.
+
+Do not bundle, synthesize, or copy private operating-system resources into an
+app. Do not remove unrelated native dependencies or suppress broad system logs
+solely to hide a Simulator warning; both actions can mask useful diagnostics
+without correcting the cause.

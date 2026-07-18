@@ -157,6 +157,31 @@ mutation.mutate(input);
 
 `suppressGlobalErrorToast: true` on `defineMutation` opts out of automatic error toasting for that mutation.
 
+### Derived Feature Operation Hooks
+
+Define each feature's typed `defineQuery` and `defineMutation` wrappers in that
+feature's operations module. A screen or component should consume a named
+derived hook, rather than configuring a GraphQL document or a query/mutation key
+inline.
+
+```ts
+// react-query/invitations/invitations-operations.ts
+export const useSendInvitationMutation = defineMutation<
+  SendInvitationMutation,
+  SendInvitationVariables
+>({
+  mutationKey: ['invitations', 'send'],
+  mutationFn: (input) => request(SEND_INVITATION_MUTATION, input),
+});
+
+// features/invitations/invite-form.tsx
+const sendInvitation = useSendInvitationMutation();
+```
+
+Keep generic request primitives inside the operations layer. Components may own
+input validation, mutation callbacks, and targeted cache updates, but not the
+transport document or its cache identity.
+
 ### defineInfiniteQuery
 
 ```ts
@@ -224,6 +249,7 @@ onError: (error) => {
 ## Rules
 
 - Never call `client.request()` directly inside a component — always go through a `defineQuery` / `defineMutation` wrapper
+- Define and consume named feature operation hooks; do not configure GraphQL documents or query/mutation keys inline in components
 - Always bridge `ok: false` to a thrown error in `queryFn` / `mutationFn` so TanStack Query's error state works
 - Use `context?.signal` in `queryFn` for cancellation support
 - Prefer targeted `invalidateQueries` over invalidating the full cache
