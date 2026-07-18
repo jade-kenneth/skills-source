@@ -39,6 +39,7 @@ Use optimistic UI when it improves responsiveness and rollback is safe.
 - Roll back on error.
 - Reconcile with the server response on success or settlement.
 - Avoid optimistic updates for payments, uploads, irreversible actions, or complex server-validated forms unless the workflow explicitly supports it.
+- Once more than one mutation hand-rolls the optimistic sequence (cancel in-flight fetches → snapshot → patch cache → rollback on error), extract a single shared helper that owns the sequence and returns `{ previous, rollback }`. Hand-rolled copies drift and typically omit the cancel step, letting a late-arriving response clobber the optimistic patch.
 
 ---
 

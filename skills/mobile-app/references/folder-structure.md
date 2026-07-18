@@ -42,6 +42,7 @@ Organize code by feature or domain.
 - Prefer feature colocation over separating files purely by type.
 - Keep primitives in `components/ui/`, not mixed into feature folders unless they are feature-specific wrappers.
 - Keep shared composite components in `components/`, not inside unrelated features.
+- Promote a feature-owned component to the shared layer the first time another feature or a route outside the feature imports it — never import UI across sibling features. A feature-local components file that accretes shared primitives becomes the app's de facto design system and couples unrelated features; split it into `components/ui/` (theme-only primitives) and `components/` (provider/service-aware composites) before it grows.
 - Keep screen entry files focused on composition, guards, and layout.
 - Keep feature-specific GraphQL, query, and data usage close to the feature unless the app already centralizes that concern in a dedicated data layer.
 - Prefer `index.ts` only at folder boundaries with a clear public surface.
