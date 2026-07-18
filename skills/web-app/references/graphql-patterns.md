@@ -180,6 +180,42 @@ The `ok` check + `throw Object.assign(new Error(...), { name })` is the standard
 
 ---
 
+## Derived Feature Operation Hooks
+
+Define each feature's typed `defineQuery` and `defineMutation` wrappers in that
+feature's operations module. A screen or component should consume a named
+derived hook, rather than configuring a GraphQL document or a query/mutation key
+inline.
+
+```ts
+// react-query/invitations/invitations-operations.ts
+export const useSendInvitationMutation = defineMutation<
+  SendInvitationMutation,
+  SendInvitationMutationVariables
+>({
+  mutationKey: ['invitations', 'send'],
+  mutationFn: async (input) => {
+    const result = await client.request<
+      SendInvitationMutation,
+      SendInvitationMutationVariables
+    >(SEND_INVITATION_MUTATION, input);
+    if (!result.ok) {
+      throw Object.assign(new Error(result.error.message), { name: result.error.name });
+    }
+    return result.data;
+  },
+});
+
+// features/invitations/invite-form.tsx
+const sendInvitation = useSendInvitationMutation();
+```
+
+Keep generic request primitives inside the operations layer. Components may own
+input validation, mutation callbacks, and targeted cache updates, but not the
+transport document or its cache identity.
+
+---
+
 ## GQL Documents
 
 ```ts
@@ -259,6 +295,7 @@ react-query/
 - Do not throw raw strings — always throw `Error` objects with `.name` set to the `GraphqlRequestErrorName`.
 - Do not create a new client instance in a hook or component — use the exported singleton.
 - Do not inline query keys as strings — use the domain's `queryKeys` object.
+- Do not configure GraphQL documents or query/mutation keys inline in components — consume named feature operation hooks.
 
 ---
 

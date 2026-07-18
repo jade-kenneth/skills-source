@@ -36,6 +36,39 @@
         "Inspects generated native metadata and the compiled or installed application",
         "Does not accept lint or TypeScript checks as sufficient native verification"
       ]
+    },
+    {
+      "id": 4,
+      "prompt": "Implement a React Native feature that sends an invitation through GraphQL. The screen currently imports the mutation document and declares its TanStack Query mutation key inline.",
+      "expected_output": "A feature operations module owns the typed GraphQL mutation hook while the screen consumes that named hook and retains only UI-specific callbacks.",
+      "files": [],
+      "expectations": [
+        "Moves the GraphQL document and mutation key into a named derived operation hook",
+        "Does not call the GraphQL client or configure the mutation key directly in the component",
+        "Keeps targeted cache updates and UI feedback at the appropriate feature boundary"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Diagnose an iOS Simulator log that names a missing private haptic resource whenever a standard text field receives focus, while text entry otherwise works and the app has no haptics call site.",
+      "expected_output": "A scoped Simulator-diagnostic assessment that distinguishes system-owned warnings from application behavior and verifies the user journey on a physical device before proposing a fix.",
+      "files": [],
+      "expectations": [
+        "Audits explicit app call sites before blaming a dependency",
+        "Does not bundle private operating-system resources or suppress broad logs",
+        "Checks current vendor guidance and requires physical-device verification before an app-side workaround"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Review a mobile detail screen whose only back control and theme toggle are rendered at the top of a ScrollView, so they disappear after scrolling.",
+      "expected_output": "A native navigation treatment that keeps route-exit controls persistently reachable while placing any theme control according to its product relevance.",
+      "files": [],
+      "expectations": [
+        "Moves the route-navigation action to the navigator-provided header or a persistent safe-area-aware header",
+        "Does not require a theme toggle on every screen when settings is the appropriate surface",
+        "Preserves platform back gestures and Android system-back behavior"
+      ]
     }
   ]
 }
