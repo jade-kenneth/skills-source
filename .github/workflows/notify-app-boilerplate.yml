@@ -4,7 +4,9 @@ on:
   push:
     branches: [main]
     paths:
+      - commands/**
       - conventions/**
+      - prompts/**
       - skills/**
       - scripts/build-agents-md.js
       - scripts/validate-generated-agents.js
