@@ -74,6 +74,7 @@ These override any default behavior. Grouped by concern — every group applies 
 
 ### Schema & contract
 
+- **Prototype validation is not API validation** → UI prototypes may demonstrate errors with local/manual checks, but persisted writes must enforce business rules in the service, transport shape through the established validated resolver boundary, and authorization through guards/roles. Never treat a client or prototype check as sufficient protection.
 - **Schema-first** → SDL files under `src/graphql/schemas/` are the source of truth. Never hand-edit generated GraphQL types; change SDL, then regenerate on the API **and** every client. See `references/codegen-and-testing.md`.
 - **IDs** → expose `id: ID!`, never `_id` or other database-specific identifiers. Map persistence IDs to `id` at the API boundary. See `references/graphql-schema.md`.
 - **Nullability** → SDL query output is the source of truth; a required output field means a required input field, except genuinely optional write-time fields (`UpdateXInput`). See `references/graphql-schema.md`.

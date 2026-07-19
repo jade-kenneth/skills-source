@@ -117,6 +117,7 @@ These override any default behavior. Grouped by concern — every group applies 
 
 ### Data & mutations
 
+- **Prototype translation** → preserve prototype appearance and observable behavior, but reject its runtime shortcuts. Mock arrays, local copies of server records, inline/manual validation, fake persistence, direct requests, and hard-coded permissions never define production architecture. Record the production mapping first and resolve it from project configuration, the approved plan, foundations present in the repository, and nearby exemplars. Reuse the existing GraphQL client/codegen, derived TanStack Query operations, form schema, API validation/authz, and standardized errors when provided; use another stack only when the current project explicitly configures it.
 - **Server state** → use TanStack Query, SWR, or Apollo. No raw `fetch`/`useEffect` for server state.
 - **Cache invalidation** → invalidate only affected scopes; never the whole cache by default. See `references/caching.md` § Invalidation Guide.
 - **Mutation actions** → every control that triggers a mutation (button, menu item, submit, row action) must be disabled on `mutation.isPending` **and** the handler guarded with `if (mutation.isPending) return;`. Never leave a mutation action clickable while it is in flight — it double-fires. See `references/react-patterns.md` § Mutation Safety.
@@ -186,6 +187,10 @@ When generating or modifying code, always follow this order. This is the canonic
 3. Follow `references/folder-structure.md` for placement.
 4. Colocate code by feature unless clearly shared.
 5. Keep route entry files thin.
+
+Before architecture or UI code, translate every prototype-backed data interaction
+into its production owner and end-to-end repository path. A visually complete
+screen backed by mock/local data or manual-only validation is incomplete.
 
 **Architect**
 

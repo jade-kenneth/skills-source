@@ -96,6 +96,22 @@ existing phase status, writes a batch sync report, and acknowledges the release
 through `design/design-sync.lock.json`. Claude Design can continue later screens
 while Codex implements already released slices.
 
+## Preserve design fidelity without copying prototype architecture
+
+Claude Design and production engineering work together through a strict boundary:
+the prototype owns appearance, copy, required states, and observable interaction
+outcomes; the repository and routed skills own implementation architecture.
+`/sync-build-docs`, `/finalize-build-docs`, and `/generate-project-tasks` require a
+production mapping before UI implementation. Prototype-local data, mock
+persistence, manual validation, fake delays, and hard-coded permissions are
+explicitly rejected. The mapping resolves its implementation from current project
+configuration, the approved plan, protected foundations present in the repository,
+existing end-to-end examples, and the routed app skill. GraphQL/codegen/TanStack
+Query, form schemas, API validation/authz, repositories, and standardized errors
+remain the app-boilerplate defaults when present; another approved architecture
+uses its configured equivalents. Visual fidelity cannot make a screen complete
+when that mapping is missing.
+
 ## Finalize the repository build docs
 
 After all required MVP design releases have been synchronized and Claude Design

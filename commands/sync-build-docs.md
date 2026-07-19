@@ -66,6 +66,12 @@ Read:
 - existing root `Product Specification.md` and `Implementation Plan.md`;
 - `AGENTS.md`, repository conventions, app structure, and reusable architecture.
 
+For each ready prototype, separate its observable design contract from its demo
+runtime. Inventory local/mock data, component state used as persistence, manual
+validation, hard-coded permissions, fake delays, and simulated requests as
+prototype-only evidence. Then verify the real production owner and end-to-end
+pattern in the repository before updating either root document.
+
 Confirm the database environment-variable name, sanitized database target, app
 mapping, and stack only when they are not already verified in the root documents.
 For every application surface that survives the verified product mapping,
@@ -105,7 +111,17 @@ When they already exist:
    only where rework and Fidelity QA are actually required.
 6. For removed or superseded scope, report data, API, navigation, seed, test, and
    migration impact before changing the plan.
-7. Keep section/phase cross-links and the two root documents consistent.
+7. Add or refresh each ready screen's `Production mapping`: architecture source,
+   state ownership, configured read/write transport and operation wrappers,
+   server/application/persistence layers, client versus server validation/authz,
+   cache invalidation or optimistic rollback, and async error/offline behavior.
+   Use GraphQL/codegen/TanStack Query and resolver/service/repository when the
+   current boilerplate provides them; otherwise use the approved configured
+   equivalents. Explicitly reject prototype-only local/mock/manual mechanisms.
+8. Reopen a completed phase when its production implementation copied a prototype
+   shortcut or bypassed a protected boilerplate primitive, even if visual Fidelity
+   QA previously passed.
+9. Keep section/phase cross-links and the two root documents consistent.
 
 Codex may begin architecture work and any `readyForBuild` slice after this sync.
 It must not implement `planned`, `in-design`, or otherwise blocked screens.

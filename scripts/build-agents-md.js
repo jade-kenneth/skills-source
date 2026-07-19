@@ -107,6 +107,14 @@ progress. Check \`[ ]\` → \`[~]\` → \`[x]\` only after the phase's QA rows p
 - Platform-native conversion: web may reuse compatible markup; Expo/React Native
   must use native primitives and must not ship prototype HTML in a WebView or copy
   fixed preview dimensions into a production container.
+- Prototype-to-production boundary: prototypes own visual and interaction outcomes,
+  not implementation mechanics. Never carry prototype-local data, manual-only
+  validation, inline mock handlers, hard-coded permissions, or fake persistence
+  into production. Resolve the production path from current project configuration,
+  the approved Implementation Plan, protected foundations that actually exist,
+  nearby end-to-end exemplars, and then the routed app skill. Reuse GraphQL,
+  codegen, TanStack Query, form schemas, and API layers when this repository
+  provides them; otherwise use its configured equivalents.
 - Reuse-not-rebuild: auth, authz, GraphQL client/server, codegen, S3, CI are
   provided ([BP]) — extend the existing primitive, never re-implement it.
 - Do not mark a phase [x] without running its QA rows. Do not skip ahead.
