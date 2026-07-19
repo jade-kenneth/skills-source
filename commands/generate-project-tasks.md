@@ -115,16 +115,81 @@ cannot start. Do not mark boilerplate-provided foundations as new work; write
 
 ## 5. Reconcile instead of overwriting
 
-When the task file already exists:
+When the task file already exists, reconciliation is a requirements comparison,
+not a metadata refresh. Do not infer that work is unchanged merely because a
+phase keeps the same name or because the previous task was marked `[x]`.
 
-1. preserve completed checkboxes, evidence, decisions, user notes, and unrelated
-   work;
-2. compare it with both canonical documents and the current repository;
-3. add, revise, reopen, block, or remove only affected tasks;
-4. never reset the entire file or silently discard implementation history;
-5. report any mismatch between task status and Implementation Plan phase status;
-6. keep phase completion synchronized: a phase is complete only when its task
-   validation and Fidelity QA are complete in both files.
+### 5.1 Build the comparison set
+
+Before changing a checkbox, create an internal mapping for every existing and
+new task to the current canonical requirements:
+
+- Product Specification sections, behaviors, states, and Fidelity QA rows;
+- Implementation Plan phase items, dependencies, and validation gates; and
+- the task's acceptance criteria, evidence, implementation references, and
+  active blockers.
+
+Compare the current acceptance criteria and required behavior with the previous
+task file. Compare the actual repository and test evidence as well. A previous
+`[x]` is historical evidence, not proof that the task satisfies the new
+requirements.
+
+### 5.2 Classify every affected task
+
+For each task, classify it as exactly one of the following:
+
+| Classification | Required action |
+| --- | --- |
+| Unchanged | Preserve the status, evidence, decisions, and notes when current evidence still satisfies the unchanged acceptance criteria. |
+| Scope or acceptance changed | Keep the historical evidence, update the acceptance criteria and references, and create the remaining work. Reopen the task as `[~]` when an existing implementation is being extended or is already underway; use `[ ]` when the changed work has not started. |
+| Newly required | Add a new atomic `[ ]` task. Never mark it `[x]` based on an older related task. |
+| Superseded or removed | Remove it from active work only when the current canonical documents explicitly supersede or remove it. Preserve a short history entry explaining what replaced it. |
+| Blocker resolved | Remove the obsolete active blocker, preserve its history, and make the newly unblocked work `[ ]` or `[~]` according to actual evidence. |
+| Still blocked | Keep `⚠ blocked` with the exact current decision or source needed. Do not retain a blocker solely because it existed in the previous tracker. |
+
+If an old task cannot be mapped confidently to the current requirements, do not
+preserve `[x]` silently. Mark it for reconciliation, split the historical work
+from the remaining work, or ask for the missing decision.
+
+### 5.3 Status and evidence rules
+
+- Preserve `[x]` only when the current acceptance criteria are unchanged and
+  repository/test evidence still validates them.
+- Reopen a completed task as `[~]` when the updated requirement extends its
+  implementation and the existing implementation provides a valid starting
+  point or work is already underway.
+- Use `[ ]` for newly required or changed work that has not started.
+- Never mark changed requirements `[x]` until the updated acceptance criteria
+  and required validation have passed.
+- Preserve prior evidence, dates, decisions, and user notes. Add a dated
+  explanation whenever a task is reopened, split, superseded, or unblocked.
+- Keep completed historical work separate from the remaining acceptance
+  criteria; do not erase the history to make the checkbox appear clean.
+
+### 5.4 Reconcile blockers and phase status
+
+Re-evaluate blockers against the updated Product Specification and
+Implementation Plan. Resolve or remove blockers that were caused by superseded
+designs, clarified decisions, or delivered dependencies. Keep a blocker only
+when the current canonical documents and repository still show that the work
+cannot start.
+
+Recalculate phase completion after task reconciliation. A phase is complete only
+when every current task and its updated acceptance criteria are validated and
+the phase's Fidelity QA and validation gates are complete. Unchanged phase names
+do not justify unchanged checkboxes.
+
+### 5.5 Required reconciliation report
+
+Append a progress-log entry that reports what actually changed. At minimum,
+include the canonical documents considered, the number of tasks preserved,
+reopened, added, revised, blocked, unblocked, superseded, and removed, plus a
+short reason and evidence pointer for each non-trivial change. Do not write that
+phase scope or checkbox state was unchanged unless the acceptance-criteria and
+repository comparison found no affected requirement.
+
+Never reset the entire file or silently discard implementation history. Report
+any mismatch between task status and Implementation Plan phase status.
 
 ## Required file structure
 
@@ -177,6 +242,15 @@ References: Product Specification §… · Implementation Plan Phase 1
 
 ## Progress log
 - <date>: <change and evidence>
+
+## Reconciliation report
+- Canonical documents compared:
+- Preserved unchanged tasks:
+- Reopened tasks and reasons:
+- New or revised tasks:
+- Resolved or retained blockers:
+- Superseded/removed tasks and history pointers:
+- Validation still required:
 ```
 
 ## Output
