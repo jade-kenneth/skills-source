@@ -134,18 +134,28 @@ task file. Compare the actual repository and test evidence as well. A previous
 `[x]` is historical evidence, not proof that the task satisfies the new
 requirements.
 
-### 5.2 Classify every affected task
+### 5.2 Classify every affected task on two axes
 
-For each task, classify it as exactly one of the following:
+First classify how the task relates to the current canonical requirements:
 
-| Classification | Required action |
+| Requirement classification | Required action |
 | --- | --- |
 | Unchanged | Preserve the status, evidence, decisions, and notes when current evidence still satisfies the unchanged acceptance criteria. |
-| Scope or acceptance changed | Keep the historical evidence, update the acceptance criteria and references, and create the remaining work. Reopen the task as `[~]` when an existing implementation is being extended or is already underway; use `[ ]` when the changed work has not started. |
+| Scope or acceptance changed | Keep the historical evidence, update the acceptance criteria and references, and create the remaining work. Determine `[ ]` or `[~]` from whether that changed work has actually started. |
 | Newly required | Add a new atomic `[ ]` task. Never mark it `[x]` based on an older related task. |
 | Superseded or removed | Remove it from active work only when the current canonical documents explicitly supersede or remove it. Preserve a short history entry explaining what replaced it. |
+
+Then classify its current blocker transition separately:
+
+| Blocker classification | Required action |
+| --- | --- |
 | Blocker resolved | Remove the obsolete active blocker, preserve its history, and make the newly unblocked work `[ ]` or `[~]` according to actual evidence. |
 | Still blocked | Keep `⚠ blocked` with the exact current decision or source needed. Do not retain a blocker solely because it existed in the previous tracker. |
+
+A task may have one requirement classification and one blocker classification at
+the same time. For example, its acceptance criteria may change while an earlier
+design blocker is also resolved. Do not force those independent changes into one
+classification.
 
 If an old task cannot be mapped confidently to the current requirements, do not
 preserve `[x]` silently. Mark it for reconciliation, split the historical work
@@ -155,16 +165,25 @@ from the remaining work, or ask for the missing decision.
 
 - Preserve `[x]` only when the current acceptance criteria are unchanged and
   repository/test evidence still validates them.
-- Reopen a completed task as `[~]` when the updated requirement extends its
-  implementation and the existing implementation provides a valid starting
-  point or work is already underway.
+- Reopen a completed task as `[~]` only when evidence shows that implementation
+  of the updated or newly added acceptance criteria has actually started.
 - Use `[ ]` for newly required or changed work that has not started.
+- An older implementation may be useful historical evidence, but it does not by
+  itself mean the changed work is in progress. If none of the new acceptance
+  criteria has started, use `[ ]` and preserve the previous completion evidence
+  in the task history.
 - Never mark changed requirements `[x]` until the updated acceptance criteria
   and required validation have passed.
 - Preserve prior evidence, dates, decisions, and user notes. Add a dated
   explanation whenever a task is reopened, split, superseded, or unblocked.
 - Keep completed historical work separate from the remaining acceptance
   criteria; do not erase the history to make the checkbox appear clean.
+
+Example: a previously completed `[x]` photo-upload task gains a new compression
+requirement. Existing upload code remains recorded as completed history. If
+compression work has not started, the reconciled remaining task is `[ ]`; after
+implementation of compression begins, it becomes `[~]`; it returns to `[x]` only
+after the updated acceptance criteria and validation pass.
 
 ### 5.4 Reconcile blockers and phase status
 
