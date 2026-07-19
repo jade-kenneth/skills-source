@@ -117,6 +117,10 @@ grep -Fq 'Classify every affected task on two axes' "$GENERATE_PROJECT_TASKS"
 grep -Fq 'of the updated or newly added acceptance criteria has actually started' "$GENERATE_PROJECT_TASKS"
 grep -Fq 'An older implementation may be useful historical evidence' "$GENERATE_PROJECT_TASKS"
 grep -Fq 'A task may have one requirement classification and one blocker classification' "$GENERATE_PROJECT_TASKS"
+grep -Fq 'git hash-object "Product Specification.md"' "$GENERATE_PROJECT_TASKS"
+grep -Fq 'Previous reconciliation fingerprints:' "$GENERATE_PROJECT_TASKS"
+grep -Fq 'Evidence/history:' "$GENERATE_PROJECT_TASKS"
+grep -Fq 'Reconciliation: <preserved/reopened/added/revised/unblocked/superseded and why>' "$GENERATE_PROJECT_TASKS"
 grep -Fq '## Reconciliation report' "$GENERATE_PROJECT_TASKS"
 if grep -Fq 'existing implementation provides a valid starting point or work is already underway' "$GENERATE_PROJECT_TASKS"; then
   echo "generate-project-tasks must not infer in-progress work from an older implementation." >&2
