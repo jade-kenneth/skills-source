@@ -48,7 +48,7 @@ This scan is non-negotiable. No implementation may begin before it is completed 
 
 Record the scan in the active task file under a `Pattern scan` heading before the first line of implementation: the exemplar file paths consulted, the end-to-end trace followed, and the pattern decisions adopted. A change without this record is treated as unscanned. Reviewers verify the record exists and that the implementation matches it; either failure rejects the phase.
 
-### 2a. Translate prototype outcomes through production architecture
+### 3. Translate prototype outcomes through production architecture
 
 Claude Design prototypes are authoritative for visible outcomes, interaction
 intent, copy, and required states inside `data-app-root`. Their implementation
@@ -95,7 +95,7 @@ mock/local implementation to make the screen appear complete. Review must trace
 every data-backed action end-to-end and reject hard-coded or duplicated production
 state even when visual fidelity passes.
 
-### 3. Diagnose or define the change
+### 4. Diagnose or define the change
 
 For a bug fix:
 
@@ -110,7 +110,7 @@ For an enhancement:
 - Identify acceptance criteria, affected states, edge cases, and compatibility constraints.
 - Find the nearest comparable implementation before introducing a new pattern or abstraction.
 
-### 4. Plan and implement the smallest coherent change
+### 5. Plan and implement the smallest coherent change
 
 For full-project execution after the canonical Product Specification and Implementation Plan exist, generate or reconcile the root `TASK_<project-slug>.md`. In Claude Code, use `/generate-project-tasks <project name>`. In Codex or any agent without slash-command support, read `.skills-source/commands/generate-project-tasks.md` in full and execute it directly; if `.skills-source/` is missing, run `npm run sync-skills` first. For a small standalone change outside that project tracker, use a scoped `task.md`. Keep either task file aligned with reality.
 
@@ -179,7 +179,7 @@ npm run boilerplate:contribute -- --sha <full-40-character-sha> [--branch <name>
   revision versus ported updates pending acknowledgement. Resolve divergence by
   contributing it upstream or recording why it stays product-specific.
 
-### 5. Validate in proportion to risk
+### 6. Validate in proportion to risk
 
 Run the smallest relevant checks first:
 
@@ -204,7 +204,7 @@ Increase validation for authentication, authorization, sensitive data, persisten
 
 Do not claim a check passed unless it ran successfully. If a check cannot run, report the command, reason, and remaining risk.
 
-### 6. Close out accurately
+### 7. Close out accurately
 
 - Inspect the final diff and working tree for unintended or unrelated edits.
 - Update task checkboxes and notes to match the actual repository state.
@@ -281,6 +281,8 @@ Use the following compact structure for a small scoped `task.md`; `.skills-sourc
 
 ## Production mapping
 
+Complete when the change implements a prototype-backed or data-backed surface; otherwise write `Not applicable` and delete the fields below.
+
 - State ownership: <server/cache, persisted client/session, form, ephemeral UI>
 - Architecture source: <project config/plan → protected foundation → exemplar → routed skill>
 - Read path: <configured transport/operation → contract/types → cache wrapper → consumer>
@@ -312,7 +314,7 @@ Use the following compact structure for a small scoped `task.md`; `.skills-sourc
 ## Verification
 
 - [ ] Pattern scan recorded before implementation and the code matches it
-- [ ] Prototype outcomes are preserved through the recorded production mapping; no mock data, server state, or manual-only validation was copied as architecture
+- [ ] Prototype outcomes are preserved through the recorded production mapping, or the task records `Not applicable`; no mock data, server state, or manual-only validation was copied as architecture
 - [ ] Lint passes for the affected project
 - [ ] Typecheck passes for the affected project
 - [ ] Relevant tests pass

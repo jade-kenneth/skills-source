@@ -84,6 +84,14 @@ placeholders for information the scan already produced.
   screens outside the request.
 - Forbid application implementation, backend architecture invented to fill a
   visual gap, and any credential, token, connection string, or production data.
+- Prototype code may use local mock data, component state, fake delays, and
+  manual checks only to make the requested states and interactions reviewable.
+  Claude Design must label those mechanisms
+  `PROTOTYPE ONLY — MAP TO PRODUCTION ARCHITECTURE` in the handoff updates and
+  must not prescribe local state, browser storage, manual validation, direct
+  network calls, authentication, authorization, persistence, or cache behavior
+  as production architecture; the repository owns those decisions during
+  build-document reconciliation.
 
 ### Requested designs
 
