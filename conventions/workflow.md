@@ -253,6 +253,9 @@ When Product Specification.md or Implementation Plan.md changes, task
 reconciliation must compare the affected task's current acceptance criteria,
 canonical references, repository evidence, and blockers. Do not preserve `[x]`
 just because a task was previously complete or its phase name is unchanged.
+Record and compare full-file content fingerprints for Product Specification.md
+and Implementation Plan.md, and keep task-level canonical references,
+evidence/history, and reconciliation reasons so the comparison is auditable.
 Preserve `[x]` only when the acceptance criteria are unchanged and still
 validated. Reopen an affected completed task as `[~]` only when implementation
 of its updated acceptance criteria has actually started; an older implementation
