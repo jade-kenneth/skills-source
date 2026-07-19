@@ -110,6 +110,23 @@ if grep -Eq 'ask me for the exact connection string|mongodb\+srv://user:pass' "$
   exit 1
 fi
 
+echo "Validating project-task reconciliation contract"
+GENERATE_PROJECT_TASKS="$ROOT/commands/generate-project-tasks.md"
+test -f "$GENERATE_PROJECT_TASKS"
+grep -Fq 'Classify every affected task on two axes' "$GENERATE_PROJECT_TASKS"
+grep -Fq 'of the updated or newly added acceptance criteria has actually started' "$GENERATE_PROJECT_TASKS"
+grep -Fq 'An older implementation may be useful historical evidence' "$GENERATE_PROJECT_TASKS"
+grep -Fq 'A task may have one requirement classification and one blocker classification' "$GENERATE_PROJECT_TASKS"
+grep -Fq 'git hash-object "Product Specification.md"' "$GENERATE_PROJECT_TASKS"
+grep -Fq 'Previous reconciliation fingerprints:' "$GENERATE_PROJECT_TASKS"
+grep -Fq 'Evidence/history:' "$GENERATE_PROJECT_TASKS"
+grep -Fq 'Reconciliation: <preserved/reopened/added/revised/unblocked/superseded and why>' "$GENERATE_PROJECT_TASKS"
+grep -Fq '## Reconciliation report' "$GENERATE_PROJECT_TASKS"
+if grep -Fq 'existing implementation provides a valid starting point or work is already underway' "$GENERATE_PROJECT_TASKS"; then
+  echo "generate-project-tasks must not infer in-progress work from an older implementation." >&2
+  exit 1
+fi
+
 echo "Validating skills"
 while IFS= read -r -d '' skill_file; do
   python3 "$VALIDATOR" "$(dirname "$skill_file")"
