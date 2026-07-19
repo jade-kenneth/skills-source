@@ -129,6 +129,15 @@ new task to the current canonical requirements:
 - the task's acceptance criteria, evidence, implementation references, and
   active blockers.
 
+Record a content fingerprint for each canonical document using
+`git hash-object "Product Specification.md"` and
+`git hash-object "Implementation Plan.md"` (or an equivalent full-file digest
+when Git is unavailable). Compare them with the fingerprints stored by the
+previous reconciliation. A changed fingerprint requires the requirement mapping
+and affected-task comparison below; it must never be handled as a date-only or
+metadata-only refresh. A matching fingerprint does not override visible
+repository or evidence changes.
+
 Compare the current acceptance criteria and required behavior with the previous
 task file. Compare the actual repository and test evidence as well. A previous
 `[x]` is historical evidence, not proof that the task satisfies the new
@@ -219,8 +228,9 @@ any mismatch between task status and Implementation Plan phase status.
 > Those files remain canonical; this file is the detailed execution tracker.
 
 ## Source and status
-- Product Specification:
-- Implementation Plan:
+- Product Specification: `Product Specification.md` · content fingerprint:
+- Implementation Plan: `Implementation Plan.md` · content fingerprint:
+- Previous reconciliation fingerprints:
 - Generated/reconciled:
 - Current phase:
 
@@ -242,8 +252,11 @@ References: Product Specification §… · Implementation Plan Phase 1
 
 ### 1.1 <task group>
 - [ ] [owner] <one concrete action>
+  - Requirements: Product Specification §… · Implementation Plan Phase … item …
   - Dependencies:
   - Acceptance:
+  - Evidence/history:
+  - Reconciliation: <preserved/reopened/added/revised/unblocked/superseded and why>
   - Validate:
 
 ## Cross-phase verification
