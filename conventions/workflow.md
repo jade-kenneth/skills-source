@@ -97,13 +97,15 @@ state even when visual fidelity passes.
 
 Fidelity QA itself does not stall on a missing dependency: when the backend data
 or integration a QA row needs does not exist yet, the reviewer may run QA against
-a temporary marked stand-in (`QA-BYPASS(Phase N)` comment or `qa-fixtures/` path)
-so every visual and interaction row is exercised immediately. Stand-ins are
+a temporary stand-in, each carrying a `QA-BYPASS(Phase N)` marker comment (also
+on files under `qa-fixtures/`), so every visual and interaction row is exercised
+immediately. Stand-ins are
 forbidden when the real dependency exists — bypassing a built integration is an
 automatic row failure. Rows verified through a stand-in are recorded as
 `🔁 re-verify (Phase N)` rather than passed, the screen stays `[~]`, and once the
-blocking phase lands the executor removes the stand-in (zero marker hits) and
-re-runs exactly those rows against the real path before the screen can be `[x]`.
+blocking phase lands the executor removes the stand-in (zero `QA-BYPASS` hits and
+zero `qa-fixtures/` references) and re-runs exactly those rows against the real
+path before the screen can be `[x]`.
 
 ### 4. Diagnose or define the change
 

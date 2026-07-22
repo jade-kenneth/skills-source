@@ -155,8 +155,8 @@ Global: [ ] boilerplate UI fully removed · [ ] no default/scaffold theme leakin
 - A temporary QA stand-in (seeded fixture, stubbed resolver, fake handler) is allowed **only when the backend data or integration a row needs does not exist yet** — not implemented in any phase so far. If the real operation, seed, or integration exists, QA runs against it; substituting a stand-in for an existing dependency is an automatic row failure.
 - With the stand-in in place, run **every** row now — visual rows (Fonts, Layout, Spacing, Color, Style moves, Copy, Imagery, Production boundary, Platform-native conversion, Responsive devices, Side-by-side) pass or fail permanently on their own merits and are never deferred.
 - Any row whose verification touched a stand-in (typically Data, Architecture mapping, No prototype runtime leakage, and sometimes States/State consistency/Guardrails) is marked `🔁 re-verify (Phase N)` naming the phase that delivers the real dependency. A `🔁` row is not a pass; it is tracked debt.
-- Every stand-in carries a single greppable marker — a `QA-BYPASS(Phase N)` comment or a path under `qa-fixtures/` — and never ships beyond QA.
-- The screen stays `[~]` while any `🔁` row remains. When the blocking phase completes, the executor removes the stand-in, confirms zero `QA-BYPASS` marker hits for that screen, and re-runs exactly the `🔁` rows against the real path; only then may the screen be `[x]`. "No prototype runtime leakage" is always in the re-verify set whenever a stand-in was used.
+- Every stand-in carries a `QA-BYPASS(Phase N)` marker comment — including files placed under `qa-fixtures/` — and never ships beyond QA.
+- The screen stays `[~]` while any `🔁` row remains. When the blocking phase completes, the executor removes the stand-in, confirms **both** zero `QA-BYPASS` marker hits and zero `qa-fixtures/` references for that screen, and re-runs exactly the `🔁` rows against the real path; only then may the screen be `[x]`. "No prototype runtime leakage" is always in the re-verify set whenever a stand-in was used.
 
 ### Step 4 — Wire the two docs together (bidirectional)
 
