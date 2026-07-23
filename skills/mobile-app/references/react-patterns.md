@@ -1095,3 +1095,43 @@ Prefer reuse before custom implementation.
 - Check project registries and existing shared components first.
 - Build custom components only when existing options do not fit the requirement.
 - Avoid creating redundant components that overlap with the design system or shared primitives.
+
+### Preserve shared `Pressable` invariants when composing styles
+
+A shared primitive must not lose its dimensions, radius, alignment, or interaction
+styling when a consumer supplies `style`. Destructure the caller style before
+spreading the remaining `PressableProps`, then compose static and callback styles
+after the invariant base style:
+
+```tsx
+function IconButton({
+  style: callerStyle,
+  ...props
+}: PressableProps) {
+  return (
+    <Pressable
+      {...props}
+      accessibilityRole="button"
+      style={(state) => [
+        {
+          alignItems: 'center',
+          borderRadius: 22,
+          height: 44,
+          justifyContent: 'center',
+          width: 44,
+        },
+        typeof callerStyle === 'function'
+          ? callerStyle(state)
+          : callerStyle,
+      ]}
+    />
+  );
+}
+```
+
+- Never set a base `style` and then spread props afterward; a caller style would
+  replace the complete base style.
+- Support both `StyleProp` values and Pressable state callbacks.
+- Keep semantic invariants such as role, target geometry, disabled behavior, and
+  required labels owned by the primitive. Expose explicit props for intentional
+  semantic variation instead of allowing incidental prop order to remove them.

@@ -77,6 +77,11 @@ function MyScreen() {
 }
 ```
 
+For an independently fetched tab, accordion, or secondary panel, keep the error
+and retry action inside that panel. Do not replace a successfully loaded parent
+screen or route-level navigation with a full-screen error, and do not retry
+unrelated panel queries.
+
 ---
 
 ## ErrorScreen Component

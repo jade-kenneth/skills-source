@@ -1173,6 +1173,40 @@ function NotesList() {
 }
 ```
 
+#### Query-backed panels under a persistent screen shell
+
+When tabs, accordions, or other panels fetch independently, each panel owns its
+complete query boundary:
+
+- Give each response shape a distinct, stable query key. Do not reuse a key for
+  different GraphQL documents or projections merely because they address the
+  same entity; a TanStack Query key identifies the complete cached response.
+- Keep the selected panel in local UI state, but keep panel data in its query
+  cache.
+- Use `enabled` to defer a non-critical panel's initial request until its
+  prerequisites exist and the panel becomes active, unless intentional
+  prefetching provides a measured benefit.
+- Render loading, error with retry, empty, and ready states inside the panel so
+  the parent identity, actions, navigation, and other persistent content stay
+  mounted.
+- Retry only the failed panel query. Pull-to-refresh should refetch the parent
+  and the active enabled panel without imperatively fetching every disabled
+  panel.
+
+```tsx
+const [panel, setPanel] = useState<'summary' | 'history'>('summary');
+
+const summaryQuery = useQuery({
+  queryKey: recordKeys.summary(recordId),
+  queryFn: () => fetchSummary(recordId),
+});
+const historyQuery = useQuery({
+  enabled: panel === 'history' && Boolean(recordId),
+  queryKey: recordKeys.history(recordId),
+  queryFn: () => fetchHistory(recordId),
+});
+```
+
 ### 6.4 Toast on Mutation Outcomes
 
 ```ts

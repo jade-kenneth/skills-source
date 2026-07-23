@@ -8,6 +8,51 @@
 - Use flexbox over fixed widths. Reserve fixed sizes for icons and avatars.
 - Verify layouts on small devices (375pt wide) before considering a feature done.
 
+### Wrapping square media grids
+
+For a fixed-column media grid built with `flexWrap`, measure the available width
+and give every tile concrete square bounds. Percentage width plus `aspectRatio`
+directly on an image child can remain unresolved when its parent or media
+renderer does not provide a reliable cross-axis size, producing counted but
+blank or collapsed media.
+
+```tsx
+const { width } = useWindowDimensions();
+const columns = 3;
+const horizontalInsets = 48;
+const gap = 8;
+const tileSize =
+  (width - horizontalInsets - gap * (columns - 1)) / columns;
+
+<View style={{ flexDirection: 'row', flexWrap: 'wrap', gap }}>
+  {media.map((item) => (
+    <View
+      key={item.id}
+      style={{
+        borderRadius: 12,
+        height: tileSize,
+        overflow: 'hidden',
+        width: tileSize,
+      }}
+    >
+      <MediaImage
+        item={item}
+        style={{ height: '100%', width: '100%' }}
+      />
+    </View>
+  ))}
+</View>;
+```
+
+- Use `useWindowDimensions()` for a screen-width grid. If the grid is nested in a
+  narrower container, measure that container with `onLayout` instead.
+- Subtract horizontal insets and every inter-column gap before dividing by the
+  column count.
+- Apply the same measured dimensions to loading skeletons, real media, and
+  overflow or "see all" tiles so state transitions do not shift the grid.
+- Verify actual decoded media, not only query counts, at the smallest supported
+  phone, a large phone, and increased text size.
+
 ## Theming (Light + Dark Mode)
 
 - If a requirement mentions light or dark mode, implement both from the start — retrofitting costs more.
