@@ -21,6 +21,10 @@ the server or session. Map every value first, keep server records in the query
 cache, and implement optimistic changes in that cache with rollback instead of a
 second local source of truth.
 
+To inspect transient screen states (loading, empty, error) without mock data
+in the production path, use the development-only harness in
+`preview-state-harness.md` — never a demo flag or mock entities in shipped code.
+
 Avoid prop drilling through 3 or more levels of intermediate components. Use context, composition, or a state-management library when state is shared broadly.
 
 ---

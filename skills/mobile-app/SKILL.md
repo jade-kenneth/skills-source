@@ -93,6 +93,7 @@ Every rule area has a dedicated file under `references/`. Each file is self-cont
 | Rich text: plain text extraction, Prose render | `references/rich-text.md`                                                |
 | Toast / showToast / ToastHost                  | `references/toast-feedback.md`                                           |
 | ErrorBoundary, screen-level error states       | `references/error-handling.md`                                           |
+| Dev-only preview of loading/empty/error states | `references/preview-state-harness.md`                                    |
 | Accessibility rules + audit checklist          | `references/accessibility.md`                                            |
 | Icons + dark mode color tokens                 | `../mobile-native-ui-design/references/icons.md`                         |
 

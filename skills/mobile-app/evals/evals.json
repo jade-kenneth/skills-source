@@ -81,6 +81,19 @@
         "Uses react-hook-form and zod for feedback while requiring API validation and authorization",
         "Keeps only ephemeral presentation state local and verifies loading, error, offline, success, invalidation, and rollback behavior"
       ]
+    },
+    {
+      "id": 8,
+      "prompt": "Fidelity QA needs screenshots of a query-backed screen's loading, empty, and error states in both themes, but loading flashes by, errors need a network failure, and empty would require deleting seed data. Make the states inspectable.",
+      "expected_output": "A development-only state harness: the production query path stays untouched, an explicit state selector behind __DEV__ renders typed fixtures declared with satisfies against the generated query type, retry interactions still transition states, and the preview is never treated as evidence the API or seed data works.",
+      "files": [],
+      "expectations": [
+        "Keeps the production query path owned by the configured data client with no mock data or demo flags reachable in a release build",
+        "Gates the preview path behind __DEV__ so it is compiled out of release builds",
+        "Types fixtures with satisfies against the generated query contract instead of hand-written parallel types",
+        "Selects states explicitly rather than using fake delays or random failures, and preserves real interactions such as retry transitioning from error to populated",
+        "Does not delete or reseed live data to reach the empty state, and does not present the preview as verification of the real API"
+      ]
     }
   ]
 }
