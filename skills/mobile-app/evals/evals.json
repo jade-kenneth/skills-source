@@ -81,6 +81,42 @@
         "Uses react-hook-form and zod for feedback while requiring API validation and authorization",
         "Keeps only ephemeral presentation state local and verifies loading, error, offline, success, invalidation, and rollback behavior"
       ]
+    },
+    {
+      "id": 8,
+      "prompt": "Fix a shared React Native IconButton that defines its base style before spreading PressableProps. A new consumer needs a callback style for pressed opacity and a static shadow without changing the button's compact dimensions or accessibility behavior.",
+      "expected_output": "A shared Pressable primitive that composes static or callback caller styles after invariant base styles while retaining semantic and target-size ownership.",
+      "files": [],
+      "expectations": [
+        "Destructures the caller style before spreading the remaining PressableProps",
+        "Supports both StyleProp values and Pressable state callbacks",
+        "Preserves base dimensions, alignment, radius, role, label, disabled behavior, and target geometry",
+        "Does not rely on prop-spread order to protect semantic invariants"
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "Implement a React Native detail screen with a persistent identity header and three tabs. Each tab fetches a different GraphQL projection, should load only when first opened, and needs independent loading, error, empty, retry, and pull-to-refresh behavior.",
+      "expected_output": "A persistent screen shell with local selected-tab state and distinct lazy query/cache boundaries for each independently fetched panel.",
+      "files": [],
+      "expectations": [
+        "Uses a distinct stable query key for every response projection",
+        "Keeps selected-tab state local while server data remains in query caches",
+        "Uses enabled conditions for non-critical inactive panels",
+        "Scopes loading, error, empty, retry, and refresh behavior to the active panel without unmounting the parent shell"
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "Diagnose a three-column Expo media preview where the query count is correct but thumbnails inside a flexWrap row are blank. Each image has width '31%' and aspectRatio: 1, with no explicit square wrapper.",
+      "expected_output": "A responsive React Native grid that derives concrete tile dimensions from live available width and renders media inside explicit square wrappers.",
+      "files": [],
+      "expectations": [
+        "Subtracts horizontal insets and every column gap before dividing available width",
+        "Uses useWindowDimensions for screen-width grids or onLayout for nested containers",
+        "Gives a wrapper explicit equal width and height and makes the media child fill it",
+        "Uses the same geometry for skeleton, ready, and overflow tiles and verifies decoded media at multiple viewport sizes"
+      ]
     }
   ]
 }
