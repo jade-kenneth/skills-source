@@ -110,5 +110,11 @@ const { isLoading, isError, data, refetch } = useQueryStatePreview(query, {
 ```
 
 The boilerplate ships this harness (`apps/*-mobile/hooks/use-query-state-preview.ts`)
-with a canonical usage on the Home screen; reuse it rather than reinventing a
-per-screen mechanism.
+with a canonical usage on the Home screen, and a mutation companion
+(`use-mutation-state-preview.ts`, canonical usage on the profile edit screen)
+that substitutes only the renderable slice — pending flag and inline error
+with real server copy — while leaving `mutate` and success side effects
+(toast, alert, navigation) on the live path. Reuse these rather than
+reinventing a per-screen mechanism; build further substitutions (pagination,
+subscriptions, device states, clock, flags) to the same rules only when a
+real screen needs them.
