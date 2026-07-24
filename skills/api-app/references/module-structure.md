@@ -53,6 +53,42 @@ export class DomainService {
 }
 ```
 
+## Provider inheritance and constructor injection
+
+Nest resolves constructor dependencies from runtime metadata on the provider
+class. When a concrete provider extends an abstract base whose constructor
+accepts injected collaborators, declare that constructor on every concrete
+provider and forward the arguments through `super(...)`. Do not rely on an
+inherited constructor to expose the concrete provider's injection contract.
+
+```ts
+abstract class BaseAdapter {
+  constructor(protected readonly config: ConfigService) {}
+}
+
+@Injectable()
+export class ConcreteAdapter extends BaseAdapter {
+  constructor(config: ConfigService) {
+    super(config);
+  }
+}
+```
+
+- Let the base constructor own shared `protected readonly` fields. The concrete
+  constructor declares the dependency for injection and forwards it; it should
+  not create a second property for the same collaborator.
+- Register concrete subclasses as providers when callers select or inject those
+  implementations. Do not register an abstract base merely because subclasses
+  extend it.
+- An abstract class can intentionally be a runtime DI token through an explicit
+  custom-provider mapping such as `{ provide: BaseAdapter, useClass:
+  ConcreteAdapter }`. That is a separate contract decision, not a substitute for
+  making each concrete class's constructor dependencies explicit.
+- Cover inherited provider behavior with a Nest testing module that resolves the
+  concrete class and exercises a base method using the injected collaborator.
+  When diagnosing missing injection, inspect `design:paramtypes` and any
+  self-declared `@Inject()` metadata on the concrete provider.
+
 ## Cross-cutting infra (use, don't reinvent)
 
 - **In-process events** — `@nestjs/event-emitter` for decoupled side effects within the process.
