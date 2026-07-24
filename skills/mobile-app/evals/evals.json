@@ -3,12 +3,13 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Add an Expo screen for creating an announcement with a native date picker, keyboard-safe form layout, offline-aware submission, and GraphQL mutation feedback.",
-      "expected_output": "A project-aligned native implementation covering platform behavior, safe areas, keyboard handling, network state, validation, cache updates, and accessible feedback.",
+      "prompt": "Add an Expo screen for creating an announcement with a native date picker, keyboard-safe form layout, offline-aware submission, GraphQL mutation feedback, and a custom sticky bottom submission bar.",
+      "expected_output": "A project-aligned native implementation covering platform behavior, single-owner bottom insets, keyboard handling, network state, validation, cache updates, and accessible feedback.",
       "files": [],
       "expectations": [
         "Uses native date-picker behavior rather than a web input pattern",
-        "Accounts for keyboard avoidance and safe areas",
+        "Uses keyboard avoidance and gives the sticky bottom surface sole ownership of the bottom safe-area inset",
+        "Excludes the bottom edge from the enclosing wrapper and reserves scroll clearance for the bar height plus inset",
         "Prevents or explains submission while offline and surfaces retry feedback",
         "Uses established GraphQL mutation and cache patterns"
       ]
