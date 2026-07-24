@@ -22,3 +22,9 @@ Keep dependencies current and intentional.
 | Expo package exists | Use it — no custom native build required |
 | No Expo equivalent | Evaluate native library; confirm it works with Expo managed workflow or requires bare workflow |
 | Library is unmaintained | Find an alternative or fork — do not take on dead dependencies |
+
+Before declaring a native format or capability unsupported, check the installed
+package version rather than relying on remembered constraints. Review its current
+documentation and changelog, then inspect platform source, dependency manifests,
+or generated native artifacts when those are the authoritative evidence of what
+the shipped binary includes.

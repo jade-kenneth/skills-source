@@ -81,6 +81,19 @@
         "Uses react-hook-form and zod for feedback while requiring API validation and authorization",
         "Keeps only ephemeral presentation state local and verifies loading, error, offline, success, invalidation, and rollback behavior"
       ]
+    },
+    {
+      "id": 8,
+      "prompt": "An Expo gallery uploads every image-picker result directly. The picker uses quality 0.5, but twelve-megapixel photos still consume several megabytes and HEIC selections fail a JPEG-only upload contract. Fix the upload preparation path and define regression coverage.",
+      "expected_output": "A product-tuned image transcode before upload that caps dimensions, preserves aspect ratio, normalizes the encoding, keeps MIME metadata aligned with the resulting bytes, and leaves videos on their own path.",
+      "files": [],
+      "expectations": [
+        "Does not treat the image picker's quality option as a dimension resize",
+        "Caps only the longest edge and lets the transcoder preserve aspect ratio",
+        "Uses the resulting image MIME type consistently when minting and executing the upload",
+        "Falls back to the original only when its actual format is accepted by the upload contract",
+        "Keeps resize arithmetic pure and tests orientation, no-op, and missing-dimension cases"
+      ]
     }
   ]
 }
