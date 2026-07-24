@@ -108,6 +108,19 @@
         "Places business validation in the service and persistence behind the repository abstraction",
         "Defines stable error mapping, generated client types, and focused validation and authorization tests"
       ]
+    },
+    {
+      "id": 10,
+      "prompt": "Two NestJS providers extend an abstract adapter whose constructor stores ConfigService. Both subclasses are decorated with Injectable but declare no constructor, and inherited methods receive an undefined config dependency at runtime. Correct the provider design and define focused verification.",
+      "expected_output": "Each concrete provider explicitly declares and forwards the base dependency, the base owns the shared protected field, provider registration reflects the intended runtime tokens, and a Nest testing module exercises the inherited behavior.",
+      "files": [],
+      "expectations": [
+        "Redeclares the dependency constructor on every concrete provider and forwards it through super",
+        "Stores the shared collaborator only on the base instead of creating duplicate subclass properties",
+        "Registers concrete implementations and does not register the abstract base merely for inheritance",
+        "Allows an abstract runtime token only through an intentional custom-provider mapping",
+        "Verifies concrete-provider resolution and an inherited method that uses the injected dependency"
+      ]
     }
   ]
 }
