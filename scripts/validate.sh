@@ -18,6 +18,65 @@ test -f "$ROOT/commands/promote-project-learning.md"
 grep -Fq "skill-contributions/" "$ROOT/commands/capture-project-learning.md"
 grep -Fq "skills/" "$ROOT/commands/promote-project-learning.md"
 
+echo "Validating command reference integrity"
+# Every `commands/<name>.md` path reference must resolve. This is what catches a
+# command being renamed or retired while stubs, conventions, or other commands
+# still point at the old file.
+dangling_refs=0
+while IFS= read -r ref; do
+  if [ ! -f "$ROOT/commands/$ref" ]; then
+    echo "Dangling command reference: commands/$ref" >&2
+    dangling_refs=1
+  fi
+done < <(grep -rhoE '(\.\./|\.skills-source/)?commands/[A-Za-z0-9._-]+\.md' \
+  "$ROOT/commands" "$ROOT/prompts" "$ROOT/conventions" "$ROOT/scripts" "$ROOT/README.md" \
+  | sed -E 's#^.*commands/##' | sort -u)
+test "$dangling_refs" = 0
+
+# Slash-command mentions must name a real command. The allowlist holds non-command
+# paths and retired names that a command must still recognize in order to report
+# them as stale — `gen-build-docs` is named by stack-doctor for exactly that reason.
+SLASH_ALLOWLIST=" admin gen-build-docs "
+unknown_slash=0
+while IFS= read -r name; do
+  case "$SLASH_ALLOWLIST" in *" $name "*) continue ;; esac
+  if [ ! -f "$ROOT/commands/$name.md" ]; then
+    echo "Unknown slash command referenced: /$name" >&2
+    unknown_slash=1
+  fi
+done < <(grep -rhoE '`/[a-z][a-z0-9-]*' \
+  "$ROOT/commands" "$ROOT/prompts" "$ROOT/conventions" "$ROOT/README.md" \
+  | sed 's#^`/##' | sort -u)
+test "$unknown_slash" = 0
+
+echo "Validating stack-doctor against the current pipeline"
+STACK_DOCTOR="$ROOT/commands/stack-doctor.md"
+test -f "$STACK_DOCTOR"
+# stack-doctor is the command whose job is catching drift, so it must name the
+# current artifacts. Each string below replaced a stale one it used to check for.
+grep -Fq 'Product Specification.md' "$STACK_DOCTOR"
+grep -Fq 'Implementation Plan.md' "$STACK_DOCTOR"
+grep -Fq 'design/design-release.json' "$STACK_DOCTOR"
+grep -Fq 'design/design-sync.lock.json' "$STACK_DOCTOR"
+grep -Fq 'design/handoff/' "$STACK_DOCTOR"
+grep -Fq 'screen-inventory.md' "$STACK_DOCTOR"
+grep -Fq 'TASK_<project-slug>.md' "$STACK_DOCTOR"
+grep -Fq 'data-app-root' "$STACK_DOCTOR"
+grep -Fq '.dc.html' "$STACK_DOCTOR"
+grep -Fq 'npm run design:validate-final' "$STACK_DOCTOR"
+grep -Fq 'boilerplate.lock.json' "$STACK_DOCTOR"
+grep -Fq '/sync-build-docs <project name>' "$STACK_DOCTOR"
+grep -Fq '/finalize-build-docs <project name>' "$STACK_DOCTOR"
+grep -Fq 'Fix queue' "$STACK_DOCTOR"
+if grep -Fq 'task_agent_stack.md' "$ROOT/commands" -r; then
+  echo "task_agent_stack.md does not exist in either repository; remove the reference." >&2
+  exit 1
+fi
+if grep -Fq '[PROJECT]Reference.md' "$STACK_DOCTOR"; then
+  echo "stack-doctor must check the root Product Specification, not the retired [PROJECT]Reference.md." >&2
+  exit 1
+fi
+
 echo "Validating canonical Claude Design preparation command"
 PREPARE_DESIGN="$ROOT/commands/prepare-claude-design.md"
 DESIGN_PROMPT_POINTER="$ROOT/prompts/claude-design-handoff.md"

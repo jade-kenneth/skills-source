@@ -85,4 +85,4 @@ End with a short summary:
 - What was created vs. found existing (databases, properties, views, rows)
 - The URLs of Ops HQ, Projects, and Pipeline Items
 - Anything skipped and why
-- Remind me of the two integration points that consume this layer: Claude Code updates task status after each phase (CLAUDE.md instruction), and n8n polls the **Queue** view (Phase 7 of task_agent_stack.md).
+- Remind me of the two integration points that consume this layer: Claude Code syncs phase status during planning/review sessions (CLAUDE.md instruction — the executor never edits Notion), and automation polls the **Queue** view.
