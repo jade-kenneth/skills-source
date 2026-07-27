@@ -54,7 +54,15 @@ not add batch numbers to filenames.
 
 The synchronization lock is repository-owned and must never be authored or
 edited by Claude Design. It records the last successfully reconciled batch,
-revision, release ID, and prototype hashes.
+revision, release ID, prototype hashes, and the screen each prototype belongs to.
+
+Those hashes bind every prototype the repository has already accepted, not only
+the ones in the current release. A prototype that changes without being declared
+in `readyForBuild` fails validation, and a deleted prototype fails unless its
+screen is listed in `removedOrSuperseded`. This is what stops an already-built
+screen from being redesigned silently, so never resolve such a failure by
+editing the lock — return the release to Claude Design and have it declare the
+change.
 
 ## 2. Read the release and repository
 
@@ -155,7 +163,8 @@ npm run design:ack
 ```
 
 This deterministically writes `design/design-sync.lock.json` with the accepted
-batch, revision, release ID, and prototype hashes. Never acknowledge before the
+batch, revision, release ID, prototype hashes, and prototype-to-screen names,
+pruning prototypes retired by this release. Never acknowledge before the
 documents are successfully reconciled. If acknowledgement fails, leave the
 release unacknowledged and report the error.
 
