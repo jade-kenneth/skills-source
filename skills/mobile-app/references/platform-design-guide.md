@@ -253,6 +253,17 @@ export function useBottomSafeSpacing(extra = 0) {
 - ALWAYS include `insets.bottom`
 - APPLY to: custom bottom nav, sticky buttons, bottom sheets, full-screen modals
 - ENSURE scroll content is not hidden behind bottom UI
+- ASSIGN the bottom inset to one owner. If a custom bottom surface owns it, the
+  enclosing screen wrapper must exclude the bottom edge so the surface reaches
+  the physical edge and paints behind system navigation.
+- DO NOT place an absolutely positioned bottom surface inside a parent that also
+  applies bottom safe-area padding.
+- COMPUTE scroll clearance from the bottom surface height plus the inset without
+  turning that clearance into a second outer safe-area owner.
+- AUDIT every bottom-slot consumer when shared edge ownership changes, including
+  bottom elements laid out in normal flow.
+- VERIFY both Android gesture and three-button navigation, checking that controls
+  stay clear and the intended surface background continues behind system UI.
 
 ---
 
