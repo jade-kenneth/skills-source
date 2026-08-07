@@ -31,6 +31,7 @@ For user-facing pages:
 - Make sure `robots.txt` allows public content and blocks sensitive or non-SEO routes.
 - Set `metadataBase` once in the root layout — without it, every `openGraph`/`twitter` image and canonical URL resolves to `http://localhost:3000` and breaks in production.
 - **When a page is publicly shareable or indexable** (landing, marketing, legal, public content), it must declare `openGraph` + `twitter` with a 1200×630 image, and its `description` must match that page's audience. Internal/authenticated tools (admin, account pages) don't need social metadata. See § 2a. Social Sharing (Open Graph / Twitter).
+- **Render decorative art as a CSS `background-image` on an `aria-hidden` element, never as an image element.** Search engines pick the result thumbnail from the page's images — not from `og:image` — so a decorative graphic that appears early or repeats will hijack the listing. `alt=""` does not exclude it. See § 2b. Search-result thumbnails.
 - Scope `robots: noindex` to the private **segment** layouts; never place it on the root layout (it silently de-indexes public pages and can suppress link previews).
 - Breadcrumbs and JSON-LD: add when they materially improve discoverability.
 
@@ -60,6 +61,7 @@ This is written for **App Router** first, with notes where behavior differs.
 
 1. [Metadata](#1-use-metadata-properly-app-router)
 2. [Dynamic Metadata](#2-use-dynamic-metadata-per-slug-blogproduct)
+2b. [Search-Result Thumbnails](#2b-search-result-thumbnails-come-from-the-pages-images-not-ogimage)
 3. [Canonical URLs + noindex](#3-canonical-urls--noindex-rules)
 4. [Structured Data](#4-structured-data-json-ld)
 5. [Sitemap + Robots](#5-sitemapxml--robotstxt)
@@ -549,8 +551,46 @@ Any page that can be **shared on social media or indexed by search** (landing, m
 | Public page not indexed / preview suppressed  | `robots: noindex` placed on the **root** layout instead of private segments    |
 | Cramped or cropped thumbnail                  | Square logo reused instead of a purpose-built 1200×630 card                     |
 | Wrong / admin-flavored description on a share  | Inherited a private `description`; not overridden on the public route          |
+| Search result shows a random decorative graphic | Decorative art shipped as `<img>`; the engine picked it over the real content image (see 2b) |
 
 **Verify after deploy.** Social platforms cache scrapes, so old/empty results persist until re-scraped. Confirm with the [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/), [LinkedIn Post Inspector](https://www.linkedin.com/post-inspector/), and [X Card Validator](https://cards-dev.twitter.com/validator) — use "Scrape Again" to bust the cache.
+
+### 2b. Search-result thumbnails come from the page's images, not `og:image`
+
+`og:image` controls **social share cards only**. Search engines ignore it when picking the thumbnail beside a result — they choose from the images actually present in the rendered HTML, favouring ones that appear early in the DOM, repeat across the page, and are large enough to render. A purely decorative graphic that satisfies those heuristics will beat the real product imagery, and `alt=""` does **not** exclude it: empty alt marks an image as decorative for assistive tech, not for crawlers.
+
+**Rule: decorative art is painted with CSS, never with an image element.** Background blobs, drifting clouds, mascots, glows, and pattern overlays belong in `background-image` on an `aria-hidden` element. Reserve `<img>` / the framework image component for images that carry meaning — product shots, screenshots, logos, photos, content illustrations.
+
+```tsx
+// ✅ Decorative — invisible to crawlers and to assistive tech
+<div
+  aria-hidden="true"
+  className="pointer-events-none absolute inset-0 bg-contain bg-no-repeat"
+  style={{ backgroundImage: 'url(/images/decorative-shape.png)' }}
+/>
+
+// ❌ Decorative art as an image element — a thumbnail candidate, especially
+// when it renders early or repeats several times on the page
+<Image src="/images/decorative-shape.png" alt="" width={272} height={181} />
+```
+
+This also removes the decorative asset from the image-optimization pipeline, so the meaningful image is the one the framework prioritizes.
+
+**Reinforce the image you *do* want chosen:**
+
+- Give the primary content image a descriptive `alt` and mark it `priority` / eager so it renders first.
+- Emit JSON-LD with an explicit image (`Organization.logo`, `WebPage.primaryImageOfPage`, or the type-appropriate `image`) — an explicit structured-data signal outweighs the engine's guess. See section 4.
+- Opt into the large thumbnail treatment in root metadata:
+
+  ```tsx
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 },
+  },
+  ```
+
+**Verify after deploy.** The thumbnail only changes on the next crawl-and-render, so expect days-to-weeks unless re-indexing is requested from the search console. Confirm the fix by fetching the deployed HTML and checking that no decorative asset remains as an image element and the JSON-LD block is present — don't judge from the search listing alone, which is stale by definition.
 
 ### 3. Canonical URLs + `noindex` Rules
 

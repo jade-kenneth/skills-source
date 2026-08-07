@@ -299,6 +299,29 @@ async function logout(router: AppRouterInstance) {
 
 ---
 
+## Screens That Wait on an Out-of-Band Decision
+
+A page that polls for a status only someone else can change (an approval queue, a verification step) must own the navigation for every terminal status it polls for. Do not rely on a global session re-check to move the user: `useAuth` typically re-evaluates on mount and on visibility change, so a decision that lands while the page is open updates the query data and nothing else — the user sits on a page that already knows it is obsolete.
+
+```ts
+useEffect(() => {
+  const status = statusQuery.data?.me.status;
+  if (status === Status.Approved) {
+    router.replace('/dashboard');
+    return;
+  }
+  if (status === Status.Rejected) {
+    router.replace('/registration/rejected');
+  }
+}, [statusQuery.data?.me.status, router]);
+```
+
+Cover every status the page can be redirected *out* of, including reversals (a rejection an admin later undoes), or the page becomes a dead end.
+
+When removing a store's emitter/listener mechanism, delete or replace its callers in the same change, and check for constants defined solely for it. A caller left behind type-errors, and if that is tolerated it throws exactly when the flow it guarded is reached — a path easy to miss in manual testing because it needs an external actor to trigger.
+
+---
+
 ## Anti-Patterns
 
 - Do not put session fetching logic inside `AuthProvider` — it belongs in `useAuth`.
@@ -311,6 +334,7 @@ async function logout(router: AppRouterInstance) {
 - Do not implement token refresh in individual query hooks — centralize in the HTTP client.
 - Do not call `store.clearSession()` without redirecting afterward.
 - Do not return `null` while redirecting in auth guards — render `<RouteGuard>` to prevent a blank flash.
+- Do not assume a global session re-check will move a user off a status-polling page — navigate on each terminal status from the page itself.
 
 ---
 

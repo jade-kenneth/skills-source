@@ -514,6 +514,25 @@ export default async function NotesPage() {
 }
 ```
 
+#### Cold Backends and the First Request of a Session
+
+A backend that scales to zero when idle answers its first request in tens of seconds and every later one in well under a second. The request that gates the entry screen pays that cost, and a plain spinner plus a short retry budget turns a recoverable wake-up into a visible failure — users retry by hand until the server happens to be warm.
+
+Diagnose before tuning: measure the endpoint warm. If warm latency is small, the wait is server wake-up, not a slow query — tune the client, not the query.
+
+- **Start it early.** Prefetch during app/route bootstrap (or on the server, where SSR applies) so the instance wakes before the screen that needs it mounts. Fire-and-forget, with `.catch()` — the screen's own query still owns error reporting.
+- **Pass the same `retry`/`retryDelay` to the prefetch as the screen query uses.** Whichever arrives second joins the in-flight fetch, so mismatched budgets make the effective budget depend on which started first.
+- **Several short attempts beat one long one.** A stalled attempt learns nothing until it expires; re-probing on a fresh connection notices the moment the server wakes. Keep the per-attempt timeout modest and let the retry budget outlast the cold start.
+- **Retry only transient failure classes** — service unavailable, internal error, unknown/network. Never retry validation, auth, or schema errors:
+
+```ts
+retry: (failureCount, error) =>
+  failureCount < MAX_RETRIES && RETRYABLE_ERROR_NAMES.has(error.name),
+retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 4000),
+```
+
+- **Escalate the loading copy** rather than going silent: swap the message after a few seconds and again around ten. Reaching the error state should mean the whole retry budget was spent, not that one attempt was slow.
+
 ### 2.8 Pagination & Infinite Queries
 
 #### Standard Pagination

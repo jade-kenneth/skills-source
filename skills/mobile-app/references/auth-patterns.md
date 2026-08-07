@@ -192,6 +192,29 @@ DeviceEventEmitter.emit(AUTH_STATE_CHANGE_EVENT);
 
 Never read the store directly in components — always go through `useSession`.
 
+### Screens That Wait on an Out-of-Band Decision
+
+A screen that polls for a status only someone else can change (an approval queue, a verification step) must own the navigation for every terminal status it polls for. Do not rely on a global auth re-check to move the user: root navigators typically re-evaluate only on mount and on app foreground, so a decision that lands while the screen is open changes the query data and nothing else — the user sits on a screen that already knows it is obsolete.
+
+```ts
+useEffect(() => {
+  const status = statusQuery.data?.me.status;
+  if (status === Status.Approved) {
+    router.replace('/(main)/(tabs)');
+    return;
+  }
+  if (status === Status.Rejected) {
+    router.replace('/(auth)/rejected');
+  }
+}, [statusQuery.data?.me.status]);
+```
+
+Cover every status the screen can be redirected *out* of, including reversals (a rejection an admin later undoes), or that screen becomes a dead end.
+
+### Deleting a Notification Mechanism
+
+When removing a store's listener/emitter mechanism, delete or replace its callers in the same change. A caller left behind is worse than dead code: it type-errors, and if the type error is tolerated it throws at exactly the moment the flow it guarded is reached — a path that is easy to miss in manual testing because it needs an external actor to trigger. Grep for the removed symbol across the app before finishing, and check whether a constant defined for the mechanism is now unreferenced too.
+
 ---
 
 ## Rules
@@ -203,3 +226,5 @@ Never read the store directly in components — always go through `useSession`.
 - `store.get()` / `store.set()` / `store.clearSession()` are the only public store API
 - Never read raw SecureStore keys directly in feature code
 - `setexp` / `getexp` are internal helpers — do not use them outside the store module
+- A screen that polls for an externally-decided status navigates itself on every terminal status — never assume a global auth re-check will move the user
+- Removing an emitter/listener mechanism includes removing its callers and any constants defined solely for it
