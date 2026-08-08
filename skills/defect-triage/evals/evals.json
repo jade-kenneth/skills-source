@@ -1,0 +1,66 @@
+{
+  "skill_name": "defect-triage",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "A user reports that saving a contact shows a success toast but the contact never appears in the list. They say the mutation needs a refetch added.",
+      "expected_output": "Triage separates the observation (contact missing after save) from the reporter's prescription (add a refetch), reproduces before changing code, and localizes the actual cause rather than implementing the suggested fix.",
+      "files": [],
+      "expectations": [
+        "Treats the reporter's proposed fix as a hypothesis, not scope",
+        "Reproduces the defect before making any change",
+        "Rejects adding a refetch as a symptom fix if the cause is a write or invalidation defect",
+        "Assigns an explicit verdict before implementing",
+        "Produces before/after evidence rather than claiming the fix works"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Work the next item in the defect backlog: 'Deactivated users can still log in.' It was filed six weeks ago.",
+      "expected_output": "Triage checks whether the defect still exists in current code before investigating, reaching an 'already resolved' verdict with the fixing commit if it was fixed, and otherwise treating it as an S1/S2 authorization defect.",
+      "files": [],
+      "expectations": [
+        "Verifies the defect still reproduces against current code before fixing",
+        "Can close the item as already resolved by naming the fixing commit",
+        "Rates an auth-bypass defect at high severity if confirmed",
+        "Verifies both the denied case and that active users can still log in"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "While fixing a pagination bug in the notifications list, you notice the repository query has no tenant scope at all.",
+      "expected_output": "The missing tenant constraint is escalated as a separate highest-severity security defect rather than being folded silently into the pagination fix.",
+      "files": [],
+      "expectations": [
+        "Treats the missing tenant constraint as a security defect, not a code-style issue",
+        "Escalates rather than silently bundling it into the current fix",
+        "Requires wrong-tenant evidence before closing",
+        "Verifies the correct tenant still resolves after the scope is added"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "A production error appears in Sentry 40 times a day but cannot be reproduced locally. Fix it.",
+      "expected_output": "Without a local reproduction the cause is gathered from logs, error tracking, stored state, and the diff that precedes first occurrence, the fix is explicitly labeled as inference-based, and closeout requires post-deploy production verification.",
+      "files": [],
+      "expectations": [
+        "Does not claim a confirmed root cause without a reproduction",
+        "Uses first-seen timestamps and the preceding diff to localize the cause",
+        "Labels the fix as inference-based rather than confirmed",
+        "Requires post-deploy verification before calling the item verified"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "The report says a report total is off by one. I already know the fix — just clamp the value in the formatter so it displays correctly.",
+      "expected_output": "The clamp is identified as a display-level symptom fix that leaves the wrong value in the data, and triage traces the total to its source instead.",
+      "files": [],
+      "expectations": [
+        "Rejects clamping or reformatting as a resolution",
+        "Traces the wrong value to where it is computed or stored",
+        "Rates silently wrong data as high severity",
+        "Checks whether the defect persisted incorrect records and states backfill scope"
+      ]
+    }
+  ]
+}
