@@ -94,6 +94,19 @@
         "Falls back to the original only when its actual format is accepted by the upload contract",
         "Keeps resize arithmetic pure and tests orientation, no-op, and missing-dimension cases"
       ]
+    },
+    {
+      "id": 9,
+      "prompt": "Review an Expo app for store release. Its app config defines an Android adaptive icon but has neither a top-level icon nor an iOS icon, and its generated ios/ and android/ directories are gitignored. Decide whether the launcher assets are ready and describe the fix and verification.",
+      "expected_output": "A platform-aware release review that configures every shipped native target from tracked sources, preserves distinct iOS and Android image requirements, regenerates native output, and verifies the installed artifacts.",
+      "files": [],
+      "expectations": [
+        "Identifies that an Android-only icon declaration does not provide an iOS launcher icon",
+        "Requires either a top-level icon fallback or explicit launcher-icon configuration for every shipped native target",
+        "Treats tracked config and source assets as canonical when native directories are generated and ignored",
+        "Requires an opaque full-square iOS source without incorrectly flattening a transparent Android adaptive foreground",
+        "Resolves the effective Expo config, regenerates or rebuilds native output, and visually checks the installed icon on each target"
+      ]
     }
   ]
 }
