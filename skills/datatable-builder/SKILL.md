@@ -1,14 +1,18 @@
 ---
 name: datatable-builder
-description: Enforce the canonical DataTable for any screen or feature that includes a table or tabular data display, and build or rebuild it by porting DataTableReference when the app does not already provide it. Use this skill whenever a build, fix, enhancement, or design implementation contains a table, even when the user does not explicitly ask for a DataTable. Do not create a custom or one-off table unless the user explicitly requests one. Trigger on requests like "build the orders page", "add a table", "build the DataTable", "rebuild DataTable", "port DataTableReference", or "fix the DataTable".
+description: Enforce the canonical DataTable for compatible web surfaces under apps/*-admin or apps/*-web, and build or rebuild it by porting DataTableReference when the web app does not already provide it. Use whenever a web build, fix, enhancement, or approved design includes a table, even when the user does not explicitly ask for a DataTable. Do not use for apps/*-mobile Expo/React Native screens; route native tabular displays through the mobile-app skill. Do not create a custom or one-off web table unless the user explicitly requests one.
 ---
 
 # DataTable Builder
 
-This skill routes every table requirement through the application's canonical
-`DataTable`. Reuse the existing foundation when present. If the application does
-not provide it, build `DataTable` by porting `DataTableReference` (found in
-`references/` alongside this file) to the current app's dependency set.
+This skill routes every compatible web table requirement through the web
+application's canonical `DataTable`. Reuse the existing foundation when present.
+If the web application does not provide it, build `DataTable` by porting
+`DataTableReference` (found in `references/` alongside this file) to the
+current web dependency set.
+
+Do not use this skill for `apps/*-mobile` Expo/React Native screens. Route
+native tabular displays through `mobile-app` and its native UI guidance.
 
 Before starting, infer the target output path from the request, the current app,
 and the nearest table implementation. Ask only when multiple plausible targets
@@ -16,10 +20,12 @@ remain and choosing one would materially change the work.
 
 ## Required selection rule
 
-1. Use the application's canonical `DataTable` when it already exists.
-2. Port `DataTableReference` only when no supported canonical `DataTable` exists.
-3. Never create a custom, one-off, or alternative table unless the user explicitly requests a custom table.
-4. If this skill or its required references cannot satisfy the approved requirement, stop and ask the user instead of silently implementing a custom table.
+1. Confirm the target is a compatible web surface under `apps/*-admin` or `apps/*-web`.
+2. For `apps/*-mobile`, stop using this skill and route the work through `mobile-app`.
+3. Use the web application's canonical `DataTable` when it already exists.
+4. Port `DataTableReference` only when no supported canonical web `DataTable` exists.
+5. Never create a custom, one-off, or alternative web table unless the user explicitly requests a custom table.
+6. If this skill or its required references cannot satisfy the approved web architecture, stop and ask the user instead of silently implementing a custom table.
 
 ## How to use this skill
 
@@ -35,7 +41,7 @@ remain and choosing one would materially change the work.
 
 ## Goal
 
-Use the application's canonical `DataTable` for every table requirement. When that foundation is missing, rebuild `DataTable` by copying the **structure, architecture, composition model, and folder/file layout** of `DataTableReference` as closely as possible.
+Use the web application's canonical `DataTable` for every compatible web table requirement. When that foundation is missing, rebuild `DataTable` by copying the **structure, architecture, composition model, and folder/file layout** of `DataTableReference` as closely as possible. Preserve the approved product design's visible outcomes and interactions while using that architecture.
 
 `DataTableReference` is the **only** reference for:
 
@@ -69,19 +75,28 @@ Although `DataTableReference` is the only code and architecture reference, its o
 
 When instructions compete, resolve in this order:
 
-1. `DataTableReference` architecture and file/folder composition (non-negotiable).
-2. Existing app DataTable UI and interaction parity (non-negotiable).
-3. shadcn pre-built component usage (required only when it preserves #2).
+1. Approved product design for visible layout, controls, states, and interaction outcomes.
+2. `DataTableReference` architecture and file/folder composition.
+3. Existing web DataTable presentation only where the approved design is silent.
+4. shadcn pre-built component usage when it preserves the authorities above.
 
-If a pre-built component choice changes visible layout/interaction from the current DataTable baseline, do not ship that change.
+Do not let the legacy table presentation override an approved design. Do not let
+a pre-built component choice change the approved outcome or, where the design is
+silent, the established web DataTable baseline.
 
 ---
 
 ## UI Rule
 
-Use the app's existing `DataTable` UI **exactly and only**. The UI must follow the exact current DataTable UI direction — no deviations, no second design language.
+Implement the approved product design's table presentation and observable
+interaction outcomes. Product design may intentionally change toolbar layout,
+spacing, controls, states, or interactions; preserve those decisions while
+retaining the canonical DataTable architecture.
 
-The visual/interaction baseline is the currently used DataTable experience in this app (toolbar layout, panel behavior, spacing rhythm, card/surface patterns, and control semantics). Preserve this baseline exactly.
+Where the approved design is silent, use the existing web DataTable experience
+as the visual and interaction baseline. Do not introduce an unapproved second
+design language, and do not preserve legacy presentation when it contradicts the
+approved design.
 
 At minimum, use these `components/ui` files when relevant:
 
@@ -220,7 +235,7 @@ Important:
 - adapt dependencies, not architecture
 - simplify implementation only where dependency support forces simplification
 - pre-built shadcn components are the default; primitive-only fallbacks are allowed only when no supported pre-built exists
-- pre-built usage must preserve existing DataTable UI parity; parity violations are considered incorrect output
+- pre-built usage must preserve the approved product design and, where it is silent, the existing DataTable UI baseline
 
 ---
 
@@ -246,15 +261,18 @@ At minimum, preserve or recreate equivalent support for:
 
 ## Styling Rule
 
-The UI must follow the exact current DataTable UI direction:
+The web table presentation must follow this order:
 
-- use the shared `components/ui/table.tsx` table primitives for the table structure
-- use the app's `components/ui/*` components and additional shadcn pre-builts for controls
-- keep spacing, borders, rounding, and surface styling aligned with the current app UI
-- avoid introducing a second design language
+- implement the approved product design's spacing, controls, states, and interaction outcomes
+- where the design is silent, retain the existing web DataTable baseline
+- use the shared `components/ui/table.tsx` primitives for the table structure
+- use the app's `components/ui/*` components and supported shadcn pre-builts for controls
+- avoid introducing an unapproved second design language
 - do not recreate `DataTableReference`'s old visual system
 
-In short: copy `DataTableReference` architecture, copy `DataTableReference` package structure, use current `components/ui/*` visuals with **pre-built shadcn components as first choice**, selected via MCP.
+In short: copy `DataTableReference` architecture and package structure, while
+adapting the web presentation to the approved product design with supported
+`components/ui/*` and shadcn components selected via MCP.
 
 ---
 
@@ -274,10 +292,12 @@ In short: copy `DataTableReference` architecture, copy `DataTableReference` pack
 
 The output is correct only if all of the following are true:
 
-1. Every table requirement uses the application's canonical `DataTable`; no custom or one-off table is introduced unless the user explicitly requests one.
-2. When the canonical foundation is missing, `DataTable` mirrors `DataTableReference` package structure and architecture.
-3. `DataTable` does not depend on unsupported `DataTableReference` dependencies.
-4. `DataTable` preserves the existing app DataTable UI/interaction baseline (no visible redesign).
-5. `DataTable` uses current `components/ui/*` plus supported shadcn pre-built components discovered through the shadcn MCP workflow.
-6. `DataTable` remains modular, not monolithic.
-7. `DataTable` feels like a supported, modernized port of `DataTableReference`, not a variant of `DataTableTwo`.
+1. Every compatible web table requirement uses the web application's canonical `DataTable`; no custom or one-off web table is introduced unless the user explicitly requests one.
+2. Native `apps/*-mobile` tabular displays are routed through `mobile-app`, never this DOM-oriented skill.
+3. Approved product design controls visible table presentation and interactions.
+4. When the canonical web foundation is missing, `DataTable` mirrors `DataTableReference` package structure and architecture.
+5. `DataTable` does not depend on unsupported `DataTableReference` dependencies.
+6. Where the approved design is silent, `DataTable` preserves the existing web UI and interaction baseline.
+7. `DataTable` uses current `components/ui/*` plus supported shadcn pre-built components discovered through the shadcn MCP workflow.
+8. `DataTable` remains modular, not monolithic.
+9. `DataTable` feels like a supported, modernized port of `DataTableReference`, not a variant of `DataTableTwo`.
