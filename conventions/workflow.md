@@ -126,6 +126,19 @@ For an enhancement:
 
 For full-project execution after the canonical Product Specification and Implementation Plan exist, generate or reconcile the root `TASK_<project-slug>.md`. In Claude Code, use `/generate-project-tasks <project name>`. In Codex or any agent without slash-command support, read `.skills-source/commands/generate-project-tasks.md` in full and execute it directly; if `.skills-source/` is missing, run `npm run sync-skills` first. For a small standalone change outside that project tracker, use a scoped `task.md`. Keep either task file aligned with reality.
 
+#### Required DataTable routing
+
+When a screen or feature requires a table or tabular data display, invoke and
+follow the `datatable-builder` skill before writing table code. Reuse the
+application's canonical `DataTable` foundation; if it does not exist, use the
+skill to port `DataTableReference` into the supported dependency set. Do not
+create a custom, one-off, or alternative table implementation unless the user
+explicitly requests a custom table. Product design remains authoritative for
+visible outcomes and interactions, while `datatable-builder` remains
+authoritative for the table implementation pattern. If the skill or its required
+references are unavailable or cannot satisfy the approved requirement, stop and
+ask the user instead of silently falling back to a custom table.
+
 - Follow the nearest established structure, naming, data flow, hooks, modules, repositories, and error-handling patterns.
 - Keep the diff focused and avoid unrelated cleanup or broad refactors.
 - Preserve public behavior and compatibility outside the requested scope unless the change explicitly requires otherwise.
