@@ -1,15 +1,25 @@
 ---
 name: datatable-builder
-description: Build or rebuild a DataTable component by porting DataTableReference to the current app's dependency set. Use this skill whenever the user asks to create, rebuild, port, or fix a DataTable component. Trigger on requests like "build the DataTable", "rebuild DataTable", "port DataTableReference", "fix the DataTable", or "create a data table component".
+description: Enforce the canonical DataTable for any screen or feature that includes a table or tabular data display, and build or rebuild it by porting DataTableReference when the app does not already provide it. Use this skill whenever a build, fix, enhancement, or design implementation contains a table, even when the user does not explicitly ask for a DataTable. Do not create a custom or one-off table unless the user explicitly requests one. Trigger on requests like "build the orders page", "add a table", "build the DataTable", "rebuild DataTable", "port DataTableReference", or "fix the DataTable".
 ---
 
 # DataTable Builder
 
-This skill builds a `DataTable` component by porting `DataTableReference` (found in `references/` alongside this file) to the current app's dependency set.
+This skill routes every table requirement through the application's canonical
+`DataTable`. Reuse the existing foundation when present. If the application does
+not provide it, build `DataTable` by porting `DataTableReference` (found in
+`references/` alongside this file) to the current app's dependency set.
 
 Before starting, infer the target output path from the request, the current app,
 and the nearest table implementation. Ask only when multiple plausible targets
 remain and choosing one would materially change the work.
+
+## Required selection rule
+
+1. Use the application's canonical `DataTable` when it already exists.
+2. Port `DataTableReference` only when no supported canonical `DataTable` exists.
+3. Never create a custom, one-off, or alternative table unless the user explicitly requests a custom table.
+4. If this skill or its required references cannot satisfy the approved requirement, stop and ask the user instead of silently implementing a custom table.
 
 ## How to use this skill
 
@@ -25,7 +35,7 @@ remain and choosing one would materially change the work.
 
 ## Goal
 
-Rebuild `DataTable` by copying the **structure, architecture, composition model, and folder/file layout** of `DataTableReference` as closely as possible.
+Use the application's canonical `DataTable` for every table requirement. When that foundation is missing, rebuild `DataTable` by copying the **structure, architecture, composition model, and folder/file layout** of `DataTableReference` as closely as possible.
 
 `DataTableReference` is the **only** reference for:
 
@@ -264,9 +274,10 @@ In short: copy `DataTableReference` architecture, copy `DataTableReference` pack
 
 The output is correct only if all of the following are true:
 
-1. `DataTable` mirrors `DataTableReference` package structure and architecture.
-2. `DataTable` does not depend on unsupported `DataTableReference` dependencies.
-3. `DataTable` preserves the existing app DataTable UI/interaction baseline (no visible redesign).
-4. `DataTable` uses current `components/ui/*` plus supported shadcn pre-built components discovered through the shadcn MCP workflow.
-5. `DataTable` remains modular, not monolithic.
-6. `DataTable` feels like a supported, modernized port of `DataTableReference`, not a variant of `DataTableTwo`.
+1. Every table requirement uses the application's canonical `DataTable`; no custom or one-off table is introduced unless the user explicitly requests one.
+2. When the canonical foundation is missing, `DataTable` mirrors `DataTableReference` package structure and architecture.
+3. `DataTable` does not depend on unsupported `DataTableReference` dependencies.
+4. `DataTable` preserves the existing app DataTable UI/interaction baseline (no visible redesign).
+5. `DataTable` uses current `components/ui/*` plus supported shadcn pre-built components discovered through the shadcn MCP workflow.
+6. `DataTable` remains modular, not monolithic.
+7. `DataTable` feels like a supported, modernized port of `DataTableReference`, not a variant of `DataTableTwo`.
