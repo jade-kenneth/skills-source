@@ -24,6 +24,19 @@
         "Keeps date filtering inside the Filter package",
         "Avoids unrelated toolbar or table redesign"
       ]
+    },
+    {
+      "id": 3,
+      "prompt": "Build the orders management page from the approved design. It includes a searchable, sortable table with row actions and pagination. Follow the established project patterns.",
+      "expected_output": "The feature routes through datatable-builder, reuses the application's canonical DataTable when present, and ports DataTableReference only when the foundation is missing.",
+      "files": [],
+      "expectations": [
+        "Invokes datatable-builder even though the request does not explicitly ask to build a DataTable component",
+        "Reuses the application's canonical DataTable before considering a port",
+        "Ports DataTableReference only when no supported canonical DataTable exists",
+        "Does not create a custom, one-off, or alternative table without an explicit user request",
+        "Preserves the approved design's visible table outcomes and interactions"
+      ]
     }
   ]
 }
