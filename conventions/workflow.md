@@ -126,6 +126,28 @@ For an enhancement:
 
 For full-project execution after the canonical Product Specification and Implementation Plan exist, generate or reconcile the root `TASK_<project-slug>.md`. In Claude Code, use `/generate-project-tasks <project name>`. In Codex or any agent without slash-command support, read `.skills-source/commands/generate-project-tasks.md` in full and execute it directly; if `.skills-source/` is missing, run `npm run sync-skills` first. For a small standalone change outside that project tracker, use a scoped `task.md`. Keep either task file aligned with reality.
 
+#### Required web DataTable routing
+
+When a compatible web surface under `apps/*-admin` or `apps/*-web` requires a
+table or tabular data display, invoke and follow the `datatable-builder` skill
+before writing table code. Reuse the application's canonical `DataTable`
+foundation; if it does not exist, use the skill to port `DataTableReference`
+into the supported web dependency set. Do not create a custom, one-off, or
+alternative web table unless the user explicitly requests a custom table.
+
+Do not invoke `datatable-builder` for `apps/*-mobile` Expo/React Native
+screens. Route native tabular displays through the `mobile-app` skill and its
+native UI guidance, using established native list, grid, and collection patterns
+instead of DOM table primitives or browser storage.
+
+Approved product design remains authoritative for visible outcomes and
+interactions on every surface. On compatible web surfaces, `datatable-builder`
+owns reusable table architecture and adapts its presentation to the approved
+design; the existing DataTable presentation is only the fallback where the
+design is silent. If the web skill or its required references are unavailable or
+cannot satisfy the approved architecture, stop and ask the user instead of
+silently falling back to a custom web table.
+
 - Follow the nearest established structure, naming, data flow, hooks, modules, repositories, and error-handling patterns.
 - Keep the diff focused and avoid unrelated cleanup or broad refactors.
 - Preserve public behavior and compatibility outside the requested scope unless the change explicitly requires otherwise.

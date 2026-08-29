@@ -24,6 +24,32 @@
         "Keeps date filtering inside the Filter package",
         "Avoids unrelated toolbar or table redesign"
       ]
+    },
+    {
+      "id": 3,
+      "prompt": "Build the orders management page in apps/app-web from the approved design. It includes a searchable, sortable table with a redesigned toolbar, row actions, and pagination.",
+      "expected_output": "The compatible web feature routes through datatable-builder, reuses the canonical DataTable architecture, and implements the approved design's presentation instead of forcing the legacy table UI.",
+      "files": [],
+      "expectations": [
+        "Invokes datatable-builder for the compatible web surface even though the request does not explicitly ask to build a DataTable component",
+        "Reuses the web application's canonical DataTable before considering a port",
+        "Ports DataTableReference only when no supported canonical web DataTable exists",
+        "Does not create a custom, one-off, or alternative web table without an explicit user request",
+        "Lets the approved product design control visible table presentation and interactions"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Build an apps/app-mobile Expo screen that shows a compact comparison of appointment times, clinicians, and statuses.",
+      "expected_output": "The native feature is routed through mobile-app and native UI guidance; datatable-builder and its DOM-oriented DataTableReference are not used.",
+      "files": [],
+      "expectations": [
+        "Does not invoke datatable-builder for the apps/*-mobile surface",
+        "Routes implementation through mobile-app and native UI guidance",
+        "Uses established native list, grid, or collection patterns instead of components/ui/table.tsx",
+        "Does not port the DOM-oriented DataTableReference or browser-storage behavior",
+        "Does not stop for DataTable incompatibility when a normal native implementation is available"
+      ]
     }
   ]
 }
