@@ -2,7 +2,7 @@
 name: web-ui-design
 description: 'Complete guide for designing and building production-grade web interfaces. Use for any web UI work: pages, dashboards, forms, tables, dialogs, drawers, navigation, responsive layouts, dark mode, accessibility, motion, charts, empty/loading/error states, and visual polish. Pair with `web-app` for implementation authority.'
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 license: MIT
 ---
 
@@ -61,6 +61,7 @@ This skill owns **design decisions only**: visual language, layout composition, 
 | Icon sizing, containers, accessible icon buttons | `references/icon-system.md` |
 | Form field states (focus, error, disabled, loading) | `references/form-field-states.md` |
 | Toast / notification visual design and copy rules | `references/toast-notifications.md` |
+| Carousels, rails, chip rows, hidden scrollbars, scroll snap | `references/carousels-and-scrollers.md` |
 
 ---
 
@@ -142,7 +143,8 @@ Choose the design posture based on the product surface:
 
 - Design from content constraints, not viewport guesses. Use `max-width`, grid tracks, and stable dimensions for fixed-format controls.
 - Verify at 375px, 768px, 1024px, 1280px, and 1440px when a screen has meaningful responsive behavior.
-- Prevent horizontal scroll except for intentional data tables with clear overflow handling.
+- Prevent horizontal scroll except for intentional data tables and designed scrollers with clear overflow handling.
+- Treat every horizontally scrolling region — carousel, rail, chip row, scrollable tab strip — as a designed component. Hide the native scrollbar on touch surfaces and replace it with a real affordance (peek, dots, edge fade, or arrows); never hide the vertical page scrollbar on desktop. See `references/carousels-and-scrollers.md`.
 - Make mobile web navigation explicit and accessible. Avoid hiding critical actions behind ambiguous icon-only menus.
 - Use cards only for repeated items, modals, and genuinely framed tools. Do not put cards inside cards or style every section as a floating card.
 

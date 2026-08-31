@@ -70,6 +70,9 @@ Read:
 
 - every prototype named by `readyForBuild`;
 - the current `design/planning/screen-inventory.md`;
+- `design/planning/navigation-map.md` and
+  `design/planning/interaction-inventory.md` for the routes, guards, and control
+  actions each ready screen declares;
 - applicable design-system, planning, handoff, and asset files;
 - existing root `Product Specification.md` and `Implementation Plan.md`;
 - `AGENTS.md`, repository conventions, app structure, and reusable architecture.
@@ -126,6 +129,14 @@ When they already exist:
    Use GraphQL/codegen/TanStack Query and resolver/service/repository when the
    current boilerplate provides them; otherwise use the approved configured
    equivalents. Explicitly reject prototype-only local/mock/manual mechanisms.
+   Map routing and controls in the same pass: the screen's declared
+   `data-route`, params, navigation container, and presentation become a real
+   route registration in the repository's router; `data-route-guard` becomes the
+   verified auth/role guard with its redirect and post-sign-in return; and every
+   `data-action-id` gets a named production handler that produces the declared
+   `data-action-result`. A ready screen whose route or control actions have no
+   production owner is not ready — return it to design rather than inventing a
+   destination.
 8. Reopen a completed phase when its production implementation copied a prototype
    shortcut or bypassed a protected boilerplate primitive, even if visual Fidelity
    QA previously passed.

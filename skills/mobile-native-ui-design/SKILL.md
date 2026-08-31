@@ -2,7 +2,7 @@
 name: mobile-native-ui-design
 description: "Design and review production-grade mobile interfaces for iOS and Android, including platform adaptation, tokens, typography, color, motion, navigation, accessibility, iconography, brand, research, and handoff. Use for any mobile UI screen or component, native-feel critique, iOS-versus-Android decision, dark-mode or touch-target audit, animation or haptic specification, navigation architecture, cross-platform design system, or mobile HTML mockup. Pair with the mobile implementation skill when writing application code."
 metadata:
-  version: 3.4.0
+  version: 3.5.0
 license: MIT
 ---
 
@@ -49,6 +49,7 @@ This skill owns design decisions, not application architecture. Invoke
 | Gradients and theme adaptation | `references/gradients.md` |
 | Blur, glass, shadows, and visual effects | `references/visual-effects.md` |
 | Native tabs | `references/tabs.md` |
+| Carousels, horizontal rails, and scroll indicators | `references/carousels.md` |
 | Toolbars and headers | `references/toolbar-and-headers.md` |
 | Search | `references/search.md` |
 | Controls and form inputs | `references/controls.md` |
@@ -95,6 +96,9 @@ This skill owns design decisions, not application architecture. Invoke
   haptics, keyboard behavior, and back navigation.
 - Keep primary actions reachable without sacrificing safe areas or obscuring
   content behind the keyboard.
+- Hide the scroll indicator on every horizontal rail and carousel, and replace it
+  with a visible affordance — a peek of the next item, pagination dots, or an
+  edge fade — so the region still reads as scrollable.
 - Respect reduced-motion preferences and keep essential state changes legible
   without animation.
 

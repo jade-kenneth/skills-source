@@ -268,7 +268,24 @@ Don't send 2000px desktop images to a 375px screen.
 ### Carousels
 
 - Must support swipe on touch devices
-- Autoplay should pause on touch/interaction
+- Autoplay should pause on touch/interaction, on hover, and on focus, and must not run under `prefers-reduced-motion`
+- Hide the native scrollbar on touch surfaces while keeping the region scrollable:
+
+```css
+.scroller {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;   /* don't trigger browser back-swipe */
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;            /* Firefox */
+  -ms-overflow-style: none;         /* legacy Edge */
+}
+.scroller::-webkit-scrollbar { display: none; }
+```
+
+- Because the scrollbar is hidden, always leave a discoverability affordance: a fractional item width so the next item peeks (`flex: 0 0 85%`), pagination dots, an edge fade, or visible arrows
+- Set `scroll-padding-inline` to the page gutter so snapped items align with surrounding content
+- Never hide the vertical page scrollbar, and keep the scrollbar visible on horizontally scrolling data tables on desktop
+- Give the container `tabindex="0"` and an accessible name when it has no focusable children, so it is keyboard-scrollable
 
 ---
 

@@ -49,6 +49,16 @@ before producing a release. Cover:
 - loading, empty, error, success, validation, disabled, permission, and
   destructive-action states where applicable;
 - navigation continuity, back/cancel behavior, recovery paths, and edge cases;
+- routing coverage: every screen's route, params, navigation container,
+  presentation, and guard, plus any screen with no inbound navigation and any
+  navigation that lands nowhere;
+- control coverage: every button, link, tab, menu item, row, icon button,
+  toggle, form submit, swipe action, and gesture target, and whether each one
+  has a defined destination and observable result rather than a dead handler;
+- horizontally scrolling regions: carousels, rails, chip rows, scrollable tab
+  strips, and overflow containers, including any that expose a native scrollbar
+  on a touch surface, hide one without leaving a discoverability affordance, or
+  lack boundary, single-item, empty, loading, and error states;
 - mobile safe areas, keyboard behavior, scrolling, orientation, gestures,
   offline handling, and relevant iOS/Android differences;
 - web responsive breakpoints, overflow, focus, keyboard navigation, and
@@ -72,7 +82,9 @@ exactly one classification:
 
 Each row must include evidence, required action, affected flow, target surface,
 and intended release batch when known. Do not mark a screen ready merely because
-an HTML file exists.
+an HTML file exists. An unreachable screen, an undefined back/cancel target, or
+an unbound control is `needs-correction`, never `ready` — a screen that looks
+finished but strands the user is an incomplete screen.
 
 Claude Design may repair `needs-correction` items and design
 `missing-defined` items by following the approved requirements and the
@@ -105,6 +117,50 @@ The prompt must:
 9. Keep annotations, measurements, alternate examples, and other presentation
    content outside the app root and mark them
    `data-handoff="presentation-only"`.
+10. Declare each screen's identity and routing on the same element that carries
+    `data-app-root`: `data-screen-id` (stable kebab-case, reused by the planning
+    documents and by every control that targets the screen), `data-route`,
+    `data-route-params` where params exist, `data-nav-container`,
+    `data-presentation` (`push`, `replace`, `tab`, `modal`, `sheet`, `dialog`,
+    `drawer`, or `full-screen`), and `data-route-guard` (`none`,
+    `authenticated`, `unauthenticated`, or `role:<role>`). Mobile screens
+    declare a path even when the runtime uses native stack or tab navigation.
+11. Bind every interactive control to exactly one action: `data-action-id`,
+    `data-action` (one of `navigate`, `back`, `submit`, `mutate`, `open`,
+    `close`, `toggle`, `select`, `filter`, `sort`, `paginate`, `expand`, `copy`,
+    `share`, `external`, `destructive`, or `none`), `data-action-target` (a real
+    `data-screen-id`, overlay id, field, `self`, or `needs-design:<screen-id>`
+    for an undesigned destination), `data-action-states`, and
+    `data-action-result` as one plain sentence naming what the user observes.
+    `destructive` names its confirmation surface and states reversibility;
+    `none` is only for genuinely non-interactive display elements and must carry
+    `data-action-note`. Adding these bindings is a completeness repair, not a
+    restyle — do not change a control's existing behavior while annotating it.
+12. Declare every horizontally scrolling region on its scroll container with
+    `data-scroller-id`, `data-scroller` (`carousel`, `rail`, `chip-row`,
+    `tab-strip`, or `overflow`), `data-snap`, `data-items-visible`, `data-peek`,
+    `data-autoplay`, and `data-loop`. On mobile and every touch surface the
+    native scrollbar is hidden — `scrollbar-width: none`,
+    `-ms-overflow-style: none`, and a `::-webkit-scrollbar { display: none }`
+    rule — while scrolling stays fully functional, and the region carries a
+    replacement affordance: a peek of the next item, pagination dots or an
+    `n of m` counter, an edge fade, or visible arrows. Never hide the vertical
+    page scrollbar on desktop web. Repair boundary, single-item, empty, loading,
+    and error states, gesture-axis boundaries, keyboard operation, position
+    announcement, and reduced-motion behavior for each region, and treat its
+    arrows and dots as controls under the action contract.
+
+Rehabilitation is not finished while a routing or control gap remains. Before any
+release: every screen has at least one declared inbound navigation and one
+declared exit; every action target that names a screen resolves to an existing
+`data-screen-id` or is marked `needs-design:` and blocked; every screen declares
+back, cancel, and dismiss behavior and the exact screen each lands on, including
+Android hardware back, iOS swipe-back, and the browser back button; every
+parameterized route designs its loading, not-found, invalid-param, and
+permission-denied results; every guarded route declares the blocked-visitor
+destination, the post-sign-in return, and the wrong-role result; and role
+differences are designed per route and per control. Existing screens that already
+satisfy a rule keep their current design.
 
 For mobile, fixed reference dimensions belong on the preview shell, never the
 application root. Document reference viewport, tested size range, safe-area
@@ -126,7 +182,18 @@ promote those mechanics into the handoff as engineering requirements.
 ## 4. Refresh the handoff contract
 
 Require Claude Design to preserve and refresh system, planning, and asset
-documents, and export exactly:
+documents. `design/planning/navigation-map.md` and
+`design/planning/interaction-inventory.md` must be created when absent and
+regenerated from the repaired prototypes when present: the navigation map is the
+normative route table (screen id, route, params, surface, container,
+presentation, guard, entry points, exits, back/cancel/dismiss target, deep-link
+support, not-found and permission-denied handling) followed by a navigation graph
+per role and a list of unresolved targets; the interaction inventory is the
+normative control table (screen id, label, action id, action type, target,
+observable result, implemented states, confirmation requirement, business rule)
+and must account for every interactive control in every exported prototype.
+
+Export exactly:
 
 ```text
 design/handoff/[PROJECT] Design Reference.md
@@ -134,10 +201,11 @@ design/handoff/[PROJECT] Design Handoff Plan.md
 ```
 
 The Design Reference owns the verified design source, visual and interaction
-contract, prototype mappings, surfaces, application boundaries, and
-presentation-only exclusions. The Design Handoff Plan owns design-derived scope,
-gap recovery, coverage, sequencing, dependencies, open design work, and
-per-screen fidelity QA. Engineering architecture remains `VERIFY IN REPO`.
+contract, prototype mappings, surfaces, application boundaries, the route and
+navigation graph, the per-control action bindings, and presentation-only
+exclusions. The Design Handoff Plan owns design-derived scope, gap recovery,
+screen/flow/route/control-action coverage, sequencing, dependencies, open design
+work, and per-screen fidelity QA. Engineering architecture remains `VERIFY IN REPO`.
 
 For each data-backed interaction, record its observable result, required states,
 and approved business rule, then mark any mock/local/manual implementation as
@@ -185,8 +253,8 @@ Advance `batch` for newly buildable scope. Increment `revision` for
 corrections to the current batch. Keep prototype filenames stable. Claude Design
 must never create or edit `design/design-sync.lock.json`.
 
-Refresh `design/planning/screen-inventory.md` with prototype, surface, design
-status, first-ready batch, and last-updated batch. Use only `planned`,
+Refresh `design/planning/screen-inventory.md` with `data-screen-id`, prototype,
+surface, route, design status, first-ready batch, and last-updated batch. Use only `planned`,
 `in-design`, `ready-for-build`, `revision-required`, or `superseded`.
 
 ## 6. Require a rehabilitation report
@@ -199,6 +267,14 @@ End the generated prompt by requiring:
   decisions were preserved;
 - old-to-new filename mappings;
 - each screen's surface and `data-app-root`;
+- route coverage: each screen's route, container, presentation, and guard, plus
+  any screen still lacking inbound navigation;
+- control coverage: controls repaired from dead or undefined handlers, controls
+  now bound to an action, and every action target that does not yet resolve to a
+  designed screen;
+- scroller coverage: every carousel, rail, chip row, tab strip, and overflow
+  container, its scrollbar treatment per surface, and the affordance that
+  replaces a hidden scrollbar on touch;
 - preview-only and presentation-only exclusions;
 - refreshed system, planning, handoff, and asset inventories;
 - the first release batch and why each included screen is ready.
