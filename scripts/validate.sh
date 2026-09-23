@@ -38,7 +38,10 @@ grep -Fq '/adapt-design-export <project name>' "$PREPARE_DESIGN"
 echo "Validating prompt-only mode in the design prompt command"
 grep -Fq '## 0. Choose the mode' "$PREPARE_DESIGN"
 grep -Fq -- '--prompt-only' "$PREPARE_DESIGN"
-grep -Fq '### Prompt only — generate the design export locally' "$PREPARE_DESIGN"
+grep -Fq '### Prompt only — implement the UI directly' "$PREPARE_DESIGN"
+grep -Fq '### Prompt-only prompt' "$PREPARE_DESIGN"
+grep -Fq 'Production mapping' "$PREPARE_DESIGN"
+grep -Fq "Move the prototype's job into the Design Reference" "$PREPARE_DESIGN"
 if grep -Fq 'design/DESIGN_PROMPT.md' "$PREPARE_DESIGN"; then
   echo "prompt-only mode must reuse design/CLAUDE_DESIGN_PROMPT.md and generate the export locally." >&2
   exit 1

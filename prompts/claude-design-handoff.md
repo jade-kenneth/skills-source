@@ -10,6 +10,6 @@ into Claude Design, then import the completed export before running
 the entry point.
 
 When the Claude Design process is not used, run
-`/prepare-claude-design <project name> --prompt-only`. It writes the same prompt,
-then carries it out in Claude Code to generate the `design/` export locally under
-the same contract.
+`/prepare-claude-design <project name> --prompt-only`. It skips only the
+prototypes: it writes the planning, system, and handoff documents, the root build
+docs, and the task file, then implements the UI directly in the repository.

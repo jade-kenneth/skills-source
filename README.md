@@ -61,11 +61,12 @@ design, and import the export under `design/prototypes/`, `design/system/`, and
 `design/handoff/[PROJECT] Design Handoff Plan.md`.
 
 When the Claude Design process is not used, pass `--prompt-only` or choose that
-mode when asked. The command writes the same prompt, then carries it out in Claude
-Code and generates the export locally — `design/planning/`, `design/system/`,
-`design/prototypes/`, both handoff documents, and `design/design-release.json` —
-under the same contract. Validation and `/sync-build-docs` then work the same as
-for a Claude Design export.
+mode when asked. Only prototypes are skipped: the command writes the prompt,
+`design/planning/`, `design/system/`, both handoff documents, the root
+`Product Specification.md` and `Implementation Plan.md`, and the task file, then
+implements the UI directly in the owning app's source. The Design Reference holds
+the per-screen spec a prototype would have carried. With no prototype export,
+`npm run design:validate` and `/sync-build-docs` do not apply to this mode.
 
 The compatibility pointer is `prompts/claude-design-handoff.md`; the full workflow
 remains canonical under `commands/`.

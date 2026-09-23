@@ -1,5 +1,5 @@
 ---
-description: Prepare the Claude Design master prompt and export contract, then either hand it to Claude Design or, in prompt-only mode, carry it out locally to generate the design/ export without Claude Design
+description: Prepare the Claude Design master prompt and export contract for Claude Design, or, in prompt-only mode, generate every design and build document except prototypes and implement the UI directly in the repository
 argument-hint: [project name] [--prompt-only]
 ---
 
@@ -7,33 +7,37 @@ argument-hint: [project name] [--prompt-only]
 
 **Arguments:** $ARGUMENTS
 
-This command prepares the prompt that creates the product's design source and,
-in prompt-only mode, runs that prompt to generate the `design/` export locally. It
-never writes application code or generates `Product Specification.md` or
-`Implementation Plan.md` itself. Use it before `/sync-build-docs`.
+This command prepares the prompt that defines the product's design. In Claude
+Design mode it stops at the prompt; Claude Design produces the design export. In
+prompt-only mode it carries the prompt out itself, writes every design and build
+document except prototypes, and implements the UI directly in the repository.
 
 ## 0. Choose the mode
 
-The mode decides who carries out the design prompt. Take it from the arguments or
-the user's request when either states it (`--prompt-only` selects prompt-only
-mode). Otherwise ask once, before gathering the brief — never assume:
+The mode decides who carries out the design prompt and what it produces. Take it
+from the arguments or the user's request when either states it (`--prompt-only`
+selects prompt-only mode). Otherwise ask once, before gathering the brief — never
+assume:
 
-- **Claude Design** — Claude Design produces the design. Write the prompt, hand it
-  to the user to paste into Claude Design, and stop. The user imports Claude
-  Design's export into `design/`.
-- **Prompt only (generate locally)** — the Claude Design process is not used.
-  Write the same prompt, then carry it out in this session and generate the full
-  `design/` export in the repository yourself: prototypes, system, planning,
-  handoff documents, and the release manifest (step 3).
+- **Claude Design** — Claude Design produces the design. Write the full prompt,
+  hand it to the user to paste into Claude Design, and stop. The user imports
+  Claude Design's export into `design/`, then continues with validation and
+  `/sync-build-docs`.
+- **Prompt only (implement directly)** — the Claude Design process is not used.
+  Only the prototypes are skipped; every reference document is still produced.
+  Write the prompt, generate `design/planning/`, `design/system/`, and both
+  `design/handoff/` documents, write the root `Product Specification.md`,
+  `Implementation Plan.md`, and task file, then implement the UI directly in the
+  owning app's source (step 3). No `.html` or `.dc.html` files are created.
 
-Both modes write `design/CLAUDE_DESIGN_PROMPT.md` with every section in step 2,
-and both produce an export under the same contract, so validation,
-`/sync-build-docs`, and `/finalize-build-docs` work the same afterwards. State the
-chosen mode back to the user in one line before continuing.
+Choosing prompt-only mode is the user's explicit request to implement UI in this
+session. State the chosen mode back to the user in one line before continuing.
 
 If usable screens already exist under `design/prototypes/`, do not overwrite them
-or start a replacement design. Run `/adapt-design-export <project name>` instead
-to prepare a compatibility pass for the existing design.
+or start a replacement design. In Claude Design mode, run
+`/adapt-design-export <project name>` instead. In prompt-only mode, treat them as
+design evidence for the brief and ask whether the implementation should follow
+them.
 
 ## 1. Resolve the product brief
 
@@ -64,12 +68,46 @@ conflicts rather than silently replacing them.
 Create `design/CLAUDE_DESIGN_PROMPT.md`, creating `design/` when necessary. If the
 file already exists, show the proposed changes and ask before replacing it.
 
-The generated file must be a self-contained prompt addressed directly to Claude
-Design. Resolve the user's answers into it; do not leave generic placeholders for
-information the user already provided. Include every section from **Role and
-goal** through **Incremental design release contract** exactly as specified, in
-both modes. In prompt-only mode the same file is also the brief you carry out in
-step 3, so keeping it complete keeps the local export on the same contract.
+The generated file must be a self-contained prompt addressed directly to its
+recipient. Resolve the user's answers into it; do not leave generic placeholders
+for information the user already provided. In Claude Design mode, include every
+section from **Role and goal** through **Incremental design release contract**
+exactly as specified.
+
+### Prompt-only prompt
+
+In prompt-only mode the prompt is the brief you implement from, and nothing is
+exported as a prototype. Address it to the implementer, not Claude Design, and
+adapt the sections as follows. This list instructs you; it is never prompt
+content.
+
+- **Keep:** Role and goal (minus the ban on application implementation),
+  Confirmed product brief, Required design process, Design-system deliverables,
+  Planning deliverables, and Design handoff documents.
+- **Move the prototype's job into the Design Reference.** With no prototype, the
+  Design Reference is the visual and behavioral authority. For every screen it
+  records what a prototype would have carried: declared surface; exact layout and
+  element order; font, color, spacing, border, radius, and shadow values from the
+  design system; verbatim copy; every state and interaction state; the route,
+  params, navigation container, presentation, and guard; each control's action,
+  target, states, and observable result; and each scroller's snap, visible
+  items, peek, and affordance. Replace "prototype source mapping" with this
+  per-screen spec.
+- **Keep as requirements on the implemented UI:** the per-screen quality list
+  from the Prototype contract, every rule and coverage check in the Navigation and
+  interaction contract, and the Carousel and scroll-container contract. Routes,
+  guards, and control actions are declared in `navigation-map.md`,
+  `interaction-inventory.md`, and the Design Reference instead of `data-*`
+  attributes, and are implemented as real routes and handlers.
+- **Drop:** the `.dc.html` naming, all `data-*` prototype markup, prototype-only
+  mock mechanisms, `design/prototypes/`, and the Incremental design release
+  contract — `design/design-release.json` and `design/design-sync.lock.json`
+  track prototype hashes and exist only for `/sync-build-docs`.
+- **Adapt:** the Export contract tree omits `prototypes/`. `screen-inventory.md`
+  tracks each screen's route, surface, owning app, Design Reference section, and
+  status (`planned`, `in-design`, `specified`, `in-build`, `built`, `blocked`)
+  instead of prototype filename and batch. Replace the final export report with
+  the implementation report in step 3.
 
 ### Role and goal
 
@@ -504,7 +542,7 @@ Require a final export report containing:
 The exported files must contain no passwords, API keys, tokens, connection strings,
 private customer data, or other secrets.
 
-## 3. Hand off or generate the design
+## 3. Hand off or implement
 
 ### Claude Design
 
@@ -533,51 +571,60 @@ Use `/finalize-build-docs <project name>` only after the final MVP design releas
 Do not wait for every screen before the first sync. Sync only validated releases,
 and finalize only after the required MVP design is complete.
 
-### Prompt only — generate the design export locally
+### Prompt only — implement the UI directly
 
-Do not send the prompt anywhere. Carry out `design/CLAUDE_DESIGN_PROMPT.md` in this
-session as the designer, taking the role and every obligation it gives Claude
-Design:
+Do not send the prompt anywhere and do not create prototypes. Carry out
+`design/CLAUDE_DESIGN_PROMPT.md` in this session, producing every reference
+document before any UI code:
 
 1. **Clarify first.** Work through the prompt's required design process in order.
-   Where it requires clarification before design, ask the user and wait; never
-   fill a scope, navigation, platform, or brand gap with an invented decision.
-2. **Plan before screens.** Write `design/planning/` — scope, information
-   architecture, `navigation-map.md`, flows, journeys, `screen-inventory.md`,
+   Where it requires clarification, ask the user and wait; never fill a scope,
+   navigation, platform, or brand gap with an invented decision.
+2. **Plan.** Write `design/planning/` — scope, information architecture,
+   `navigation-map.md`, flows, journeys, `screen-inventory.md`,
    `interaction-inventory.md`, roles and permissions, data requirements, and
-   `open-decisions.md` — before any prototype.
-3. **System before screens.** Write every `design/system/` document with exact
-   values, then build prototypes only from those tokens and components.
-4. **Prototypes.** Write one `design/prototypes/<Screen Name>.dc.html` per screen,
-   each meeting the prototype, navigation and interaction, and scroll-container
-   contracts: one `data-prototype-surface`, one `data-app-root` carrying the
-   screen and route attributes, and exactly one `data-action` per control.
-5. **Handoff.** Write `design/handoff/[PROJECT] Design Reference.md` and
+   `open-decisions.md`.
+3. **Design system.** Write every `design/system/` document with exact values.
+4. **Handoff.** Write `design/handoff/[PROJECT] Design Reference.md`, with the full
+   per-screen spec that replaces the prototype, and
    `design/handoff/[PROJECT] Design Handoff Plan.md`, linked to each other.
-6. **Release.** Follow the incremental design release contract: once the
-   foundation and one complete end-to-end MVP slice are coherent, write
-   `design/design-release.json` as Design Batch 1, report it, and continue with
-   later scope as further batches. Never create or edit
-   `design/design-sync.lock.json`.
-7. **Audit and report.** Run the prompt's pre-export coverage rules on your own
-   output, fix what fails, and give the user the final export report the prompt
-   requires.
+5. **Build docs.** Write the root `Product Specification.md` and
+   `Implementation Plan.md` by following `/finalize-build-docs` steps 1–4 —
+   runtime inputs, stack, boilerplate trim audit, seed data, both paired files,
+   the Fidelity QA checklist, and the bidirectional links — with these
+   substitutions, since no prototype exists:
+   - the Design Reference's per-screen spec and `design/system/` replace the
+     prototype's `data-app-root` as the fidelity contract, and each Product
+     Specification screen cites its Design Reference section instead of a
+     prototype file;
+   - skip the rules that stop on missing prototypes or preview markup;
+   - "Planned but not prototyped" becomes "Planned but not specified";
+   - Fidelity QA compares the built screen against its Design Reference spec, and
+     the `data-action-id` and `data-app-root` checks read from
+     `interaction-inventory.md` and `navigation-map.md`.
+6. **Task file.** Run `/generate-project-tasks <project name>` to create
+   `TASK_<project-slug>.md` from the two build docs.
+7. **Build.** Implement one Implementation Plan phase at a time in the owning
+   app's source. Load that app's routed skill and UI design skill (for example
+   `web-app` with `web-ui-design`, or `mobile-app` with
+   `mobile-native-ui-design`), put the design-system tokens in the app's existing
+   theme or token layer, and record the `Pattern scan` and `Production mapping`
+   in the task file before each screen. Reuse existing components, routing, data
+   clients, and form patterns; never scaffold a parallel stack. When a screen
+   needs a backend operation that does not exist yet, stop and ask whether to
+   build it or leave the screen blocked; never ship mock data, fake persistence,
+   or placeholder handlers as the finished UI.
+8. **Verify.** Run the app's type check, lint, and tests, run the app to check
+   each screen and state, pass each screen's Fidelity QA rows, and update phase
+   checkboxes and `screen-inventory.md` statuses as screens land.
+9. **Report.** Give the user an implementation report: documents written, screens
+   built with their routes and source files, route and control coverage, states
+   implemented, verification results, blocked screens, and `open-decisions.md`
+   items.
 
-The export stays design-only: no application code, no changes outside `design/`,
-and no secrets or private data — representative demo content only. If a decision
-blocks a screen, mark it `needs-design:` and record it in `open-decisions.md`
-rather than guessing.
-
-Then give the user the same next steps as Claude Design mode:
-
-```bash
-npm run design:validate
-```
-
-Then, for every design release:
-
-```text
-/sync-build-docs <project name>
-```
-
-Use `/finalize-build-docs <project name>` only after the final MVP design release.
+Do not create `design/prototypes/`, `design/design-release.json`, or
+`design/design-sync.lock.json`, and do not run `npm run design:validate`,
+`/sync-build-docs`, or `/finalize-build-docs` — they validate a prototype export
+this mode never produces. When scope changes later, update the planning, system,
+and handoff documents first, then the two build docs and the task file, then the
+code. Never write secrets or private data.
