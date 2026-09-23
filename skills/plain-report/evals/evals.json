@@ -1,0 +1,29 @@
+{
+  "skill_name": "plain-report",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Write a status update for the client about what we fixed since last time.",
+      "expected_output": "Asks the audience and work-by questions first, reports only untagged or newly closed tracker rows, writes plain before/now comparisons with one bolded impact sentence each, then tags the source documents.",
+      "files": [],
+      "expectations": [
+        "Asks where the report will be posted and who did the work in one question call",
+        "Skips documents whose reported tag already lists every closed row",
+        "Gives every item a severity and a Before/Now or Today/Once fixed pair written as what a person sees",
+        "Keeps code, file paths, status codes and tags out of the report body",
+        "Adds or updates the reported tag in each source document after saving"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Make a plain report. Nothing has changed since the last report two days ago.",
+      "expected_output": "Finds no qualifying documents and says so instead of writing a report.",
+      "files": [],
+      "expectations": [
+        "Checks each document's reported tag against its tracker",
+        "Does not write an empty or repeated report",
+        "Tells the user there is nothing new since the last tagged date"
+      ]
+    }
+  ]
+}

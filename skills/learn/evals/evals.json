@@ -1,0 +1,30 @@
+{
+  "skill_name": "learn",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Teach me what a message queue is and whether we need one.",
+      "expected_output": "Asks first whether the lesson is repo-anchored or standalone, then builds a docs/learn lesson with a runnable lab, four diagrams, provenance-tagged claims and, if repo-anchored, a fit map and audit task cards.",
+      "files": [],
+      "expectations": [
+        "Asks the repo-anchored or standalone question before reading code or writing files",
+        "Tags every load-bearing claim measured, documented, rule of thumb or depends, and counts them in the masthead",
+        "Builds a zero-dependency lab that runs the counterfactual too",
+        "Plans the four diagrams: mechanism map, without/with, risks, neighbours",
+        "In repo-anchored mode, grades a fit map from a feature inventory read on the day and ends with A- audit cards"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Teach me our database platform and where we could use more of it. Base it on our current code.",
+      "expected_output": "A repo-anchored product lesson whose fit map starts from the project's needs and grades each capability honestly, including ruled-out rows that name the rule.",
+      "files": [],
+      "expectations": [
+        "Inventories the project's features before listing the product's capabilities",
+        "Marks capabilities already in use with file, line and date",
+        "Grades a capability ruled out when it collides with a recorded decision, naming it",
+        "Never writes to the real instance from the lab"
+      ]
+    }
+  ]
+}

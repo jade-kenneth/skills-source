@@ -1,0 +1,18 @@
+{
+  "skill_name": "project-story",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Explain the whole project to a new stakeholder, from the start to where we are now.",
+      "expected_output": "Reads every document tier and the git history, builds a dated timeline, and writes one plain-language story with the fixed section order, including a list of what has never actually been run.",
+      "files": [],
+      "expectations": [
+        "Asks who the reader is unless the user already said",
+        "Reads docs/README.md first and every tier rather than sampling",
+        "Tells each phase as situations a person lived through, with the cause in plain words",
+        "Keeps a 'never actually been run' list with the same weight as what works",
+        "Writes no reported tag and changes no source document"
+      ]
+    }
+  ]
+}

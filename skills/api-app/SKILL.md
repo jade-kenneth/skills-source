@@ -93,10 +93,12 @@ These override any default behavior. Grouped by concern — every group applies 
 - **Auth at the boundary** → protect GraphQL resolvers with the auth guard + roles guard and `@Roles(...)`; REST endpoints with side effects declare auth intent at the method boundary. Never rely on body validation as authorization. See `references/auth-patterns.md`.
 - **Uploads** → presigned upload/file-ingest endpoints validate namespace, reject traversal/absolute keys, enforce a MIME allowlist, and the service generates the final storage key — never the caller. See `references/service-implementation.md`.
 - **Media processing** → when downloading a remote object to process it, stream the unbounded body to a uniquely created temporary file and hand path-based processors the file path; never buffer it into one in-memory byte array. Clean up the task directory in `finally`, and reject a body that cannot provide a stream. See `references/service-implementation.md`.
+- **Model output & outbound fetches** → treat LLM output as untrusted input: coerce it, rebuild records from an allowlist of keys, and never let it set an approved state. A server-side fetch of a caller-supplied URL gets a host allowlist, a timeout and a size cap. See `references/service-implementation.md` § Model output and outbound fetches.
 
 ### Side effects & scheduling
 
 - **Side-effect ordering** → in multi-step workflows, perform the side effect first and persist terminal state only after it succeeds; handle rollback explicitly when ordering cannot change. See `references/service-implementation.md`.
+- **Workflow gates** → a step that depends on an earlier approval checks it in the service and fails with a conflict error; an approval records a version of every input the next step reads, so a re-approved upstream forces a stale child to regenerate. See `references/service-implementation.md` § Workflow gates and approvals.
 - **Deleting owned objects & quota** → when a record owns an external object and contributes to a usage counter, authorize, delete the object(s) in the server-owned namespace, release the server-verified persisted size, then delete metadata and reconcile — clamp counters at zero, and give cascades the same steps. Never drop only the row. See `references/service-implementation.md`.
 - **Scheduled jobs** → recurring jobs acquire the shared scheduler lock and honor the runtime scheduler-enabled flag; once-only reminders persist a dedicated timestamp field, stamped only after the side effect succeeded. See `references/scheduled-work.md`.
 

@@ -52,14 +52,22 @@ Before design work begins, run the canonical Claude Code command:
 /prepare-claude-design <project name>
 ```
 
-It gathers the product brief and writes a copy-ready
+It first asks whether Claude Design will be used for the design, then gathers the
+product brief. With the Claude Design process, it writes a copy-ready
 `design/CLAUDE_DESIGN_PROMPT.md`. Paste that file into Claude Design, complete the
 design, and import the export under `design/prototypes/`, `design/system/`, and
 `design/planning/`, including
 `design/handoff/[PROJECT] Design Reference.md` and
-`design/handoff/[PROJECT] Design Handoff Plan.md`. The compatibility pointer is
-`prompts/claude-design-handoff.md`; the full workflow remains canonical under
-`commands/`.
+`design/handoff/[PROJECT] Design Handoff Plan.md`.
+
+When you only want the prompt and the Claude Design process is not used, pass
+`--prompt-only` or choose that mode when asked. It writes a tool-neutral
+`design/DESIGN_PROMPT.md` without the export, release, and sync contracts. A
+design made from it does not feed `/sync-build-docs`; rerun the command in Claude
+Design mode if the design later needs to enter the build pipeline.
+
+The compatibility pointer is `prompts/claude-design-handoff.md`; the full workflow
+remains canonical under `commands/`.
 
 ## Adapt an existing Claude Design export
 

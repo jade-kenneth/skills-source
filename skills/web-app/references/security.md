@@ -158,6 +158,7 @@ module.exports = {
 | Admin functionality not discoverable in frontend code | 🟡 | Don't bundle admin-only routes/code in the public app bundle |
 | Third-party scripts reviewed and limited | 🟠 | Each third-party script is a potential supply chain attack vector |
 | Iframes and embeds restricted | 🟡 | Use `sandbox` attribute and CSP `frame-src` |
+| Client components import only types from server modules | 🔴 | A runtime import from a module that reads secrets or calls a provider pulls server code toward the bundle. Mark such modules with `import 'server-only'` so the build fails; where that package is not installed, nothing stops it at build time and review has to |
 
 ### Frontend Secret Exposure Checks
 
@@ -209,6 +210,20 @@ grep -rn "SUPABASE_SERVICE_ROLE\|DATABASE_URL" .next/static/
 | No idempotency key on charge endpoint | Double-charge on retry | Use Stripe idempotency keys or DB-level dedup |
 | Webhook endpoint without signature verification | Attacker can fake payment confirmations | Verify `stripe-signature` header |
 | Discount applied without server validation | Unlimited discounts by modifying request | Validate coupon in DB, check usage limits |
+
+### Multi-Step Workflows and Approvals
+
+A workflow where each step builds on an approved earlier one (draft → review →
+approve → publish) fails quietly when the order lives only in the UI.
+
+| Check | Severity | Notes |
+| --- | --- | --- |
+| Each step's prerequisite is enforced by the server handler | 🔴 | A disabled button is not a gate. The handler checks the predecessor's state and answers `409` with a sentence the UI can show |
+| An approval records a version of every input the next step reads | 🟠 | Not only the step directly before it: include the root record the whole workflow hangs off. Hash by value, so an edit that changes nothing does not count |
+| Downstream records carry a fingerprint of the approved inputs they were built from | 🟠 | Re-approving an upstream step then forces a stale child record to be regenerated rather than silently reused. A record saved before the version existed counts as stale |
+| A save that must contain a fixed set checks identity, not length | 🟠 | Match each item to a stored record by id, reject duplicates and strangers, and take fixed attributes (role, type) from the stored record, not the request body |
+| Approval refuses placeholder content | 🟡 | Fallback copy carries a fixed marker, and the approve path rejects any record still containing it. Saving it as a draft stays allowed |
+| Status codes keep their meaning | 🟡 | `400` bad input, `403` not entitled, `404` unknown or not the caller's, `409` an earlier step is not done, `502` an upstream provider failed. Error bodies are sentences written for the person using the app |
 
 ---
 
@@ -324,6 +339,30 @@ export async function POST(request: Request) {
   return new Response('OK', { status: 200 });
 }
 ```
+
+### Outbound Fetches of Caller-Supplied URLs
+
+| Check | Severity | Notes |
+| --- | --- | --- |
+| Scheme and host checked against an allowlist before the request | 🔴 | `https:` only, no credentials in the URL, no private, loopback or link-local address. See the SSRF row in §08 |
+| Every server-side fetch has a timeout | 🟠 | `AbortSignal.timeout(…)` or the client's equivalent, so an unresponsive site cannot hold a request open |
+| The response body is size-capped before it is parsed or stored | 🟠 | Cap the bytes read, or slice the text, so one large page cannot exhaust memory or a model's context |
+| Provider error bodies are truncated before they are logged or returned | 🟡 | Cap the length, and never echo credentials or request headers back to the caller |
+
+### Model (LLM) Output Is Untrusted Input
+
+Treat anything a language model returns the way you treat a request body from the
+internet: it has a shape you asked for, not a shape you can rely on.
+
+| Check | Severity | Notes |
+| --- | --- | --- |
+| Model output is read as `unknown` and coerced field by field | 🔴 | Coerce each field to its type and allowlist enum values before anything touches a record |
+| Saved records are rebuilt from an allowlist of keys, never spread from model output | 🔴 | Stray fields such as `status`, `approvedAt` or an owner id cannot ride along. Cap counts and string lengths |
+| The model never approves anything | 🔴 | Generated records are saved as drafts; only a human request sets an approved state. Human-entered non-empty values win over generated ones |
+| Values the prompt tells the model not to change are set in code | 🟠 | Anything derived from entitlements, assignments or configuration is copied from the source after normalisation. The prompt instruction is a hint, not the control |
+| The model cannot claim human provenance | 🟠 | A label saying a value came from a person or a record is kept only when the value matches that input exactly; otherwise it is relabelled as generated. Citations are filtered to sources that were actually collected |
+| Required structure survives the model | 🟡 | A section the baseline must always carry is restored when the model drops or empties it, and a protected section re-created under a new id or the same title is discarded |
+| Prompts that draft customer-facing copy forbid invention | 🟡 | Pass the evidence in rather than asking the model to recall it, and instruct it never to invent facts, offers, prices, dates, approvals or claims |
 
 ---
 

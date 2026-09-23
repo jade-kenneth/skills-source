@@ -1195,6 +1195,37 @@ Before building a custom component, check in this order:
 
 Build custom components only when no existing option fits. Redundant components create inconsistency and maintenance burden.
 
+**A thin `components/ui/` is not evidence the library is unused.** A project whose stack
+documentation names a component library *is* using it, even if only one or two primitives
+have been generated so far and neighbouring screens are hand-rolled markup. Match the
+declared stack, not the local precedent — hand-rolled markup on the last screen is a
+backlog item, not a convention to extend.
+
+### Registry Version Skew — Read From MCP, Install With the Pinned CLI
+
+A component registry served over MCP (or by a bare `@latest` CLI) tracks the library's
+newest major version, which can be one or more majors ahead of what the project's
+styling engine and pinned CLI support. The mismatch is silent: the registry answers
+happily, and the source it returns targets the newer engine.
+
+Two symptoms to watch for when reading registry items:
+
+- **Dependency renames** — a primitive that lists a newly unified or renamed upstream
+  package instead of the per-component packages the project already resolves.
+- **Engine-specific syntax** — component source or theme files written for a styling
+  engine major the project does not run.
+
+The rule:
+
+1. **Read from the MCP** — searching, viewing items, and reading usage examples are safe
+   and are what it is for.
+2. **Install with the version the project pins**, not the command the MCP hands back. MCP
+   `get_add_command_*` tools return an `@latest` invocation; substitute the pinned version.
+3. **Diff the theme and config files after any install** — the generated component files
+   are the intended output, but a newer CLI may also rewrite the theme/config into syntax
+   the project cannot parse, and silently drop custom scale keys. Verify the custom keys
+   survived before moving on; a dropped scale emits no build or type error.
+
 ### When Custom Components Are Justified
 
 - No existing component covers the interaction pattern.

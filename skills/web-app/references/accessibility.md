@@ -67,6 +67,7 @@ Always consider accessibility for every user-facing component and page.
 - Keep keyboard tab order aligned with visual reading order.
 - Icon-only navigation items need accessible names; decorative icons should be hidden from assistive tech.
 - Menus, disclosure navigation, and mobile nav toggles need `aria-expanded` and keyboard support.
+- On a route whose panels are tabs, the breadcrumb's last crumb names the *open panel*, not the route — otherwise the trail says the same thing on every tab. Carry `aria-current="page"` on that crumb, and render an ancestor crumb as plain text (not a link or button) whenever it already resolves to the current view, so no crumb points at where the reader is.
 
 ---
 

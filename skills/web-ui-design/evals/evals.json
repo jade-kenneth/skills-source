@@ -24,6 +24,31 @@
         "Requires validation text or semantics in addition to color",
         "Requires expected dialog keyboard behavior including Escape"
       ]
+    },
+    {
+      "id": 3,
+      "prompt": "A workspace has five tabs for one ad platform's campaign and a sixth tab named \"Platform Setup\" that holds budget, bidding and ad-level link fields to copy into the platform's ads tool by hand. Is that a good name for the tab, and what should change if it is renamed?",
+      "expected_output": "A naming review that rejects the shared platform word and the catch-all 'Setup', proposes a name for the job or destination in the user's vocabulary, and lists every place the rename must reach while leaving stored keys alone.",
+      "files": [],
+      "expectations": [
+        "Points out that a word every sibling tab shares does not distinguish this tab",
+        "Flags 'Setup' as suggesting a different job, such as connecting accounts",
+        "Proposes a name based on the job done there or where the values go, in the destination tool's vocabulary",
+        "Requires the new name in the tab, section header, buttons, gate states and server error messages",
+        "Keeps the persisted field name and export key unchanged as part of the label rename"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "A settings form shows two read-only notes: the draft brief's budget above the amount input, and the plan's goal sentence above a goal dropdown that offers only one option. The approved plan also records a budget, which later steps are checked against. Should the notes stay?",
+      "expected_output": "Keeps a budget note but sources it from the approved plan and labels its origin; removes the goal note because the dropdown has only one option and the note informs no choice.",
+      "files": [],
+      "expectations": [
+        "Removes the note beside the single-option dropdown because it informs no choice",
+        "Keeps a budget reference because the user must type an amount",
+        "Reads the budget from the approved record later steps are checked against, not the draft brief",
+        "Labels where the reference value comes from"
+      ]
     }
   ]
 }

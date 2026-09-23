@@ -1,0 +1,30 @@
+{
+  "skill_name": "root-docs",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I just fixed the bug where the search page returned 502 while the API container was booting. Document it.",
+      "expected_output": "A bug-fixed document in the right folder for the estate's shape, with the required sections, the in-plain-terms analogy when the cause crossed a boundary, and the index row.",
+      "files": [],
+      "expectations": [
+        "Reads the estate's shape off the disk before choosing docs/bug-fixed/ or docs/bug-fixed/REPO/",
+        "Names the file after the failure, not a ticket",
+        "Includes pasted evidence and a verify command plus a check that the fix is not merely masked",
+        "Moves the matching unresolved document if one existed, rather than leaving a copy",
+        "Keeps any docs/ path out of code comments and the commit message"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Write up why checkout sometimes charges twice; we haven't fixed it yet.",
+      "expected_output": "An unresolved document with a resolution tracker, options grouped by role, a companion one-pager and task cards at the bottom.",
+      "files": [],
+      "expectations": [
+        "Files it under docs/unresolved/TOPIC/ with a broad topic",
+        "Numbers solution options to match the tracker rows and groups them by the role that would make the change",
+        "Ends the document with generated task cards, one per tracker row, with no After on open cards",
+        "Builds the same-basename HTML one-pager and rebuilds the doc assistant with a clean --check"
+      ]
+    }
+  ]
+}

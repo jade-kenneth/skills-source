@@ -29,6 +29,27 @@ features/<name>/
   types.ts
 ```
 
+### Extracting a Feature From an Existing Route
+
+When a route file has grown into an entire screen, relocate it into `features/` as one
+mechanical move rather than a rewrite:
+
+- Name the feature folder to match the directory casing the repo already uses. The
+  PascalCase in the template above is illustrative; existing conventions outrank it.
+- Split on declaration boundaries and keep each component with the doc comments and the
+  small helpers only it uses. Divide by ownership, not by line count.
+- Derive each new file's imports from what its *code* references. A name that appears
+  only in a comment is not a dependency, and importing it leaves a dead import that a
+  typecheck will not flag.
+- Export from the feature only what a sibling file or the route actually consumes, behind
+  the feature's `index.ts`; everything else stays private to the file that uses it.
+- Leave the route file as composition only — the feature entry, its guards, and its layout.
+- Move the screen's tests along with the screen and point them at the feature entry, so
+  the suite still covers the same surface afterwards.
+- Prove the move changed nothing before doing anything else: typecheck, run the moved
+  tests, and build the route. A split that also changes behaviour gives you two problems
+  to debug at once.
+
 ## Code Organization Rules
 
 Organize code by feature or domain.

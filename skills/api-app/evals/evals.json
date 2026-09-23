@@ -121,6 +121,33 @@
         "Allows an abstract runtime token only through an intentional custom-provider mapping",
         "Verifies concrete-provider resolution and an inherited method that uses the injected dependency"
       ]
+    },
+    {
+      "id": 11,
+      "prompt": "Add a mutation that asks an LLM to draft a proposal from a client's intake answers and stores it, and a second mutation that approves the proposal for publishing.",
+      "expected_output": "The service treats LLM output as untrusted input and keeps approval a human, server-enforced step tied to the versions of the inputs it was built from.",
+      "files": [],
+      "expectations": [
+        "Coerces the model response field by field and rebuilds the record from an allowlist of keys",
+        "Persists the generated proposal as a draft; only the authorized approve mutation sets the approved state",
+        "Checks the predecessor state in the service and fails with a conflict error a person can act on",
+        "Stores a fingerprint of the intake answers the proposal was built from so later edits mark it stale",
+        "Rejects approval while placeholder fallback text is still present"
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "Add a mutation that saves a client's multi-step intake form. The client calls it with `submit: false` from 'Save and finish later' and with `submit: true` on the last step. Some fields have format rules (email, URL).",
+      "expected_output": "Validates the draft and the submit differently: the submit is all or nothing, while a draft persists the valid fields, omits malformed ones and names them on the result; server-set fields always come from verified context.",
+      "files": [],
+      "expectations": [
+        "Rejects a submit with a missing required field or a malformed value, naming each field, with no write",
+        "Persists a draft's valid fields even when one field is malformed",
+        "Omits the malformed value from the draft write rather than storing it",
+        "Returns the omitted field names on the success result",
+        "Sets status, owner and tenant from verified context for both drafts and submits",
+        "Tests a draft with one malformed field and the same input as a submit"
+      ]
     }
   ]
 }

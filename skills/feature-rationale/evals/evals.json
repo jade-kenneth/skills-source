@@ -1,0 +1,40 @@
+{
+  "skill_name": "feature-rationale",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "The checkout settings tab just landed. Write the page that explains why it was built the way it was, for someone non-technical.",
+      "expected_output": "Reads the brief, the plan and the code, lists every field, dropdown, check and export section, writes one card per decision with a plain answer and an honest strength label, and saves a house-style HTML page under docs/feature-rationale/.",
+      "files": [],
+      "expectations": [
+        "Copies the list of what was asked for word for word and separates what was added beyond it",
+        "Builds the list of decisions from the screen, handler and types, not from the plan alone",
+        "Gives every card exactly one of the six strength labels and counts them in the masthead",
+        "Writes 'No recorded reason' instead of inventing one when no source explains a choice",
+        "Keeps file names, routes and stored values out of the body and only in the developer details",
+        "Runs the visible text through the humanizer and rebuilds the reading assistant"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Why are some fields dropdowns instead of text boxes, and why are there fields that weren't in the brief?",
+      "expected_output": "Treats this as a request for the feature's rationale page, answering each dropdown and each added field as its own card with what would go wrong the other way.",
+      "files": [],
+      "expectations": [
+        "Explains each dropdown by the outside rule or safety rule behind it",
+        "Marks rules nobody has checked in the real account as not yet checked",
+        "Flags choices the code made before the owner decided as decided early, naming the role that decides"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I fixed the save button that looked stuck. Explain why the fix was built that way.",
+      "expected_output": "Recognises a bug fix, does not write a feature-rationale page, and points to the bug-fixed tier instead.",
+      "files": [],
+      "expectations": [
+        "Does not create a page under docs/feature-rationale/",
+        "Routes the explanation to the bug-fixed documentation instead"
+      ]
+    }
+  ]
+}

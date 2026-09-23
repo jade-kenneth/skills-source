@@ -154,6 +154,20 @@ const isBusy =
 
 ---
 
+## Drafts and Save-for-Later
+
+A multi-step or long form that offers "save and finish later" makes two different requests: a **draft save** and a **final submit**. Validate them differently.
+
+- **The final submit is all or nothing.** Every required field present and every format check passing, or a field-level rejection and no write.
+- **A draft save is never all or nothing.** One malformed or half-typed field must not throw away every other answer. Store every valid field, leave the malformed one out so the last good stored value stays, and return the names of the fields it did not store.
+- **Never store a malformed value to make a draft succeed.** The format rules still decide what reaches storage. A draft only relaxes what blocks the *rest* of the save, not what gets persisted.
+- **A partly successful save says so.** Mark the named fields with their inline errors and say "Saved, except the fields marked…". A bare "Saved" hides the part the user still has to fix.
+- **Resuming reads the stored draft back through the same default-values helper**, including the step or page the user stopped on, so a returning user lands where they left off with their answers filled in.
+- **A mock or preview mode that claims to save must keep the draft** somewhere the next page load reads (browser storage, read after mount and never during render), or say plainly that nothing is kept. A "saved" message that doesn't survive a reload reads as a save and isn't one.
+- **Test both sides.** A draft with one malformed field succeeds, its write omits that field and includes the rest, and the response names it; the same body sent as a final submit is rejected with no write.
+
+---
+
 ## Dialog and Drawer Forms
 
 Create/edit flows live in modals or drawers (see the Inline flows non-negotiable). For dialog-hosted forms:
@@ -172,7 +186,10 @@ Create/edit flows live in modals or drawers (see the Inline flows non-negotiable
 - Keying `useFieldArray` rows by index.
 - Storing server objects in form state — forms hold editable values only; server state stays in the query cache.
 - Leaving a submit control enabled while its mutation is pending.
+- Running the final submit's all-or-nothing validation on a "save and finish later" draft, so one half-typed field discards every other answer.
 - `as` casts to force form values into API input types.
+- An edit mode that silently skips some of the fields it shows. Every field an edit view displays either gets an input or says, in edit mode, why it is locked. "Structured" values (lists of objects, flag groups) still need an editor, and the server needs a matching per-row validator.
+- Seeding an edit input with `JSON.stringify(object)` or rendering an object with `String(value)` (`[object Object]`). Give each structured shape an explicit to-text and from-text mapping, and reject bad rows with a message naming the field and line.
 
 ---
 

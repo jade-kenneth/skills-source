@@ -1,0 +1,30 @@
+{
+  "skill_name": "task-phase",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Create a task phase from docs/unresolved/payments/checkout-retries-charge-twice.md.",
+      "expected_output": "A task_NAME.md plan grounded in the unresolved document's tracker and the real code, phased by dependency, ending in Verify & document, followed by ASCII mockups.",
+      "files": [],
+      "expectations": [
+        "Reads the source document's resolution tracker and task cards before writing any step",
+        "Starts with Phase 0 Decisions & prerequisites and ends with a Verify & document phase whose last step updates docs and CLAUDE.md",
+        "Puts a reproduce step before the fix step and names path:line for each change",
+        "Tags settings-only steps that a code rollback would not undo",
+        "Adds ASCII mockups for every surface the plan changes, or says there are none"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Plan the 'bulk export' feature. The repo has no test runner; the gate is lint and build.",
+      "expected_output": "A plan whose steps name honest checks (lint, build, a scripted request, a manual pass) and never call a build a test.",
+      "files": [],
+      "expectations": [
+        "Uses the project's actual gate commands rather than an assumed test command",
+        "Does not describe a build or lint as a test",
+        "Makes introducing a test runner its own explicit step if the plan needs one",
+        "Does not start implementing the feature"
+      ]
+    }
+  ]
+}

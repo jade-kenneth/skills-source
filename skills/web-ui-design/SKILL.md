@@ -188,9 +188,23 @@ Examples:
 
 ---
 
+## Naming Screens, Tabs and Actions
+
+A label tells the user what they do there, in words they already use.
+
+- Name a screen, tab or section for the job done there, or for where its output goes, in the vocabulary of the domain or the tool the user already works in.
+- A word every sibling shares does not tell them apart. When every tab belongs to the same platform, product or client, that name is not a label.
+- Avoid catch-all words (`Setup`, `Config`, `General`, `Misc`, `Advanced`) when they suggest a different job. `Setup` reads as connecting accounts or installing something, not as filling in a form.
+- Check a new name against the labels the user already knows from the destination tool. If it echoes a different page there, the screen's own headings should make the difference obvious.
+- Use one name everywhere the thing is mentioned: the tab, the section header, the buttons that open it, empty and gate states, and server error messages that name it.
+- A label the user reads is not the key the code stores. Renaming a label is a copy change and leaves persisted field names and export keys alone; renaming a stored key is a data change (see `web-app`).
+
+---
+
 ## Components & Patterns
 
 - **Forms**: labels, helper text, validation, disabled/loading states, success/error handling, keyboard order, and accessible error summaries for complex forms.
+- **Read-only reference values beside an input**: show one only when it informs a choice the user makes on that screen; a note beside a field with one possible answer is noise. Read it from the record later steps are checked against (the approved version), not from an earlier draft or input, and label where it comes from.
 - **Tables**: sorting, filtering, loading skeletons, empty states, pagination/virtualization, column alignment, row actions, and responsive overflow.
 - **Dialogs/drawers**: focus trap, escape/close behavior, clear title/description, destructive confirmation, and scroll-safe bodies.
 - **Navigation**: clear active state, breadcrumbs for deep admin flows, predictable sidebar/topbar behavior, and responsive collapse rules.

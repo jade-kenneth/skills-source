@@ -47,6 +47,45 @@
         "Uses react-hook-form plus zod for client feedback and requires independent API validation and authorization",
         "Implements the named query/mutation wrapper and targeted cache update or rollback while preserving the prototype's observable states"
       ]
+    },
+    {
+      "id": 5,
+      "prompt": "Add an 'Approve' step to the campaign editor: staff generate a draft with an AI route handler, edit it in a form that includes a list of ad objects, then approve it so the next step can use it.",
+      "expected_output": "The approval is gated on the server, model output is coerced and rebuilt from an allowlist before it is saved as a draft, and the edit form gives every structured field a real editor.",
+      "files": [],
+      "expectations": [
+        "Enforces the predecessor check in the route handler and returns 409 with a readable message, not only a disabled button",
+        "Saves generated output as a draft and never lets model output set the approved state",
+        "Rebuilds the saved record from an allowlist of keys instead of spreading the model response",
+        "Records a version of every input the next step reads so a re-approved upstream marks the child stale",
+        "Gives the list of ad objects an editor with explicit to-text and from-text mapping instead of JSON.stringify"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Product wants the 'Advanced' section of a saved record renamed to 'Delivery settings' in the UI. The record is stored with an `advanced` field and exported as JSON. What should the change include?",
+      "expected_output": "Treats the request as a copy change: every visible label and message is updated, while the stored `advanced` field and the JSON export key stay as they are; renaming the key is described as a separate data change needing a migration or read fallback.",
+      "files": [],
+      "expectations": [
+        "Updates every visible place the section is named, including buttons and error messages",
+        "Leaves the persisted `advanced` field and the export key unchanged",
+        "Explains that renaming the stored key needs a migration or read fallback for existing records",
+        "Keeps any stored-key rename out of the label change"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "A multi-step onboarding form has a 'Save and finish later' button. Users report that when one box is half-typed (for example an email like `jane@acme`), pressing it saves nothing and they come back to an empty form. Fix it.",
+      "expected_output": "Separates the draft save from the final submit: the draft stores every valid field, leaves the malformed one out, and the form marks the named field; the final submit stays all or nothing, and resuming reads the stored draft back into the form on the saved step.",
+      "files": [],
+      "expectations": [
+        "Keeps the final submit all or nothing on required fields and format rules",
+        "Makes a draft save store the valid fields instead of refusing the whole save over one malformed field",
+        "Never stores the malformed value to make the draft succeed",
+        "Shows the fields that were not stored with their inline errors and a message saying the save was partial",
+        "Resumes from the stored draft, including the step the user stopped on",
+        "Adds tests for a draft with one malformed field and for the same input sent as a submit"
+      ]
     }
   ]
 }

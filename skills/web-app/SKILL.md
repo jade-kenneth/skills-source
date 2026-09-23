@@ -122,7 +122,10 @@ These override any default behavior. Grouped by concern — every group applies 
 - **Cache invalidation** → invalidate only affected scopes; never the whole cache by default. See `references/caching.md` § Invalidation Guide.
 - **Mutation actions** → every control that triggers a mutation (button, menu item, submit, row action) must be disabled on `mutation.isPending` **and** the handler guarded with `if (mutation.isPending) return;`. Never leave a mutation action clickable while it is in flight — it double-fires. See `references/react-patterns.md` § Mutation Safety.
 - **Search inputs** → always debounce with `useDebounce` (300ms) before triggering API calls. See `references/caching.md`.
+- **Workflow gates** → when a step depends on an earlier approval, the server handler checks it and answers `409`; a disabled button is not a gate. An approval records a version of every input the next step reads, so re-approving upstream forces a stale child to be regenerated. See `references/security.md` § Multi-Step Workflows and Approvals.
+- **Model output and outbound fetches** → treat LLM output as untrusted input (coerce, rebuild from an allowlist, never let it approve anything), and give every server-side fetch of a URL an allowlist check, a timeout and a size cap. See `references/security.md` § 10.
 - **Forms** → `useForm` + `zod` + `useFieldArray` for array fields. See `references/forms.md`.
+- **Renaming** → a visible label and a stored key are separate. Renaming what a screen, field or section is called is a copy change: update every place a user reads it (tab, heading, buttons, empty and error states, server error messages) and leave persisted field names, API fields and export keys alone. Renaming a persisted key is a data change: existing records keep the old key, so it needs a migration or a read fallback and a check of every consumer, shipped as its own change.
 
 ### Rendering, SSR & performance
 
@@ -145,6 +148,7 @@ These override any default behavior. Grouped by concern — every group applies 
 - **State communication** → prefer one clear state treatment over multiple redundant ones. Do not stack icon, badge, color, helper text, and label treatments that all say the same thing. See `references/common-anti-patterns.md` § Redundant State Indicators.
 - **Inline flows** → prefer modals/drawers for create/edit over navigating to a separate CRUD page.
 - **Tailwind** → use canonical utility classes; no arbitrary `[]` values when a canonical equivalent exists. See `references/common-anti-patterns.md` § Tailwind — No Arbitrary Values.
+- **Component library** → build new surfaces on the primitives the project's stack declares, even when neighbouring screens are hand-rolled markup and only a couple of primitives exist so far. When a registry is reachable over MCP, read from it but install with the version the project pins — the MCP tracks the newest major and hands back an `@latest` command. See `references/react-patterns.md` § Component Discovery and Reuse.
 
 ### Code quality & placement
 
