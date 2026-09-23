@@ -60,11 +60,12 @@ design, and import the export under `design/prototypes/`, `design/system/`, and
 `design/handoff/[PROJECT] Design Reference.md` and
 `design/handoff/[PROJECT] Design Handoff Plan.md`.
 
-When you only want the prompt and the Claude Design process is not used, pass
-`--prompt-only` or choose that mode when asked. It writes a tool-neutral
-`design/DESIGN_PROMPT.md` without the export, release, and sync contracts. A
-design made from it does not feed `/sync-build-docs`; rerun the command in Claude
-Design mode if the design later needs to enter the build pipeline.
+When the Claude Design process is not used, pass `--prompt-only` or choose that
+mode when asked. The command writes the same prompt, then carries it out in Claude
+Code and generates the export locally — `design/planning/`, `design/system/`,
+`design/prototypes/`, both handoff documents, and `design/design-release.json` —
+under the same contract. Validation and `/sync-build-docs` then work the same as
+for a Claude Design export.
 
 The compatibility pointer is `prompts/claude-design-handoff.md`; the full workflow
 remains canonical under `commands/`.

@@ -9,6 +9,7 @@ into Claude Design, then import the completed export before running
 `/sync-build-docs`. `/finalize-build-docs` is the closing completeness gate, not
 the entry point.
 
-When only the prompt is wanted and the Claude Design process is not used, run
-`/prepare-claude-design <project name> --prompt-only`. It writes a tool-neutral
-`design/DESIGN_PROMPT.md` with no export or sync steps.
+When the Claude Design process is not used, run
+`/prepare-claude-design <project name> --prompt-only`. It writes the same prompt,
+then carries it out in Claude Code to generate the `design/` export locally under
+the same contract.

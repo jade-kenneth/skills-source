@@ -1,5 +1,5 @@
 ---
-description: Prepare a reusable, copy-ready design master prompt — either for the Claude Design process and its export contract, or as a standalone prompt when Claude Design is not used
+description: Prepare the Claude Design master prompt and export contract, then either hand it to Claude Design or, in prompt-only mode, carry it out locally to generate the design/ export without Claude Design
 argument-hint: [project name] [--prompt-only]
 ---
 
@@ -7,35 +7,33 @@ argument-hint: [project name] [--prompt-only]
 
 **Arguments:** $ARGUMENTS
 
-This command prepares the prompt that creates the product's design source; it
-does not design screens, write application code, or generate
-`Product Specification.md` or `Implementation Plan.md` itself. In Claude Design
-mode, use it before `/sync-build-docs`.
+This command prepares the prompt that creates the product's design source and,
+in prompt-only mode, runs that prompt to generate the `design/` export locally. It
+never writes application code or generates `Product Specification.md` or
+`Implementation Plan.md` itself. Use it before `/sync-build-docs`.
 
 ## 0. Choose the mode
 
-The mode decides what the prompt contains and what happens after it is written.
-Take it from the arguments or the user's request when either states it
-(`--prompt-only` selects prompt-only mode). Otherwise ask once, before gathering
-the brief — never assume:
+The mode decides who carries out the design prompt. Take it from the arguments or
+the user's request when either states it (`--prompt-only` selects prompt-only
+mode). Otherwise ask once, before gathering the brief — never assume:
 
-- **Claude Design process** — Claude Design will produce the design and export it
-  into `design/` for the build pipeline. Write `design/CLAUDE_DESIGN_PROMPT.md`
-  with every section in step 2, and hand off into validation and
-  `/sync-build-docs`.
-- **Prompt only** — the user wants only the generated prompt; the Claude Design
-  process is not used. There is no Claude Design project, export, release
-  manifest, or sync. Write `design/DESIGN_PROMPT.md`, adapt the sections as step 2
-  specifies, and hand off the prompt alone.
+- **Claude Design** — Claude Design produces the design. Write the prompt, hand it
+  to the user to paste into Claude Design, and stop. The user imports Claude
+  Design's export into `design/`.
+- **Prompt only (generate locally)** — the Claude Design process is not used.
+  Write the same prompt, then carry it out in this session and generate the full
+  `design/` export in the repository yourself: prototypes, system, planning,
+  handoff documents, and the release manifest (step 3).
 
-State the chosen mode back to the user in one line before continuing.
+Both modes write `design/CLAUDE_DESIGN_PROMPT.md` with every section in step 2,
+and both produce an export under the same contract, so validation,
+`/sync-build-docs`, and `/finalize-build-docs` work the same afterwards. State the
+chosen mode back to the user in one line before continuing.
 
 If usable screens already exist under `design/prototypes/`, do not overwrite them
-or start a replacement design. In Claude Design mode, run
-`/adapt-design-export <project name>` instead to prepare a compatibility pass for
-the existing Claude Design project. In prompt-only mode, never touch
-`design/prototypes/`; treat the existing screens as design evidence for the brief
-and ask whether the prompt should extend them or start fresh.
+or start a replacement design. Run `/adapt-design-export <project name>` instead
+to prepare a compatibility pass for the existing design.
 
 ## 1. Resolve the product brief
 
@@ -63,37 +61,15 @@ conflicts rather than silently replacing them.
 
 ## 2. Write the copy-ready prompt
 
-Create the mode's prompt file — `design/CLAUDE_DESIGN_PROMPT.md` for the Claude
-Design process, `design/DESIGN_PROMPT.md` for prompt only — creating `design/`
-when necessary. If the file already exists, show the proposed changes and ask
-before replacing it.
+Create `design/CLAUDE_DESIGN_PROMPT.md`, creating `design/` when necessary. If the
+file already exists, show the proposed changes and ask before replacing it.
 
-The generated file must be a self-contained prompt addressed directly to its
-recipient. Resolve the user's answers into it; do not leave generic placeholders
-for information the user already provided. In Claude Design mode, include every
-section from **Role and goal** through **Incremental design release contract**
-exactly as specified. The adaptations table below instructs you; it is never
-prompt content.
-
-### Prompt-only adaptations
-
-In prompt-only mode, the sections that exist only to feed the Claude Design
-export and build pipeline are dropped, and the rest are kept tool-neutral. Apply
-these changes and include every other section unchanged:
-
-| Section | Prompt-only treatment |
-|---|---|
-| Role and goal | Address the recipient as "you" — the design tool, model, or designer the user will give it to. Name a specific tool only if the user named one. Keep every requirement. |
-| Confirmed product brief, Required design process | Unchanged. |
-| Prototype contract | Keep the per-screen quality list, platform rules, and prototype-only labeling. Drop the `.dc.html` filename convention. Require the `data-prototype-surface`, `data-preview-shell`, `data-app-root`, and `data-handoff` markup only when the recipient will produce HTML; otherwise require each screen to state its target surface and what is production UI versus presentation. |
-| Navigation and interaction contract, Carousel and scroll-container contract | Keep every rule and coverage check. The `data-*` attributes apply only to HTML output; otherwise the same fields are declared in the route table (`navigation-map.md`) and control table (`interaction-inventory.md`). |
-| Design-system and planning deliverables | Keep the documents and their required content. Deliver them as named Markdown documents, or as named sections of the response when the recipient cannot export files. Drop the `design/system/` and `design/planning/` paths and the batch columns in `screen-inventory.md`. |
-| Design handoff documents, Export contract, Incremental design release contract | Omit, except the final export report that closes the release contract. They exist only for `/sync-build-docs` and `/finalize-build-docs`. |
-| Final export report | Keep it as a completeness report. Drop the file-by-folder listing and any batch or release fields. |
-
-The no-secrets rule applies in both modes. Never mention `design-release.json`,
-`design-sync.lock.json`, `npm run design:validate`, or the build-doc commands
-inside a prompt-only prompt.
+The generated file must be a self-contained prompt addressed directly to Claude
+Design. Resolve the user's answers into it; do not leave generic placeholders for
+information the user already provided. Include every section from **Role and
+goal** through **Incremental design release contract** exactly as specified, in
+both modes. In prompt-only mode the same file is also the brief you carry out in
+step 3, so keeping it complete keeps the local export on the same contract.
 
 ### Role and goal
 
@@ -528,9 +504,9 @@ Require a final export report containing:
 The exported files must contain no passwords, API keys, tokens, connection strings,
 private customer data, or other secrets.
 
-## 3. Hand off to the user
+## 3. Hand off or generate the design
 
-### Claude Design process
+### Claude Design
 
 After writing `design/CLAUDE_DESIGN_PROMPT.md`:
 
@@ -557,17 +533,51 @@ Use `/finalize-build-docs <project name>` only after the final MVP design releas
 Do not wait for every screen before the first sync. Sync only validated releases,
 and finalize only after the required MVP design is complete.
 
-### Prompt only
+### Prompt only — generate the design export locally
 
-After writing `design/DESIGN_PROMPT.md`:
+Do not send the prompt anywhere. Carry out `design/CLAUDE_DESIGN_PROMPT.md` in this
+session as the designer, taking the role and every obligation it gives Claude
+Design:
 
-1. Open the file for the user.
-2. Explain that its full contents are a self-contained prompt to use wherever
-   they choose.
-3. Give no validation or build-doc next steps. `npm run design:validate`,
-   `/sync-build-docs`, and `/finalize-build-docs` read a Claude Design export
-   (`design/prototypes/`, the paired handoff documents, and
-   `design/design-release.json`), which prompt-only mode never produces.
-4. Say in one line that a design made from this prompt does not enter the build
-   pipeline on its own. If it later needs to, rerun
-   `/prepare-claude-design <project name>` in Claude Design mode.
+1. **Clarify first.** Work through the prompt's required design process in order.
+   Where it requires clarification before design, ask the user and wait; never
+   fill a scope, navigation, platform, or brand gap with an invented decision.
+2. **Plan before screens.** Write `design/planning/` — scope, information
+   architecture, `navigation-map.md`, flows, journeys, `screen-inventory.md`,
+   `interaction-inventory.md`, roles and permissions, data requirements, and
+   `open-decisions.md` — before any prototype.
+3. **System before screens.** Write every `design/system/` document with exact
+   values, then build prototypes only from those tokens and components.
+4. **Prototypes.** Write one `design/prototypes/<Screen Name>.dc.html` per screen,
+   each meeting the prototype, navigation and interaction, and scroll-container
+   contracts: one `data-prototype-surface`, one `data-app-root` carrying the
+   screen and route attributes, and exactly one `data-action` per control.
+5. **Handoff.** Write `design/handoff/[PROJECT] Design Reference.md` and
+   `design/handoff/[PROJECT] Design Handoff Plan.md`, linked to each other.
+6. **Release.** Follow the incremental design release contract: once the
+   foundation and one complete end-to-end MVP slice are coherent, write
+   `design/design-release.json` as Design Batch 1, report it, and continue with
+   later scope as further batches. Never create or edit
+   `design/design-sync.lock.json`.
+7. **Audit and report.** Run the prompt's pre-export coverage rules on your own
+   output, fix what fails, and give the user the final export report the prompt
+   requires.
+
+The export stays design-only: no application code, no changes outside `design/`,
+and no secrets or private data — representative demo content only. If a decision
+blocks a screen, mark it `needs-design:` and record it in `open-decisions.md`
+rather than guessing.
+
+Then give the user the same next steps as Claude Design mode:
+
+```bash
+npm run design:validate
+```
+
+Then, for every design release:
+
+```text
+/sync-build-docs <project name>
+```
+
+Use `/finalize-build-docs <project name>` only after the final MVP design release.
