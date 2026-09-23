@@ -64,7 +64,10 @@ When the Claude Design process is not used, pass `--prompt-only` or choose that
 mode when asked. Only prototypes are skipped: the command writes the prompt,
 `design/planning/`, `design/system/`, both handoff documents, the root
 `Product Specification.md` and `Implementation Plan.md`, and the task file, then
-implements the UI directly in the owning app's source. The Design Reference holds
+implements the UI directly in the owning app's source. It also asks which
+installed UI skills to use — for example `impeccable`, `taste-skill`,
+`ui-ux-pro-max`, `frontend-design`, `design-engineering`, or a combination — and
+applies them to the design system and the implementation. The Design Reference holds
 the per-screen spec a prototype would have carried. With no prototype export,
 `npm run design:validate` and `/sync-build-docs` do not apply to this mode.
 

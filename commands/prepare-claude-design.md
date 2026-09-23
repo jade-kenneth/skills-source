@@ -63,6 +63,41 @@ Read any existing product brief, PRD, task document, brand asset, or design file
 the repository before asking questions. Preserve verified decisions and surface
 conflicts rather than silently replacing them.
 
+### UI skills (prompt-only mode)
+
+In prompt-only mode, also ask which UI skill or skills guide the design system and
+the UI implementation. Ask in the same round as the brief questions, as one
+multi-select question. Skip this in Claude Design mode, where Claude Design owns
+the visual work.
+
+1. **Discover what is installed.** Check the session's available-skills list,
+   `~/.claude/skills/`, the project's `.claude/skills/`, and installed plugin
+   skills. Offer only real skill names; never guess one.
+2. **Offer them grouped by role.** List installed skills first, then well-known
+   UI skills that are not installed, labeled `not installed`:
+
+   | Role | Examples |
+   |---|---|
+   | Scope, craft floor, audit, and polish | `impeccable` |
+   | Aesthetic direction — style, palette, typography | `taste-skill`, `ui-ux-pro-max`, `frontend-design` |
+   | Motion and interaction feel | `design-engineering` |
+   | Component library | `shadcn` |
+
+   Always include **None — repository UI skills only**. The repository's own
+   platform skills (`web-ui-design`, `mobile-native-ui-design`) and app skills
+   (`web-app`, `mobile-app`) always load for their platform and are not part of
+   the choice.
+3. **Allow combinations, one lead per role.** Skills with different roles combine
+   freely; skills built to route to each other — such as `impeccable` with
+   `taste-skill` and `design-engineering` — are a good default. When the user picks
+   more than one aesthetic-direction skill, ask which one leads; the others are
+   advisory only.
+4. **Handle missing skills honestly.** When a chosen skill is not installed, say
+   so and ask whether to continue without it or pause while the user installs it.
+   Never claim to apply a skill that was not loaded.
+5. **Record the choice** as `UI skills` in the prompt's Confirmed product brief,
+   with each skill's role.
+
 ## 2. Write the copy-ready prompt
 
 Create `design/CLAUDE_DESIGN_PROMPT.md`, creating `design/` when necessary. If the
@@ -584,7 +619,11 @@ document before any UI code:
    `navigation-map.md`, flows, journeys, `screen-inventory.md`,
    `interaction-inventory.md`, roles and permissions, data requirements, and
    `open-decisions.md`.
-3. **Design system.** Write every `design/system/` document with exact values.
+3. **Design system.** Load the chosen aesthetic-direction and component-library
+   skills first, and let them shape the style, palette, typography, and
+   components within the user's brand decisions. Then write every
+   `design/system/` document with exact values; from here on those values, not
+   the skill's defaults, are the authority.
 4. **Handoff.** Write `design/handoff/[PROJECT] Design Reference.md`, with the full
    per-screen spec that replaces the prototype, and
    `design/handoff/[PROJECT] Design Handoff Plan.md`, linked to each other.
@@ -607,7 +646,12 @@ document before any UI code:
 7. **Build.** Implement one Implementation Plan phase at a time in the owning
    app's source. Load that app's routed skill and UI design skill (for example
    `web-app` with `web-ui-design`, or `mobile-app` with
-   `mobile-native-ui-design`), put the design-system tokens in the app's existing
+   `mobile-native-ui-design`) plus every chosen UI skill, and follow each within
+   its role. When they conflict, this order wins: the user's recorded decisions
+   and the `design/` documents, then the app skill's architecture and
+   accessibility rules, then the chosen UI skill. A UI skill never replaces a
+   recorded token, the repository's component library, or its data and routing
+   patterns; record a real conflict in `open-decisions.md` and ask. Put the design-system tokens in the app's existing
    theme or token layer, and record the `Pattern scan` and `Production mapping`
    in the task file before each screen. Reuse existing components, routing, data
    clients, and form patterns; never scaffold a parallel stack. When a screen
@@ -615,9 +659,10 @@ document before any UI code:
    build it or leave the screen blocked; never ship mock data, fake persistence,
    or placeholder handlers as the finished UI.
 8. **Verify.** Run the app's type check, lint, and tests, run the app to check
-   each screen and state, pass each screen's Fidelity QA rows, and update phase
+   each screen and state, run the audit or polish pass of any chosen UI skill
+   that has one (for example `impeccable`), pass each screen's Fidelity QA rows, and update phase
    checkboxes and `screen-inventory.md` statuses as screens land.
-9. **Report.** Give the user an implementation report: documents written, screens
+9. **Report.** Give the user an implementation report: UI skills used, documents written, screens
    built with their routes and source files, route and control coverage, states
    implemented, verification results, blocked screens, and `open-decisions.md`
    items.
