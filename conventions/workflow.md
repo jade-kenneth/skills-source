@@ -57,7 +57,12 @@ inline handlers, manual submit checks, fake delays, hard-coded permissions,
 browser storage, and mock network behavior exist only to demonstrate the design;
 never copy them into production merely because they make the prototype work.
 
-Before implementing a prototype-backed screen, add a `Production mapping` under
+A prompt-only project has no prototypes. There, the Design Reference's per-screen
+spec and `design/system/` are authoritative for the same visible outcomes,
+interaction intent, copy, and states, and every rule below applies to
+spec-backed screens exactly as it does to prototype-backed ones.
+
+Before implementing a prototype-backed or spec-backed screen, add a `Production mapping` under
 the active task's pattern scan. Resolve architecture in this order: explicit
 project configuration and the approved Implementation Plan; protected foundations
 that actually exist in the current repository; the nearest end-to-end exemplars;
@@ -384,7 +389,7 @@ Use the following compact structure for a small scoped `task.md`; `.skills-sourc
 
 ## Production mapping
 
-Complete when the change implements a prototype-backed or data-backed surface; otherwise write `Not applicable` and delete the fields below.
+Complete when the change implements a prototype-backed, spec-backed, or data-backed surface; otherwise write `Not applicable` and delete the fields below.
 
 - State ownership: <server/cache, persisted client/session, form, ephemeral UI>
 - Architecture source: <project config/plan → protected foundation → exemplar → routed skill>
@@ -392,7 +397,7 @@ Complete when the change implements a prototype-backed or data-backed surface; o
 - Write path: <configured form validation → write operation → server/application layers → persistence → cache update>
 - Validation and errors: <client feedback validation + server validation/auth/error contract>
 - Async states: <loading, empty, error, success, offline, optimistic rollback>
-- Prototype-only mechanics rejected: <mock/local/manual mechanisms not carried over>
+- Prototype-only mechanics rejected: <mock/local/manual mechanisms not carried over, or `None — no prototype` for a spec-backed screen>
 
 ## Phases
 

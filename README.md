@@ -74,6 +74,23 @@ the per-screen spec a prototype would have carried. With no prototype export,
 The compatibility pointer is `prompts/claude-design-handoff.md`; the full workflow
 remains canonical under `commands/`.
 
+## Request designs for blocked tasks
+
+When tasks in `TASK_<project-slug>.md` block on missing screens or states, run:
+
+```text
+/generate-design-request <project name>
+```
+
+It follows the mode `/prepare-claude-design` recorded as `Design mode` in
+`design/CLAUDE_DESIGN_PROMPT.md` (override with `--prompt-only` or
+`--claude-design`). In Claude Design mode it writes a copy-ready
+`design/CLAUDE_DESIGN_REQUEST.md` to paste into the existing Claude Design
+project, followed by `npm run design:validate` and `/sync-build-docs`. In
+prompt-only mode it writes the same request for itself, specifies the missing
+screens in the Design Reference and planning documents, updates the build docs,
+re-runs `/generate-project-tasks` to unblock the tasks, and offers to build them.
+
 ## Adapt an existing Claude Design export
 
 If screens were already designed before the current handoff contract—either
@@ -108,6 +125,12 @@ The command creates or updates the same root `Product Specification.md` and
 existing phase status, writes a batch sync report, and acknowledges the release
 through `design/design-sync.lock.json`. Claude Design can continue later screens
 while Codex implements already released slices.
+
+`/sync-build-docs`, `/finalize-build-docs`, and `/adapt-design-export` apply only
+to Claude Design mode. A prompt-only project (`Design mode: Prompt only` in
+`design/CLAUDE_DESIGN_PROMPT.md`) has no release to sync or finalize; its build
+docs come from `/prepare-claude-design --prompt-only`, and later design gaps
+from `/generate-design-request`.
 
 ## Preserve design fidelity without copying prototype architecture
 

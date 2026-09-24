@@ -131,6 +131,29 @@ grep -Fq 'design/design-release.json' "$GENERATE_DESIGN_REQUEST"
 grep -Fq 'design/design-sync.lock.json' "$GENERATE_DESIGN_REQUEST"
 grep -Fq 'PROTOTYPE ONLY — MAP TO PRODUCTION ARCHITECTURE' "$GENERATE_DESIGN_REQUEST"
 grep -Fq '/sync-build-docs <project name>' "$GENERATE_DESIGN_REQUEST"
+grep -Fq '## 0. Resolve the design mode' "$GENERATE_DESIGN_REQUEST"
+grep -Fq -- '--prompt-only' "$GENERATE_DESIGN_REQUEST"
+grep -Fq '### Prompt-only request' "$GENERATE_DESIGN_REQUEST"
+grep -Fq '### Prompt only — specify the designs directly' "$GENERATE_DESIGN_REQUEST"
+grep -Fq 'Design mode' "$GENERATE_DESIGN_REQUEST"
+grep -Fq 'Design mode' "$PREPARE_DESIGN"
+grep -Fq '/generate-design-request <project name>' "$PREPARE_DESIGN"
+
+echo "Validating prompt-only awareness across the design pipeline"
+for mode_aware in "$SYNC_BUILD_DOCS" "$ROOT/commands/finalize-build-docs.md" \
+  "$ADAPT_DESIGN" "$ROOT/commands/generate-project-tasks.md" \
+  "$ROOT/commands/stack-doctor.md" "$ROOT/scripts/build-agents-md.js"; do
+  grep -Eqi 'prompt[- ]only' "$mode_aware" || {
+    echo "$mode_aware must handle prompt-only design mode." >&2
+    exit 1
+  }
+done
+grep -Fq '/generate-design-request <project name>' "$ROOT/scripts/build-agents-md.js"
+grep -Fq 'spec-backed' "$ROOT/conventions/workflow.md"
+if grep -Fq 'gen-build-docs' "$ROOT/commands/stack-doctor.md" "$ROOT/prompts/gen-build-prompt.md"; then
+  echo "gen-build-docs was renamed to finalize-build-docs." >&2
+  exit 1
+fi
 
 echo "Validating canonical build-doc finalization command"
 FINALIZE_BUILD_DOCS="$ROOT/commands/finalize-build-docs.md"

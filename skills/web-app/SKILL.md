@@ -194,7 +194,9 @@ When generating or modifying code, always follow this order. This is the canonic
 5. Keep route entry files thin.
 
 Before architecture or UI code, translate every prototype-backed data interaction
-into its production owner and end-to-end repository path. A visually complete
+into its production owner and end-to-end repository path. When no prototype
+exists, the Design Reference's per-screen spec is the visual and behavior
+contract, and its data interactions get the same translation. A visually complete
 screen backed by mock/local data or manual-only validation is incomplete.
 
 **Architect**

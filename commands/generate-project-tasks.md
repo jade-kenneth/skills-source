@@ -30,8 +30,11 @@ Read, in this order:
 
 If either canonical root document is missing, stop and direct the user to
 `/sync-build-docs <project name>` for an incremental design release or
-`/finalize-build-docs <project name>` for a complete final release. Never use
-the similarly named handoff files as substitutes.
+`/finalize-build-docs <project name>` for a complete final release. For a
+prompt-only project (`Design mode: Prompt only` in `design/CLAUDE_DESIGN_PROMPT.md`, and no prototype export), direct them to
+`/prepare-claude-design <project name> --prompt-only` instead; the sync and
+finalize commands do not apply there. Never use the similarly named handoff
+files as substitutes.
 
 ## 2. Respect document authority
 
@@ -97,7 +100,8 @@ atomic tasks that:
   unverified operation names as decisions instead of inventing them;
 - keep secrets out of the file and refer only to environment-variable names.
 
-For every prototype-backed, data-backed screen, include atomic tasks that first
+For every prototype-backed or spec-backed, data-backed screen, include atomic
+tasks that first
 record and then implement its production mapping: architecture source; state
 ownership; configured read/write operation and typed wrapper; applicable
 server/application/persistence path; configured client feedback validation plus
@@ -106,7 +110,9 @@ and loading/error/offline states. Use the protected GraphQL, codegen, TanStack
 Query, form-schema, API, and repository foundations when they exist in the current
 boilerplate; otherwise name the approved configured equivalents. UI construction
 depends on these contract tasks. Never create a task to copy prototype local state
-or manual validation as a temporary production implementation.
+or manual validation as a temporary production implementation. In prompt-only
+mode the screen's Design Reference per-screen spec supplies the observable
+outcome, and the rejected-mechanics column reads `None — no prototype`.
 
 Use one checkbox for one verifiable action. Use `[ ]` for pending, `[~]` for
 in progress, `[x]` only after validation passes, and `⚠ blocked` for work that
@@ -200,7 +206,10 @@ Re-evaluate blockers against the updated Product Specification and
 Implementation Plan. Resolve or remove blockers that were caused by superseded
 designs, clarified decisions, or delivered dependencies. Keep a blocker only
 when the current canonical documents and repository still show that the work
-cannot start.
+cannot start. A missing-design blocker is resolved when the screen is
+`ready-for-build` in a synced release (Claude Design mode) or `specified` with a
+complete Design Reference section (prompt-only mode). Design blockers that
+remain are the input to `/generate-design-request <project name>`.
 
 Recalculate phase completion after task reconciliation. A phase is complete only
 when every current task and its updated acceptance criteria are validated and

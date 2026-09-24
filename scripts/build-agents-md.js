@@ -75,8 +75,10 @@ const revisionNotice = sourceRevision
 
 let doc = `# AGENTS.md — execution contract (generated from skills-source; do not edit)
 ${revisionNotice}
-You are the EXECUTOR on this project. Claude Design produced the UI/UX handoff;
-Claude Code reconciled it with this repository. Your job is to build faithfully.
+You are the EXECUTOR on this project. Claude Design produced the UI/UX handoff —
+or, in prompt-only design mode, Claude Code specified it directly in the Design
+Reference — and Claude Code reconciled it with this repository. Your job is to
+build faithfully.
 
 ## Automatic project context — no repeated user instruction required
 Before planning, editing, reviewing, or implementing application code:
@@ -88,7 +90,11 @@ Before planning, editing, reviewing, or implementing application code:
    Plan owns dependency order, scope, phase status, and Fidelity QA.
 3. Read this AGENTS.md for code structure, naming, stack patterns, and skills.
 4. If either canonical root document is missing, stop and ask for
-   \`/finalize-build-docs <project name>\` instead of guessing or using a legacy file.
+   \`/finalize-build-docs <project name>\` — or, for a prompt-only project,
+   \`/prepare-claude-design <project name> --prompt-only\` — instead of guessing
+   or using a legacy file.
+5. If a task is blocked on a missing screen, state, or design decision, stop and
+   ask for \`/generate-design-request <project name>\`; never design it yourself.
 
 The user does not need to repeat “read AGENTS.md, Product Specification.md, and
 Implementation Plan.md.” Treat that context load as the default start of every
@@ -100,10 +106,13 @@ progress. Check \`[ ]\` → \`[~]\` → \`[x]\` only after the phase's QA rows p
 ## Non-negotiables
 - Conflict order: design/prototypes > design/system > design/planning >
   this file (code structure ONLY) > boilerplate UI (never wins, always discarded).
+  A prompt-only project has no prototypes; its Design Reference per-screen spec
+  takes the prototypes' place at the top of that order.
 - Fidelity: a screen is done only when it passes every row of the Fidelity QA
   checklist at the end of the Implementation Plan. "Close enough" is a failure.
-- Prototype boundary: implement only \`data-app-root\`; never ship device frames,
-  preview shells, presentation canvases, annotations, or presentation-only content.
+- Prototype boundary (when prototypes exist): implement only \`data-app-root\`;
+  never ship device frames, preview shells, presentation canvases, annotations,
+  or presentation-only content.
 - Platform-native conversion: web may reuse compatible markup; Expo/React Native
   must use native primitives and must not ship prototype HTML in a WebView or copy
   fixed preview dimensions into a production container.

@@ -13,3 +13,8 @@ When the Claude Design process is not used, run
 `/prepare-claude-design <project name> --prompt-only`. It skips only the
 prototypes: it writes the planning, system, and handoff documents, the root build
 docs, and the task file, then implements the UI directly in the repository.
+
+When tasks later block on missing designs, run
+`/generate-design-request <project name>`. It follows the mode recorded in the
+prompt: a copy-ready request for Claude Design, or, in prompt-only mode, specs
+written directly into the design documents.

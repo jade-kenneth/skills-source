@@ -177,8 +177,9 @@ When generating or modifying code, always follow this order:
 5. Invoke `mobile-native-ui-design` before writing any UI. When implementing from
    an HTML prototype, read only its `data-app-root` as the visual/behavior contract;
    exclude preview shells and translate it to React Native primitives rather than
-   a WebView or copied DOM/CSS.
-6. Before writing the screen, resolve prototype state and actions through project
+   a WebView or copied DOM/CSS. When no prototype exists, the Design Reference's
+   per-screen spec is that contract.
+6. Before writing the screen, resolve prototype or spec state and actions through project
    configuration, the approved plan, foundations present in the repository, and
    nearby exemplars. Reuse the established GraphQL/codegen/TanStack Query,
    form-schema, API validation/authz, error, and cache paths when provided; use

@@ -31,7 +31,9 @@ assume:
   owning app's source (step 3). No `.html` or `.dc.html` files are created.
 
 Choosing prompt-only mode is the user's explicit request to implement UI in this
-session. State the chosen mode back to the user in one line before continuing.
+session. State the chosen mode back to the user in one line before continuing,
+and record it as `Design mode` in the prompt's Confirmed product brief —
+`/generate-design-request` reads it to decide who fills later design gaps.
 
 If usable screens already exist under `design/prototypes/`, do not overwrite them
 or start a replacement design. In Claude Design mode, run
@@ -156,9 +158,10 @@ content.
 
 ### Confirmed product brief
 
-Record the project name, problem, users/roles, target surfaces, MVP boundary,
-later scope, brand direction, platform constraints, accessibility target, content
-rules, and existing assets. Clearly label remaining decisions.
+Record the project name, design mode (`Claude Design` or `Prompt only`),
+problem, users/roles, target surfaces, MVP boundary, later scope, brand
+direction, platform constraints, accessibility target, content rules, and
+existing assets. Clearly label remaining decisions.
 
 ### Required design process
 
@@ -604,7 +607,9 @@ Then, in Claude Code for every design release:
 Use `/finalize-build-docs <project name>` only after the final MVP design release.
 
 Do not wait for every screen before the first sync. Sync only validated releases,
-and finalize only after the required MVP design is complete.
+and finalize only after the required MVP design is complete. When tasks later
+block on missing designs, run `/generate-design-request <project name>` for the
+follow-up Claude Design request.
 
 ### Prompt only — implement the UI directly
 
@@ -672,4 +677,6 @@ Do not create `design/prototypes/`, `design/design-release.json`, or
 `/sync-build-docs`, or `/finalize-build-docs` — they validate a prototype export
 this mode never produces. When scope changes later, update the planning, system,
 and handoff documents first, then the two build docs and the task file, then the
-code. Never write secrets or private data.
+code. When tasks later block on missing designs, run
+`/generate-design-request <project name>`; it follows this mode. Never write
+secrets or private data.

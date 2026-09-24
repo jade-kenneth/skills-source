@@ -8,6 +8,12 @@ argument-hint: [project name]
 > Final completeness gate. For the first or any partial design release, use
 > `/sync-build-docs <project name>` so Codex can start ready slices while Claude
 > Design continues later screens.
+>
+> Claude Design mode only. When invoked directly on a prompt-only project
+> (`Design mode: Prompt only` in `design/CLAUDE_DESIGN_PROMPT.md`, and no
+> prototype export), stop: there is no release to finalize. Prompt-only mode
+> reuses steps 1–4 of this command, with its own substitutions, from inside
+> `/prepare-claude-design <project name> --prompt-only`.
 
 
 **Project name:** $ARGUMENTS

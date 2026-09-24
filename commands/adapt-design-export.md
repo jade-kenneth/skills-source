@@ -33,7 +33,11 @@ If the project name is empty, ask for it. Choose one mode:
   annotations, and existing handoff metadata.
 
 If neither an existing design project nor an export exists, stop and use
-`/prepare-claude-design <project name>`.
+`/prepare-claude-design <project name>`. A prompt-only project
+(`Design mode: Prompt only` in `design/CLAUDE_DESIGN_PROMPT.md`) has no Claude Design project to adapt: its Design Reference specs are
+already the design source, and `/generate-design-request <project name>` fills
+their gaps. Moving it to Claude Design is a new `/prepare-claude-design` run in
+Claude Design mode, not an adaptation.
 
 Treat approved product requirements and existing coherent flows as evidence.
 Do not infer business rules from generic design conventions. Ask focused

@@ -12,6 +12,12 @@ partial release. It creates the canonical root build documents when absent and
 updates the same documents for later batches. It never requires every planned
 screen to be finished and never implements application code.
 
+This command applies only to Claude Design mode. When the project is prompt-only
+(`Design mode: Prompt only` in `design/CLAUDE_DESIGN_PROMPT.md`, and no prototype export), stop: there is no release to sync. In that mode
+`/prepare-claude-design <project name> --prompt-only` writes the build documents,
+and `/generate-design-request <project name>` updates them when tasks block on
+missing designs.
+
 ## 1. Validate release identity first
 
 If the project name is empty, ask for it. Run from the product repository root:
